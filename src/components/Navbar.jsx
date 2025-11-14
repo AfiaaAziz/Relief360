@@ -1,5 +1,6 @@
 import React from "react";
 import { AlertTriangle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
@@ -25,9 +26,9 @@ export default function Navbar() {
             <a href="#hospitals" className="hover:text-gray-900 transition">
               Hospitals
             </a>
-            <a href="#contact" className="hover:text-gray-900 transition">
+            <Link to="/contact" className="hover:text-gray-900 transition">
               Contact
-            </a>
+            </Link>
           </div>
 
           <div className="flex items-center gap-4">

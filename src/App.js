@@ -1,7 +1,8 @@
-import './App.css';
-import SafetyTips from './pages/SafetyTips';
-import Navbar from './components/Navbar';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import "./App.css";
+import SafetyTips from "./pages/SafetyTips";
+import Navbar from "./components/Navbar";
+import ContactUs from "./pages/ContactUs";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -11,6 +12,9 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/safety" element={<SafetyTips />} />
+        </Routes>
+        <Routes>
+          <Route path="/contact" element={<ContactUs />} />
         </Routes>
       </div>
     </Router>
