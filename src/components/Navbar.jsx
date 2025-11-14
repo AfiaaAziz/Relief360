@@ -20,6 +20,10 @@ export default function Navbar() {
             <a href="#how-it-works" className="hover:text-gray-900 transition">
               How It Works
             </a>
+            <Link to="/safety" className="hover:text-gray-900 transition">
+              Safety Tips
+            </Link>
+
             <a href="#volunteer" className="hover:text-gray-900 transition">
               Volunteer
             </a>

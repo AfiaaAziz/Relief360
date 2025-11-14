@@ -58,9 +58,7 @@ export default function SafetyTips() {
           </p>
         </header>
 
-        {/* General Preparedness & Emergency Contacts */}
         <section className="grid gap-6 md:grid-cols-2">
-          {/* General Preparedness */}
           <div className="bg-white p-6 rounded-2xl shadow-md border border-green-100">
             <h2 className="font-semibold text-lg flex items-center gap-2 text-green-700">
               <Home className="w-5 h-5" /> General Preparedness
@@ -91,7 +89,6 @@ export default function SafetyTips() {
             </div>
           </div>
 
-          {/* Emergency Contacts */}
           <div className="bg-white p-6 rounded-2xl shadow-md border border-green-100">
             <h2 className="font-semibold text-lg flex items-center gap-2 text-green-700">
               <AlertTriangle className="w-5 h-5" /> Emergency Contacts
@@ -125,7 +122,6 @@ export default function SafetyTips() {
           </div>
         </section>
 
-        {/* Disaster-specific Articles */}
         <main className="mt-10 space-y-6">
           <Article
             icon={<Droplet className="w-6 h-6 text-blue-500" />}
@@ -180,7 +176,6 @@ export default function SafetyTips() {
           />
         </main>
 
-        {/* Footer Notes */}
         <footer className="mt-12 text-sm text-gray-600 bg-white p-5 rounded-lg border border-green-100">
           <div className="flex items-start gap-3">
             <CheckCircle className="w-5 h-5 text-green-600 mt-1" />
