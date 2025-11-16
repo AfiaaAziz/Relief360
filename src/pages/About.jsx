@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const AboutPage = () => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -340,9 +341,11 @@ const AboutPage = () => {
               <p className="text-gray-700 mb-6">
                 Contact us for further assistance
               </p>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition duration-300">
-                Contact Us
-              </button>
+              <Link to="/contact">
+  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition duration-300">
+    Contact Us
+  </button>
+</Link>
             </div>
           </div>
         </div>
