@@ -1,10 +1,14 @@
-
 import React from "react";
 import { AlertTriangle, Users, Hospital, MapPin, Phone } from "lucide-react";
 import heroImage from "../assets/images/HeroImage.jpg";
 
-
-const Button = ({ children, className = "", variant = "default", size = "default", ...props }) => {
+const Button = ({
+  children,
+  className = "",
+  variant = "default",
+  size = "default",
+  ...props
+}) => {
   const base =
     "inline-flex items-center justify-center gap-2 font-medium rounded-md transition-all duration-200 whitespace-nowrap";
 
@@ -20,12 +24,14 @@ const Button = ({ children, className = "", variant = "default", size = "default
   };
 
   return (
-    <button className={`${base} ${variants[variant]} ${sizes[size]} ${className}`} {...props}>
+    <button
+      className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
+      {...props}
+    >
       {children}
     </button>
   );
 };
-
 
 const Home = () => {
   return (
@@ -41,14 +47,12 @@ const Home = () => {
       <div className="relative z-10 container mx-auto px-4 py-20 text-center">
         <div className="max-w-3xl mx-auto mb-10">
           <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
-
             Relief - 360
-
           </h1>
 
           <p className="text-lg md:text-xl text-gray-300 mt-4 max-w-2xl mx-auto">
-            Connecting citizens, volunteers, hospitals, and emergency responders in real-time
-            to save lives and manage disasters effectively.
+            Connecting citizens, volunteers, hospitals, and emergency responders
+            in real-time to save lives and manage disasters effectively.
           </p>
         </div>
 
@@ -71,7 +75,9 @@ const Home = () => {
           </div>
 
           <div>
-            <p className="text-3xl md:text-4xl font-bold text-yellow-400">1000+</p>
+            <p className="text-3xl md:text-4xl font-bold text-yellow-400">
+              1000+
+            </p>
             <p className="text-sm text-gray-300 mt-1">Active Volunteers</p>
           </div>
 
