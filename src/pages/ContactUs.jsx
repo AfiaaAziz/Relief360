@@ -44,7 +44,7 @@ export default function ContactUs() {
               <Mail className="w-6 h-6 text-purple-500" />
             </div>
             <h3 className="font-semibold">Support Email</h3>
-            <p className="text-red-500 font-semibold">support@cdms.org</p>
+            <p className="text-red-500 font-semibold">support@Relief360.org</p>
             <p className="text-gray-400 text-sm mt-1">General inquiries and support</p>
           </div>
 
@@ -53,7 +53,7 @@ export default function ContactUs() {
               <Phone className="w-6 h-6 text-purple-500" />
             </div>
             <h3 className="font-semibold">General Phone</h3>
-            <p className="text-red-500 font-semibold">+1 (555) 123-CDMS</p>
+            <p className="text-red-500 font-semibold">+1 (555) 123-Relief360</p>
             <p className="text-gray-400 text-sm mt-1">Business hours: 9 AM - 6 PM</p>
           </div>
 
