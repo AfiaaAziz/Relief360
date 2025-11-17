@@ -1,357 +1,359 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Shield, Users, Target, Heart, Zap } from "lucide-react";
 
-const AboutPage = () => {
-  const [openIndex, setOpenIndex] = useState(null);
-
-  const toggleFAQ = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
-  const faqData = [
+const About = () => {
+  const values = [
     {
-      question: "What is disaster recovery?",
-      answer: "Disaster recovery refers to the process of restoring systems, data, and infrastructure after a disaster, ensuring continuity of operations.",
-      subQuestions: [
-        {
-          question: "How to prepare for disasters?",
-          answer: "Disaster preparedness involves creating an emergency plan, assembling a disaster supply kit, and staying informed about potential risks in your area."
-        },
-        {
-          question: "How can I contribute?",
-          answer: "You can contribute by donating to disaster relief efforts, volunteering your time and skills, and spreading awareness about the platform to help more people stay safe during disasters."
-        }
-      ]
+      icon: Shield,
+      title: "Safety First",
+      description: "Every decision we make prioritizes the safety and well-being of our communities."
     },
     {
-      question: "Is the platform free?",
-      answer: "Yes, the platform is free to use for both community members and emergency responders. We believe in providing accessible tools for disaster management."
+      icon: Zap,
+      title: "Rapid Response",
+      description: "Time is critical in emergencies. We've built our system for speed and efficiency."
     },
     {
-      question: "How can I sign up?",
-      answer: "To sign up, simply visit our website and follow the registration process. It only takes a few minutes."
+      icon: Heart,
+      title: "Compassion",
+      description: "We understand that disasters affect real people with real stories and needs."
+    },
+    {
+      icon: Users,
+      title: "Unity",
+      description: "Bringing together diverse stakeholders to work toward a common goal of safety."
     }
   ];
 
+  const Accordion = ({ children, type = "single", collapsible = true, className = "" }) => {
+    return (
+      <div className={`space-y-4 ${className}`}>
+        {React.Children.map(children, (child, index) => {
+          return React.cloneElement(child, {
+            isSingle: type === "single",
+            collapsible,
+            index
+          });
+        })}
+      </div>
+    );
+  };
+
+  const AccordionItem = ({ children, value, className = "", isSingle, collapsible, index }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+
+    return (
+      <div className={`bg-white border border-gray-200 rounded-lg ${className}`}>
+        {React.Children.map(children, child => {
+          if (child.type === AccordionTrigger) {
+            return React.cloneElement(child, {
+              onClick: () => setIsOpen(!isOpen),
+              isOpen,
+              value
+            });
+          }
+          if (child.type === AccordionContent) {
+            return isOpen ? child : null;
+          }
+          return child;
+        })}
+      </div>
+    );
+  };
+
+  const AccordionTrigger = ({ children, onClick, isOpen, className = "" }) => {
+    return (
+      <button
+        onClick={onClick}
+        className={`w-full flex justify-between items-center p-6 text-left hover:bg-gray-50 transition-colors ${className}`}
+      >
+        <span className="text-lg font-semibold text-gray-900">{children}</span>
+        <svg
+          className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    );
+  };
+
+  const AccordionContent = ({ children, className = "" }) => {
+    return (
+      <div className={`px-6 pb-6 text-gray-600 ${className}`}>
+        {children}
+      </div>
+    );
+  };
+
+  const Card = ({ children, className = "" }) => {
+    return (
+      <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>
+        {children}
+      </div>
+    );
+  };
+
+  const CardHeader = ({ children, className = "" }) => {
+    return (
+      <div className={`p-6 ${className}`}>
+        {children}
+      </div>
+    );
+  };
+
+  const CardTitle = ({ children, className = "" }) => {
+    return (
+      <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+        {children}
+      </h3>
+    );
+  };
+
+  const CardDescription = ({ children, className = "" }) => {
+    return (
+      <p className={`text-sm text-gray-600 ${className}`}>
+        {children}
+      </p>
+    );
+  };
+
+  const CardContent = ({ children, className = "" }) => {
+    return (
+      <div className={`p-6 pt-0 ${className}`}>
+        {children}
+      </div>
+    );
+  };
+
+  const Button = ({ children, variant = "default", size = "default", className = "", ...props }) => {
+    const baseClasses = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
+
+    const variants = {
+      default: "bg-gray-900 text-white hover:bg-gray-800 focus:ring-gray-500",
+      emergency: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+    };
+
+    const sizes = {
+      default: "px-4 py-2 text-sm",
+      lg: "px-6 py-3 text-base"
+    };
+
+    return (
+      <button
+        className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  };
+
+
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-6">
-              About Relief-360
+    <div className="min-h-screen bg-white">
+      <main>
+        <section className="py-20 bg-gradient-to-br from-blue-50 to-gray-100">
+          <div className="container mx-auto px-4 max-w-4xl text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              <span className="text-gray-900">About</span>{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Relief-360</span>
             </h1>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              We're building the future of disaster management through
-              technology, connecting communities when they need it most.
+            <p className="text-xl text-gray-600 leading-relaxed">
+              We're building the future of disaster management through technology,
+              connecting communities when they need it most.
             </p>
           </div>
+        </section>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-16">
-            <h2 className="text-3xl font-bold text-blue-800 mb-8 text-center">
-              Our Mission
-            </h2>
-            <div className="grid md:grid-cols-2 gap-8 items-center">
+        <section className="py-20">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <p className="text-lg text-gray-700 mb-6">
-                  To create a comprehensive, technology-driven platform that
-                  connects citizens, volunteers, hospitals, and emergency
-                  responders in real-time during disasters.
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+                  Our Mission
+                </h2>
+                <p className="text-lg text-gray-600 mb-6">
+                  To create a comprehensive, technology-driven platform that connects citizens,
+                  volunteers, hospitals, and emergency responders in real-time during disasters.
                 </p>
-                <p className="text-lg text-gray-700">
-                  We believe that effective disaster management requires
-                  seamless coordination between all stakeholders. Our platform
-                  bridges communication gaps, optimizes resource allocation, and
-                  ensures that help reaches those who need it most, as quickly
-                  as possible.
+                <p className="text-lg text-gray-600 mb-8">
+                  We believe that effective disaster management requires seamless coordination
+                  between all stakeholders. Our platform bridges communication gaps, optimizes
+                  resource allocation, and ensures that help reaches those who need it most, as quickly as possible.
                 </p>
+              
               </div>
-              <div className="bg-blue-50 rounded-xl p-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4">
-                    <div className="text-2xl font-bold text-blue-800 mb-2">
-                      50K+
-                    </div>
-                    <div className="text-gray-600">Lives Protected</div>
-                  </div>
-                  <div className="text-center p-4">
-                    <div className="text-2xl font-bold text-blue-800 mb-2">
-                      1000+
-                    </div>
-                    <div className="text-gray-600">Active Workforce</div>
-                  </div>
-                  <div className="text-center p-4">
-                    <div className="text-2xl font-bold text-blue-800 mb-2">
-                      100+
-                    </div>
-                    <div className="text-gray-600">Partner Insights</div>
-                  </div>
-                  <div className="text-center p-4">
-                    <div className="text-2xl font-bold text-blue-800 mb-2">
-                      24/7
-                    </div>
-                    <div className="text-gray-600">Response Time</div>
-                  </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center p-6 rounded-lg bg-blue-50">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">50K+</div>
+                  <div className="text-sm text-gray-600">Lives Protected</div>
+                </div>
+                <div className="text-center p-6 rounded-lg bg-purple-50">
+                  <div className="text-3xl font-bold text-purple-600 mb-2">1000+</div>
+                  <div className="text-sm text-gray-600">Active Volunteers</div>
+                </div>
+                <div className="text-center p-6 rounded-lg bg-green-50">
+                  <div className="text-3xl font-bold text-green-600 mb-2">100+</div>
+                  <div className="text-sm text-gray-600">Partner Hospitals</div>
+                </div>
+                <div className="text-center p-6 rounded-lg bg-orange-50">
+                  <div className="text-3xl font-bold text-orange-600 mb-2">24/7</div>
+                  <div className="text-sm text-gray-600">Response Time</div>
                 </div>
               </div>
             </div>
           </div>
+        </section>
 
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold text-blue-800 mb-8 text-center">
-              Our Values
-            </h2>
-            <p className="text-lg text-gray-700 text-center mb-12 max-w-2xl mx-auto">
-              The principles that guide everything we do and every decision we
-              make.
-            </p>
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+                Our Values
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                The principles that guide everything we do and every decision we make.
+              </p>
+            </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl shadow-md p-6 text-center">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-red-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-blue-800 mb-3">
-                  Safety First
-                </h3>
-                <p className="text-gray-600">
-                  Every decision we make prioritizes the safety and well-being
-                  of our communities.
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-md p-6 text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-green-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-blue-800 mb-3">
-                  Rapid Response
-                </h3>
-                <p className="text-gray-600">
-                  Time is critical in emergencies. We prioritize speed and
-                  efficiency in all our operations.
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-md p-6 text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-purple-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-blue-800 mb-3">
-                  Compassion
-                </h3>
-                <p className="text-gray-600">
-                  We recognize that disasters affect real people with real
-                  stories and needs.
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-md p-6 text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-blue-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-blue-800 mb-3">Unity</h3>
-                <p className="text-gray-600">
-                  Working together enables us to achieve our common goal of
-                  community safety.
-                </p>
-              </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {values.map((value, index) => {
+                const IconComponent = value.icon;
+                return (
+                  <Card key={index} className="border-0 shadow-lg bg-gradient-to-r from-blue-50 to-purple-50 text-center">
+                    <CardHeader>
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+                        <IconComponent className="h-8 w-8 text-white" />
+                      </div>
+                      <CardTitle className="text-xl">{value.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>{value.description}</CardDescription>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
+        </section>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h2 className="text-3xl font-bold text-blue-800 mb-8 text-center">
-              Why This Platform?
-            </h2>
+        <section className="py-20">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+                Why This Platform?
+              </h2>
+            </div>
 
             <div className="space-y-8">
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="md:w-1/3">
-                  <h3 className="text-xl font-bold text-blue-700 mb-2">
-                    1. Communication Breakdown
-                  </h3>
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                  <span className="text-red-600 font-bold">1</span>
                 </div>
-                <div className="md:w-2/3">
-                  <p className="text-gray-700">
-                    During disasters, traditional communication channels often
-                    fail or become overwhelmed, leaving communities isolated and
-                    unable to coordinate effective responses.
+                <div>
+                  <h3 className="text-xl font-semibold mb-2 text-gray-900">Communication Breakdown</h3>
+                  <p className="text-gray-600">
+                    During disasters, traditional communication channels often fail or become overwhelmed,
+                    leaving communities isolated and unable to coordinate effective responses.
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="md:w-1/3">
-                  <h3 className="text-xl font-bold text-blue-700 mb-2">
-                    2. Resource Misallocation
-                  </h3>
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                  <span className="text-orange-600 font-bold">2</span>
                 </div>
-                <div className="md:w-2/3">
-                  <p className="text-gray-700">
-                    Without real-time visibility into available resources and
-                    needs, emergency responses can be inefficient, with some
-                    areas over-supplied while others are neglected.
+                <div>
+                  <h3 className="text-xl font-semibold mb-2 text-gray-900">Resource Misallocation</h3>
+                  <p className="text-gray-600">
+                    Without real-time visibility into available resources and needs, emergency responses
+                    can be inefficient, with some areas over-served while others are neglected.
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="md:w-1/3">
-                  <h3 className="text-xl font-bold text-blue-700 mb-2">
-                    3. Volunteer Coordination
-                  </h3>
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 font-bold">3</span>
                 </div>
-                <div className="md:w-2/3">
-                  <p className="text-gray-700">
-                    Willing volunteers often don't know where they're needed
-                    most or how to help effectively, leading to wasted goodwill
-                    and missed opportunities to save lives.
+                <div>
+                  <h3 className="text-xl font-semibold mb-2 text-gray-900">Volunteer Coordination</h3>
+                  <p className="text-gray-600">
+                    Willing volunteers often don't know where they're needed most or how to help effectively,
+                    leading to wasted goodwill and missed opportunities to save lives.
                   </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold text-blue-900 mb-4 text-center">
-              FAQs
-            </h2>
-            <p className="text-lg text-gray-700 text-center mb-12">
-              Find answers to common questions about disaster preparedness and
-              platform usage
-            </p>
-
-            <div className="space-y-4">
-              {faqData.map((faq, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-                  <button
-                    className="w-full flex justify-between items-center p-6 text-left hover:bg-blue-50 transition-colors duration-200"
-                    onClick={() => toggleFAQ(index)}
-                  >
-                    <h3 className="text-xl font-semibold text-blue-800 pr-4">
-                      {faq.question}
-                    </h3>
-                    <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
-                      <div className={`transform transition-transform duration-300 ${
-                        openIndex === index ? 'rotate-180' : 'rotate-0'
-                      }`}>
-                        <svg 
-                          className="w-5 h-5 text-blue-600" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                        >
-                          <path 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            strokeWidth={2} 
-                            d="M19 9l-7 7-7-7" 
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                  </button>
-                  
-                  <div className={`transition-all duration-300 ease-in-out ${
-                    openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                  } overflow-hidden`}>
-                    <div className="p-6 bg-blue-50 border-t border-gray-200">
-                      <p className="text-gray-700 mb-4">{faq.answer}</p>
-                      
-                      {faq.subQuestions && (
-                        <div className="ml-4 space-y-4">
-                          {faq.subQuestions.map((subFaq, subIndex) => (
-                            <div key={subIndex}>
-                              <h4 className="text-lg font-semibold text-blue-700 mb-2">
-                                {subFaq.question}
-                              </h4>
-                              <p className="text-gray-600">
-                                {subFaq.answer}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center mt-12 pt-8 border-t border-gray-200">
-              <h3 className="text-2xl font-bold text-blue-800 mb-4">
-                Still Have Questions?
-              </h3>
-              <p className="text-gray-700 mb-6">
-                Contact us for further assistance
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+                FAQs
+              </h2>
+              <p className="text-xl text-gray-600">
+                Find answers to common questions about disaster preparedness and platform usage
               </p>
-              <Link to="/contact">
-  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition duration-300">
-    Contact Us
-  </button>
-</Link>
             </div>
+
+            <Accordion type="single" collapsible className="space-y-4">
+              <AccordionItem value="item-1" className="px-6">
+                <AccordionTrigger>
+                  What is disaster recovery?
+                </AccordionTrigger>
+                <AccordionContent>
+                  Disaster recovery refers to the process of restoring systems, data, and infrastructure after a disaster, ensuring continuity of operations.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-2" className="px-6">
+                <AccordionTrigger>
+                  How to prepare for disasters?
+                </AccordionTrigger>
+                <AccordionContent>
+                  Disaster preparedness involves creating an emergency plan, assembling a disaster supply kit, and staying informed about potential risks in your area.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-3" className="px-6">
+                <AccordionTrigger>
+                  How can I contribute?
+                </AccordionTrigger>
+                <AccordionContent>
+                  You can contribute by donating to disaster relief efforts, volunteering your time and skills, and spreading awareness about the platform to help more people stay safe during disasters.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-4" className="px-6">
+                <AccordionTrigger>
+                  Is the platform free?
+                </AccordionTrigger>
+                <AccordionContent>
+                  Yes, the platform is free to use for both community members and emergency responders. We believe in providing accessible tools for disaster management.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-5" className="px-6">
+                <AccordionTrigger>
+                  How can I sign up?
+                </AccordionTrigger>
+                <AccordionContent>
+                  To sign up, simply visit our website and follow the registration process. It only takes a few minutes.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 };
 
-export default AboutPage;
+export default About;
