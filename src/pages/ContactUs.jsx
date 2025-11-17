@@ -4,6 +4,7 @@ import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Textarea from "../components/ui/Textarea";
 import Label from "../components/ui/Label";
+import contactSupportImage from "../assets/images/contactSupport.png";
 import {
   Card,
   CardHeader,
@@ -82,9 +83,19 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-white">
       <main>
-        {/* Hero Section */}
-        <section className="py-20 bg-gradient-to-br from-blue-50 to-gray-100">
-          <div className="container mx-auto px-4 max-w-4xl text-center">
+        {/* Hero Section with Background Image */}
+        <section className="py-20 bg-gradient-to-br from-blue-50 to-gray-100 relative overflow-hidden">
+          {/* Background Image - Only in Hero Section */}
+          <div className="absolute inset-0 opacity-10">
+            <img
+              src={contactSupportImage}
+              alt="Customer support team ready to assist"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          {/* Content */}
+          <div className="container mx-auto px-4 max-w-4xl text-center relative z-10">
             <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
               <MessageCircle className="h-10 w-10 text-white" />
             </div>
@@ -101,7 +112,7 @@ const Contact = () => {
           </div>
         </section>
 
-        {/* Emergency Notice */}
+        {/* Emergency Notice - No Background Image Here */}
         <section className="py-8 bg-red-600 text-white">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <div className="flex items-center justify-center space-x-4">
@@ -115,7 +126,7 @@ const Contact = () => {
           </div>
         </section>
 
-        {/* Contact Form */}
+        {/* Contact Form - No Background Image Here */}
         <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="text-center mb-12">
