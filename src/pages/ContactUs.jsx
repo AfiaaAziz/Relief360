@@ -1,132 +1,345 @@
-import React from "react";
-import { Phone, Mail, MapPin, AlertTriangle } from "lucide-react";
+import React, { useState } from "react";
+import { Send, MessageCircle, AlertTriangle } from "lucide-react";
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
+import Textarea from "../components/ui/Textarea";
+import Label from "../components/ui/Label";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "../components/ui/Card";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../components/ui/Select";
 
-export default function ContactUs() {
+const Contact = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    department: "",
+    subject: "",
+    message: "",
+    priority: "medium",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+      alert(
+        "Message Sent Successfully! Thank you for contacting us. We'll respond within 24 hours."
+      );
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        department: "",
+        subject: "",
+        message: "",
+        priority: "medium",
+      });
+    }, 2000);
+  };
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const handleSelectChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      department: "",
+      subject: "",
+      message: "",
+      priority: "medium",
+    });
+  };
+
   return (
-    <div className="w-full">
-
-      <div className="bg-gray-50 py-16 text-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-red-500 flex items-center justify-center">
-            <Mail className="w-6 h-6 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold">
-            Contact <span className="text-red-600">Us</span>
-          </h1>
-          <p className="text-gray-500 max-w-xl">
-            Get in touch with our team. We're here to help with emergencies, support questions, and partnership opportunities.
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-red-500 text-white py-2 text-center font-semibold flex items-center justify-center gap-2">
-        <AlertTriangle className="w-4 h-4" />
-        FOR IMMEDIATE EMERGENCIES: Call 911 or use our emergency reporting system
-        <AlertTriangle className="w-4 h-4" />
-      </div>
-
-      <div className="py-16 px-4 max-w-7xl mx-auto">
-        <h2 className="text-2xl font-bold text-center mb-2">Get in Touch</h2>
-        <p className="text-gray-500 text-center mb-8">Multiple ways to reach us based on your needs and urgency level.</p>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="border border-red-500 rounded-lg p-6 text-center hover:shadow-lg transition">
-            <div className="flex justify-center mb-2">
-              <Phone className="w-6 h-6 text-red-500" />
+    <div className="min-h-screen bg-white">
+      <main>
+        {/* Hero Section */}
+        <section className="py-20 bg-gradient-to-br from-blue-50 to-gray-100">
+          <div className="container mx-auto px-4 max-w-4xl text-center">
+            <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+              <MessageCircle className="h-10 w-10 text-white" />
             </div>
-            <h3 className="font-semibold">Emergency Hotline</h3>
-            <p className="text-red-500 font-semibold">+1 (555) EMERGENCY</p>
-            <p className="text-gray-400 text-sm mt-1">24/7 emergency support line</p>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              <span className="text-gray-900">Contact</span>{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Us
+              </span>
+            </h1>
+            <p className="text-xl text-gray-600 leading-relaxed">
+              Get in touch with our team. We're here to help with emergencies,
+              support questions, and partnership opportunities.
+            </p>
           </div>
+        </section>
 
-          <div className="border rounded-lg p-6 text-center hover:shadow-lg transition">
-            <div className="flex justify-center mb-2">
-              <Mail className="w-6 h-6 text-purple-500" />
+        {/* Emergency Notice */}
+        <section className="py-8 bg-red-600 text-white">
+          <div className="container mx-auto px-4 max-w-4xl text-center">
+            <div className="flex items-center justify-center space-x-4">
+              <AlertTriangle className="h-6 w-6" />
+              <span className="font-semibold">
+                FOR IMMEDIATE EMERGENCIES: Call 911 or use our emergency
+                reporting system
+              </span>
+              <AlertTriangle className="h-6 w-6" />
             </div>
-            <h3 className="font-semibold">Support Email</h3>
-            <p className="text-red-500 font-semibold">support@Relief360.org</p>
-            <p className="text-gray-400 text-sm mt-1">General inquiries and support</p>
           </div>
+        </section>
 
-          <div className="border rounded-lg p-6 text-center hover:shadow-lg transition">
-            <div className="flex justify-center mb-2">
-              <Phone className="w-6 h-6 text-purple-500" />
+        {/* Contact Form */}
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+                Send us a Message
+              </h2>
+              <p className="text-xl text-gray-600">
+                Fill out the form below and we'll get back to you within 24
+                hours.
+              </p>
             </div>
-            <h3 className="font-semibold">General Phone</h3>
-            <p className="text-red-500 font-semibold">+1 (555) 123-Relief360</p>
-            <p className="text-gray-400 text-sm mt-1">Business hours: 9 AM - 6 PM</p>
-          </div>
 
-          <div className="border rounded-lg p-6 text-center hover:shadow-lg transition">
-            <div className="flex justify-center mb-2">
-              <MapPin className="w-6 h-6 text-purple-500" />
-            </div>
-            <h3 className="font-semibold">Headquarters</h3>
-            <p className="text-red-500 font-semibold">123 Emergency Response Blvd</p>
-            <p className="text-gray-400 text-sm mt-1">Disaster Management District, City 12345</p>
-          </div>
-        </div>
-      </div>
+            <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-50 to-purple-50">
+              <CardHeader>
+                <CardTitle className="text-2xl text-center">
+                  Contact Form
+                </CardTitle>
+                <CardDescription className="text-center">
+                  All fields marked with * are required.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Full Name *</Label>
+                      <Input
+                        id="name"
+                        placeholder="Your full name"
+                        required
+                        value={formData.name}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="your.email@example.com"
+                        required
+                        value={formData.email}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
 
-      <div className="py-16 px-4 bg-gray-50">
-        <h2 className="text-2xl font-bold text-center mb-2">Send us a Message</h2>
-        <p className="text-gray-500 text-center mb-8">Fill out the form below and we'll get back to you within 24 hours.</p>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone Number</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="Your phone number"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="department">Department *</Label>
+                      <Select
+                        value={formData.department}
+                        onValueChange={(value) =>
+                          handleSelectChange("department", value)
+                        }
+                        required
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem
+                            value="emergency"
+                            onSelect={(value) =>
+                              handleSelectChange("department", value)
+                            }
+                          >
+                            Emergency Operations
+                          </SelectItem>
+                          <SelectItem
+                            value="technical"
+                            onSelect={(value) =>
+                              handleSelectChange("department", value)
+                            }
+                          >
+                            Technical Support
+                          </SelectItem>
+                          <SelectItem
+                            value="general"
+                            onSelect={(value) =>
+                              handleSelectChange("department", value)
+                            }
+                          >
+                            General Inquiries
+                          </SelectItem>
+                          <SelectItem
+                            value="partnership"
+                            onSelect={(value) =>
+                              handleSelectChange("department", value)
+                            }
+                          >
+                            Partnerships
+                          </SelectItem>
+                          <SelectItem
+                            value="media"
+                            onSelect={(value) =>
+                              handleSelectChange("department", value)
+                            }
+                          >
+                            Media Relations
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
 
-        <form className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-8 rounded-lg shadow-md">
-          <div className="flex flex-col">
-            <label className="mb-1 font-medium">Full Name *</label>
-            <input type="text" placeholder="Your full name" className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500" />
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="subject">Subject *</Label>
+                    <Input
+                      id="subject"
+                      placeholder="Brief description of your inquiry"
+                      required
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                    />
+                  </div>
 
-          <div className="flex flex-col">
-            <label className="mb-1 font-medium">Email Address *</label>
-            <input type="email" placeholder="your.email@example.com" className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500" />
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Message *</Label>
+                    <Textarea
+                      id="message"
+                      placeholder="Please provide detailed information about your inquiry or request..."
+                      className="min-h-32"
+                      required
+                      value={formData.message}
+                      onChange={handleInputChange}
+                    />
+                  </div>
 
-          <div className="flex flex-col">
-            <label className="mb-1 font-medium">Phone Number</label>
-            <input type="text" placeholder="Your phone number" className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500" />
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="priority">Priority Level</Label>
+                    <Select
+                      value={formData.priority}
+                      onValueChange={(value) =>
+                        handleSelectChange("priority", value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select priority" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          value="low"
+                          onSelect={(value) =>
+                            handleSelectChange("priority", value)
+                          }
+                        >
+                          Low - General inquiry
+                        </SelectItem>
+                        <SelectItem
+                          value="medium"
+                          onSelect={(value) =>
+                            handleSelectChange("priority", value)
+                          }
+                        >
+                          Medium - Support needed
+                        </SelectItem>
+                        <SelectItem
+                          value="high"
+                          onSelect={(value) =>
+                            handleSelectChange("priority", value)
+                          }
+                        >
+                          High - Urgent issue
+                        </SelectItem>
+                        <SelectItem
+                          value="critical"
+                          onSelect={(value) =>
+                            handleSelectChange("priority", value)
+                          }
+                        >
+                          Critical - Emergency related
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-          <div className="flex flex-col">
-            <label className="mb-1 font-medium">Department *</label>
-            <select className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500">
-              <option>Select department</option>
-              <option>Support</option>
-              <option>Volunteer</option>
-              <option>General Inquiry</option>
-            </select>
+                  <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                    <Button
+                      type="submit"
+                      variant="info"
+                      size="lg"
+                      className="flex-1"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-4 w-4 mr-2" />
+                          Send Message
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      onClick={resetForm}
+                    >
+                      Reset Form
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
           </div>
-
-          <div className="flex flex-col md:col-span-2">
-            <label className="mb-1 font-medium">Subject *</label>
-            <input type="text" placeholder="Brief description of your inquiry" className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500" />
-          </div>
-
-          <div className="flex flex-col md:col-span-2">
-            <label className="mb-1 font-medium">Message *</label>
-            <textarea placeholder="Please provide detailed information about your inquiry or request…" rows="5" className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
-          </div>
-
-          <div className="flex flex-col">
-            <label className="mb-1 font-medium">Priority Level</label>
-            <select className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500">
-              <option>Medium - Support needed</option>
-              <option>High - Immediate action</option>
-              <option>Low - General inquiry</option>
-            </select>
-          </div>
-
-          <div className="flex items-end gap-2">
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition flex-1">
-              Send Message
-            </button>
-            <button type="reset" className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition">
-              Reset Form
-            </button>
-          </div>
-        </form>
-      </div>
+        </section>
+      </main>
     </div>
   );
-}
+};
+
+export default Contact;
