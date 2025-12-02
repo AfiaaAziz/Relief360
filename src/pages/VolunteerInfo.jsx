@@ -84,7 +84,7 @@ const VolunteerInfo = () => {
     { number: "24/7", label: "Availability", icon: Clock }
   ];
 
-  const getBadgeColor = (urgency: string) => {
+  const getBadgeColor = (urgency) => {
     switch (urgency) {
       case 'Critical':
         return 'bg-red-100 text-red-800 border-red-200';
