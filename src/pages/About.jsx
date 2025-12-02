@@ -1,5 +1,5 @@
 import React from "react";
-import { Shield, Users, Target, Heart, Zap } from "lucide-react";
+import { Shield, Users, Heart, Zap } from "lucide-react";
 import volunteerNetworkImage from "../assets/images/volunteer-network.png";
 import {
   Card,

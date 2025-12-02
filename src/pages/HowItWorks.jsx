@@ -5,7 +5,7 @@ import {
   Users, 
   Hospital, 
   CheckCircle,
-  ArrowRight,
+ // ArrowRight,
   MapPin,
   Clock,
   Shield
