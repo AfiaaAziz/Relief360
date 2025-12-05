@@ -22,7 +22,7 @@ const HospitalRegistration = () => {
     contactEmail: "",
     additionalInfo: "",
     terms: false,
-    dataSharing: false
+    dataSharing: false,
   });
 
   const availableServices = [
@@ -36,33 +36,77 @@ const HospitalRegistration = () => {
     { id: "cardiac", label: "Cardiac Care" },
   ];
 
-const handleServiceChange = (serviceId, checked) => {
-  if (checked) {
-    setServices([...services, serviceId]);
-  } else {
-    setServices(services.filter(id => id !== serviceId));
-  }
-};
+  const handleServiceChange = (serviceId, checked) => {
+    if (checked) {
+      setServices([...services, serviceId]);
+    } else {
+      setServices(services.filter((id) => id !== serviceId));
+    }
+  };
 
- const handleInputChange = (e) => {
-  const { id, value, type, checked } = e.target;
-  if (type === 'checkbox') {
-    setFormData(prev => ({ ...prev, [id]: checked }));
-  } else {
-    setFormData(prev => ({ ...prev, [id]: value }));
-  }
-};
+  const handleInputChange = (e) => {
+    const { id, value, type, checked } = e.target;
+    if (type === "checkbox") {
+      setFormData((prev) => ({ ...prev, [id]: checked }));
+    } else {
+      setFormData((prev) => ({ ...prev, [id]: value }));
+    }
+  };
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  
-  // Simulate API call
-  setTimeout(() => {
-    setIsSubmitting(false);
-    alert("Hospital Registration Successful!\nYour facility has been added to our emergency response network.");
-  }, 2000);
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const res = await fetch(`${apiBase}/api/hospital-registration`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          services: services,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to register hospital");
+      }
+
+      setIsSubmitting(false);
+      alert(
+        "Hospital Registration Successful!\nYour facility has been added to our emergency response network."
+      );
+      // Reset form
+      setFormData({
+        hospitalName: "",
+        hospitalType: "",
+        address: "",
+        phone: "",
+        emergencyPhone: "",
+        email: "",
+        totalBeds: "",
+        icuBeds: "",
+        emergencyBeds: "",
+        ambulances: "",
+        staffCount: "",
+        contactName: "",
+        contactPosition: "",
+        contactPhone: "",
+        contactEmail: "",
+        additionalInfo: "",
+        terms: false,
+        dataSharing: false,
+      });
+      setServices([]);
+    } catch (error) {
+      setIsSubmitting(false);
+      console.error("Hospital registration submit error:", error);
+      alert(
+        "Sorry, we couldn't register your hospital. Please try again later."
+      );
+    }
+  };
 
   return (
     <section id="hospitals" className="py-20 bg-gray-50">
@@ -72,7 +116,8 @@ const handleSubmit = (e) => {
             <span className="text-blue-600">Partner</span> Hospital Registration
           </h2>
           <p className="text-xl text-gray-600">
-            Join our healthcare network to coordinate emergency medical response and resource sharing.
+            Join our healthcare network to coordinate emergency medical response
+            and resource sharing.
           </p>
         </div>
 
@@ -82,9 +127,12 @@ const handleSubmit = (e) => {
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
               <Hospital className="h-8 w-8 text-blue-600" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Resource Coordination</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              Resource Coordination
+            </h3>
             <p className="text-sm text-gray-600">
-              Share real-time capacity and resource availability with emergency services.
+              Share real-time capacity and resource availability with emergency
+              services.
             </p>
           </div>
 
@@ -95,7 +143,8 @@ const handleSubmit = (e) => {
             </div>
             <h3 className="text-lg font-semibold mb-2">Priority Referrals</h3>
             <p className="text-sm text-gray-600">
-              Receive priority emergency referrals based on your specialties and capacity.
+              Receive priority emergency referrals based on your specialties and
+              capacity.
             </p>
           </div>
 
@@ -104,9 +153,12 @@ const handleSubmit = (e) => {
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
               <Stethoscope className="h-8 w-8 text-blue-600" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Enhanced Communication</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              Enhanced Communication
+            </h3>
             <p className="text-sm text-gray-600">
-              Direct communication channels with emergency coordinators and volunteers.
+              Direct communication channels with emergency coordinators and
+              volunteers.
             </p>
           </div>
         </div>
@@ -119,22 +171,28 @@ const handleSubmit = (e) => {
               Hospital Registration
             </h2>
             <p className="text-gray-600 mt-2">
-              Register your healthcare facility to join our emergency response network.
+              Register your healthcare facility to join our emergency response
+              network.
             </p>
           </div>
-          
+
           <div className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Information */}
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Basic Information</h3>
-                
+                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                  Basic Information
+                </h3>
+
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="hospitalName" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="hospitalName"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Hospital Name *
                     </label>
-                    <input 
+                    <input
                       id="hospitalName"
                       type="text"
                       value={formData.hospitalName}
@@ -146,10 +204,13 @@ const handleSubmit = (e) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="hospitalType" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="hospitalType"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Hospital Type *
                     </label>
-                    <select 
+                    <select
                       id="hospitalType"
                       value={formData.hospitalType}
                       onChange={handleInputChange}
@@ -162,16 +223,21 @@ const handleSubmit = (e) => {
                       <option value="trauma">Trauma Center</option>
                       <option value="children">Children's Hospital</option>
                       <option value="psychiatric">Psychiatric Hospital</option>
-                      <option value="rehabilitation">Rehabilitation Center</option>
+                      <option value="rehabilitation">
+                        Rehabilitation Center
+                      </option>
                     </select>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="address"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Hospital Address *
                   </label>
-                  <textarea 
+                  <textarea
                     id="address"
                     value={formData.address}
                     onChange={handleInputChange}
@@ -183,10 +249,13 @@ const handleSubmit = (e) => {
 
                 <div className="grid md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="phone"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Main Phone *
                     </label>
-                    <input 
+                    <input
                       id="phone"
                       type="tel"
                       value={formData.phone}
@@ -198,10 +267,13 @@ const handleSubmit = (e) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="emergencyPhone" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="emergencyPhone"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Emergency Line *
                     </label>
-                    <input 
+                    <input
                       id="emergencyPhone"
                       type="tel"
                       value={formData.emergencyPhone}
@@ -213,10 +285,13 @@ const handleSubmit = (e) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Email Address *
                     </label>
-                    <input 
+                    <input
                       id="email"
                       type="email"
                       value={formData.email}
@@ -231,14 +306,19 @@ const handleSubmit = (e) => {
 
               {/* Capacity Information */}
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Capacity & Resources</h3>
-                
+                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                  Capacity & Resources
+                </h3>
+
                 <div className="grid md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="totalBeds" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="totalBeds"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Total Beds *
                     </label>
-                    <input 
+                    <input
                       id="totalBeds"
                       type="number"
                       value={formData.totalBeds}
@@ -250,10 +330,13 @@ const handleSubmit = (e) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="icuBeds" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="icuBeds"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       ICU Beds *
                     </label>
-                    <input 
+                    <input
                       id="icuBeds"
                       type="number"
                       value={formData.icuBeds}
@@ -265,10 +348,13 @@ const handleSubmit = (e) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="emergencyBeds" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="emergencyBeds"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Emergency Beds *
                     </label>
-                    <input 
+                    <input
                       id="emergencyBeds"
                       type="number"
                       value={formData.emergencyBeds}
@@ -282,10 +368,13 @@ const handleSubmit = (e) => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="ambulances" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="ambulances"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Ambulances Available
                     </label>
-                    <input 
+                    <input
                       id="ambulances"
                       type="number"
                       value={formData.ambulances}
@@ -296,10 +385,13 @@ const handleSubmit = (e) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="staffCount" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="staffCount"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Medical Staff Count *
                     </label>
-                    <input 
+                    <input
                       id="staffCount"
                       type="number"
                       value={formData.staffCount}
@@ -319,15 +411,23 @@ const handleSubmit = (e) => {
                 </label>
                 <div className="grid md:grid-cols-2 gap-4">
                   {availableServices.map((service) => (
-                    <div key={service.id} className="flex items-center space-x-2">
-                      <input 
+                    <div
+                      key={service.id}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
                         type="checkbox"
                         id={service.id}
                         checked={services.includes(service.id)}
-                        onChange={(e) => handleServiceChange(service.id, e.target.checked)}
+                        onChange={(e) =>
+                          handleServiceChange(service.id, e.target.checked)
+                        }
                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                       />
-                      <label htmlFor={service.id} className="text-sm text-gray-700">
+                      <label
+                        htmlFor={service.id}
+                        className="text-sm text-gray-700"
+                      >
                         {service.label}
                       </label>
                     </div>
@@ -337,14 +437,19 @@ const handleSubmit = (e) => {
 
               {/* Contact Person */}
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Emergency Contact Person</h3>
-                
+                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                  Emergency Contact Person
+                </h3>
+
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="contactName" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="contactName"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Contact Name *
                     </label>
-                    <input 
+                    <input
                       id="contactName"
                       type="text"
                       value={formData.contactName}
@@ -356,10 +461,13 @@ const handleSubmit = (e) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="contactPosition" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="contactPosition"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Position *
                     </label>
-                    <input 
+                    <input
                       id="contactPosition"
                       type="text"
                       value={formData.contactPosition}
@@ -373,10 +481,13 @@ const handleSubmit = (e) => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="contactPhone"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Direct Phone *
                     </label>
-                    <input 
+                    <input
                       id="contactPhone"
                       type="tel"
                       value={formData.contactPhone}
@@ -388,10 +499,13 @@ const handleSubmit = (e) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="contactEmail"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Contact Email *
                     </label>
-                    <input 
+                    <input
                       id="contactEmail"
                       type="email"
                       value={formData.contactEmail}
@@ -405,10 +519,13 @@ const handleSubmit = (e) => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="additionalInfo"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Additional Information
                 </label>
-                <textarea 
+                <textarea
                   id="additionalInfo"
                   value={formData.additionalInfo}
                   onChange={handleInputChange}
@@ -417,8 +534,8 @@ const handleSubmit = (e) => {
                 />
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={isSubmitting || services.length === 0}
                 className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
               >
@@ -440,9 +557,13 @@ const handleSubmit = (e) => {
 
         {/* Partnership Benefits */}
         <div className="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
-          <h3 className="text-lg font-semibold text-blue-600 mb-2">Partnership Benefits</h3>
+          <h3 className="text-lg font-semibold text-blue-600 mb-2">
+            Partnership Benefits
+          </h3>
           <ul className="text-sm text-gray-600 space-y-1">
-            <li>• Priority access to emergency medical supplies during disasters</li>
+            <li>
+              • Priority access to emergency medical supplies during disasters
+            </li>
             <li>• Coordinated patient transfer and evacuation support</li>
             <li>• Real-time communication with emergency response teams</li>
             <li>• Access to disaster preparedness training and resources</li>

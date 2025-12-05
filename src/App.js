@@ -1,4 +1,3 @@
-
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
@@ -28,13 +27,6 @@ import ManageHospitals from "./pages/admin/ManageHospitals";
 import ManageIncidents from "./pages/admin/ManageIncidents";
 import ManageVolunteers from "./pages/admin/ManageVolunteers";
 
-
-
-
-
-
-
-
 // Layout
 import DashboardLayout from "./layouts/DashboardLayout";
 
@@ -55,12 +47,18 @@ function App() {
                 <Route path="/contact" element={<ContactUs />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />
                 <Route path="/volunteer-info" element={<VolunteerInfo />} />
-                <Route path="/volunteer-register" element={<VolunteerRegister />} />
+                <Route
+                  path="/volunteer-register"
+                  element={<VolunteerRegister />}
+                />
                 <Route path="/hospital-info" element={<HospitalInfo />} />
-                <Route path="/hospital-registration" element={<HospitalRegistration />} />
+                <Route
+                  path="/hospital-registration"
+                  element={<HospitalRegistration />}
+                />
                 <Route path="/report-incident" element={<ReportIncident />} />
                 <Route path="/sign-in" element={<SignIn />} />
-                
+
                 {/* Catch all - redirect to home */}
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
@@ -79,55 +77,17 @@ function App() {
                 <Route path="citizens" element={<ManageCitizens />} />
                 <Route path="donations" element={<ManageDonations />} />
                 <Route path="feedback" element={<ManageFeedback />} />
-                <Route path="hospitals" element={<ManageHospitals />} /> 
+                <Route path="hospitals" element={<ManageHospitals />} />
                 <Route path="incidents" element={<ManageIncidents />} />
                 <Route path="volunteers" element={<ManageVolunteers />} />
-                
-                {/* Add placeholder routes for other dashboard items */}
-                <Route path="incidents" element={
-                  <div className="p-6">
-                    <h1 className="text-3xl font-bold">Manage Incidents</h1>
-                    <p className="text-gray-600 mt-2">Page under construction</p>
-                  </div>
-                } />
-                <Route path="citizens" element={
-                  <div className="p-6">
-                    <h1 className="text-3xl font-bold">Manage Citizens</h1>
-                    <p className="text-gray-600 mt-2">Page under construction</p>
-                  </div>
-                } />
-                <Route path="volunteers" element={
-                  <div className="p-6">
-                    <h1 className="text-3xl font-bold">Manage Volunteers</h1>
-                    <p className="text-gray-600 mt-2">Page under construction</p>
-                  </div>
-                } />
-                <Route path="hospitals" element={
-                  <div className="p-6">
-                    <h1 className="text-3xl font-bold">Manage Hospitals</h1>
-                    <p className="text-gray-600 mt-2">Page under construction</p>
-                  </div>
-                } />
-                <Route path="donations" element={
-                  <div className="p-6">
-                    <h1 className="text-3xl font-bold">Donations</h1>
-                    <p className="text-gray-600 mt-2">Page under construction</p>
-                  </div>
-                } />
-                <Route path="feedback" element={
-                  <div className="p-6">
-                    <h1 className="text-3xl font-bold">Feedback</h1>
-                    <p className="text-gray-600 mt-2">Page under construction</p>
-                  </div>
-                } />
-                
+
                 {/* Catch all for admin routes */}
                 <Route path="*" element={<Navigate to="/admin-dashboard" />} />
               </Routes>
             </DashboardLayout>
           }
         />
-        
+
         {/* Global catch-all route */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
