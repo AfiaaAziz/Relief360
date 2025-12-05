@@ -36,7 +36,19 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    try {
+      const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const res = await fetch(`${apiBase}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to send message");
+      }
+
       setIsSubmitting(false);
       alert(
         "Message Sent Successfully! Thank you for contacting us. We'll respond within 24 hours."
@@ -50,7 +62,11 @@ const Contact = () => {
         message: "",
         priority: "medium",
       });
-    }, 2000);
+    } catch (error) {
+      setIsSubmitting(false);
+      console.error("Contact submit error:", error);
+      alert("Sorry, we couldn't send your message. Please try again later.");
+    }
   };
 
   const handleInputChange = (e) => {
