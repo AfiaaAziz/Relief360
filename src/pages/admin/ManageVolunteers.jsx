@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, UserPlus, Edit, Trash2, Heart } from "lucide-react";
 
 // Create simple UI components
 const Card = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>{children}</div>
+  <div
+    className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}
+  >
+    {children}
+  </div>
 );
 
 const CardHeader = ({ children, className = "" }) => (
@@ -11,7 +15,9 @@ const CardHeader = ({ children, className = "" }) => (
 );
 
 const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>{children}</h3>
+  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+    {children}
+  </h3>
 );
 
 const CardDescription = ({ children, className = "" }) => (
@@ -30,14 +36,23 @@ const Badge = ({ children, variant = "default" }) => {
     outline: "border border-gray-300 text-gray-700",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]}`}>
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]}`}
+    >
       {children}
     </span>
   );
 };
 
-const Button = ({ children, variant = "default", size = "default", className = "", ...props }) => {
-  const base = "inline-flex items-center justify-center rounded-md font-medium transition-colors";
+const Button = ({
+  children,
+  variant = "default",
+  size = "default",
+  className = "",
+  ...props
+}) => {
+  const base =
+    "inline-flex items-center justify-center rounded-md font-medium transition-colors";
   const sizes = {
     default: "h-10 px-4 py-2",
     sm: "h-9 rounded-md px-3 text-sm",
@@ -48,7 +63,14 @@ const Button = ({ children, variant = "default", size = "default", className = "
     outline: "border border-gray-300 bg-transparent hover:bg-gray-50",
     ghost: "hover:bg-gray-100",
   };
-  return <button className={`${base} ${sizes[size]} ${variants[variant]} ${className}`} {...props}>{children}</button>;
+  return (
+    <button
+      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
 };
 
 const Input = ({ placeholder, value, onChange, className = "" }) => (
@@ -71,7 +93,9 @@ const TableHeader = ({ children }) => <thead>{children}</thead>;
 const TableBody = ({ children }) => <tbody>{children}</tbody>;
 const TableRow = ({ children }) => <tr className="border-b">{children}</tr>;
 const TableHead = ({ children }) => (
-  <th className="h-12 px-4 text-left align-middle font-medium text-gray-500">{children}</th>
+  <th className="h-12 px-4 text-left align-middle font-medium text-gray-500">
+    {children}
+  </th>
 );
 const TableCell = ({ children, className = "" }) => (
   <td className={`p-4 align-middle ${className}`}>{children}</td>
@@ -80,26 +104,40 @@ const TableCell = ({ children, className = "" }) => (
 // Simple Select Component
 const Select = ({ onValueChange, children, defaultValue }) => {
   const [selectedValue, setSelectedValue] = useState(defaultValue || "");
-  
+
   const handleChange = (e) => {
     const newValue = e.target.value;
     setSelectedValue(newValue);
     if (onValueChange) onValueChange(newValue);
   };
-  
+
   const childrenArray = React.Children.toArray(children);
-  const trigger = childrenArray.find(child => child.type.displayName === "SelectTrigger");
-  const content = childrenArray.find(child => child.type.displayName === "SelectContent");
-  
+  const trigger = childrenArray.find(
+    (child) => child.type.displayName === "SelectTrigger"
+  );
+  const content = childrenArray.find(
+    (child) => child.type.displayName === "SelectContent"
+  );
+
   return (
     <div className="relative">
-      {trigger && React.cloneElement(trigger, { value: selectedValue, onChange: handleChange })}
+      {trigger &&
+        React.cloneElement(trigger, {
+          value: selectedValue,
+          onChange: handleChange,
+        })}
       {content}
     </div>
   );
 };
 
-const SelectTrigger = ({ value, onChange, children, className = "", ...props }) => (
+const SelectTrigger = ({
+  value,
+  onChange,
+  children,
+  className = "",
+  ...props
+}) => (
   <select
     value={value}
     onChange={onChange}
@@ -112,9 +150,7 @@ const SelectTrigger = ({ value, onChange, children, className = "", ...props }) 
 SelectTrigger.displayName = "SelectTrigger";
 
 const SelectContent = ({ children, className = "" }) => (
-  <div className={`absolute z-50 mt-1 w-full ${className}`}>
-    {children}
-  </div>
+  <div className={`absolute z-50 mt-1 w-full ${className}`}>{children}</div>
 );
 SelectContent.displayName = "SelectContent";
 
@@ -124,24 +160,35 @@ const SelectItem = ({ value, children }) => (
 SelectItem.displayName = "SelectItem";
 
 const SelectValue = ({ placeholder }) => (
-  <option value="" disabled>{placeholder}</option>
+  <option value="" disabled>
+    {placeholder}
+  </option>
 );
 SelectValue.displayName = "SelectValue";
 
 // Dialog Component
 const Dialog = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const childrenArray = React.Children.toArray(children);
-  const trigger = childrenArray.find(child => child.type.displayName === "DialogTrigger");
-  const content = childrenArray.find(child => child.type.displayName === "DialogContent");
-  
+  const trigger = childrenArray.find(
+    (child) => child.type.displayName === "DialogTrigger"
+  );
+  const content = childrenArray.find(
+    (child) => child.type.displayName === "DialogContent"
+  );
+
   return (
     <>
-      {trigger && React.cloneElement(trigger, { onClick: () => setIsOpen(true) })}
+      {trigger &&
+        React.cloneElement(trigger, { onClick: () => setIsOpen(true) })}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setIsOpen(false)}>
-          {content && React.cloneElement(content, { onClose: () => setIsOpen(false) })}
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setIsOpen(false)}
+        >
+          {content &&
+            React.cloneElement(content, { onClose: () => setIsOpen(false) })}
         </div>
       )}
     </>
@@ -157,21 +204,26 @@ DialogTrigger.displayName = "DialogTrigger";
 
 const DialogContent = ({ children, onClose, className = "" }) => {
   const childrenArray = React.Children.toArray(children);
-  const header = childrenArray.find(child => child.type.displayName === "DialogHeader");
-  const otherChildren = childrenArray.filter(child => child.type.displayName !== "DialogHeader");
-  
+  const header = childrenArray.find(
+    (child) => child.type.displayName === "DialogHeader"
+  );
+  const otherChildren = childrenArray.filter(
+    (child) => child.type.displayName !== "DialogHeader"
+  );
+
   return (
-    <div className={`bg-white rounded-lg shadow-lg w-full max-w-md ${className}`} onClick={(e) => e.stopPropagation()}>
-      <button 
+    <div
+      className={`bg-white rounded-lg shadow-lg w-full max-w-md ${className}`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
         onClick={onClose}
         className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
       >
         ✕
       </button>
       {header}
-      <div className="p-6">
-        {otherChildren}
-      </div>
+      <div className="p-6">{otherChildren}</div>
     </div>
   );
 };
@@ -179,9 +231,13 @@ DialogContent.displayName = "DialogContent";
 
 const DialogHeader = ({ children, className = "" }) => {
   const childrenArray = React.Children.toArray(children);
-  const title = childrenArray.find(child => child.type.displayName === "DialogTitle");
-  const description = childrenArray.find(child => child.type.displayName === "DialogDescription");
-  
+  const title = childrenArray.find(
+    (child) => child.type.displayName === "DialogTitle"
+  );
+  const description = childrenArray.find(
+    (child) => child.type.displayName === "DialogDescription"
+  );
+
   return (
     <div className={`p-6 border-b border-gray-100 ${className}`}>
       {title}
@@ -201,21 +257,7 @@ const DialogDescription = ({ children, className = "" }) => (
 );
 DialogDescription.displayName = "DialogDescription";
 
-// Mock data
-const mockVolunteers = [
-  { id: 1, name: "Ali Khan", email: "ali@example.com", skills: "First Aid", available: true, assigned: 2 },
-  { id: 2, name: "Sara Ahmed", email: "sara@example.com", skills: "Rescue Operations", available: true, assigned: 1 },
-  { id: 3, name: "Ahmed Raza", email: "ahmed@example.com", skills: "Fire Safety", available: false, assigned: 0 },
-  { id: 4, name: "Fatima Noor", email: "fatima@example.com", skills: "Medical", available: true, assigned: 3 },
-  { id: 5, name: "Bilal Malik", email: "bilal@example.com", skills: "Search & Rescue", available: true, assigned: 1 },
-];
-
-const mockIncidents = [
-  { id: "INC-001", type: "Flood", severity: "Critical", location: "Downtown Area", date: "2024-01-15", status: "Pending" },
-  { id: "INC-002", type: "Fire", severity: "High", location: "Industrial Zone", date: "2024-01-16", status: "In Progress" },
-  { id: "INC-003", type: "Earthquake", severity: "Critical", location: "North District", date: "2024-01-17", status: "Pending" },
-  { id: "INC-004", type: "Medical Emergency", severity: "Medium", location: "Residential Area", date: "2024-01-18", status: "Resolved" },
-];
+// Mock data removed - data now comes from database
 
 // Simple toast function
 const useToast = () => {
@@ -229,11 +271,38 @@ const useToast = () => {
 const ManageVolunteers = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
+  const [volunteers, setVolunteers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredVolunteers = mockVolunteers.filter(volunteer =>
-    volunteer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    volunteer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    volunteer.skills.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    const fetchVolunteers = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/volunteers");
+        if (response.ok) {
+          const data = await response.json();
+          setVolunteers(data);
+        } else {
+          console.error("Failed to fetch volunteers");
+        }
+      } catch (error) {
+        console.error("Error fetching volunteers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVolunteers();
+  }, []);
+
+  const filteredVolunteers = volunteers.filter(
+    (volunteer) =>
+      `${volunteer.first_name} ${volunteer.last_name}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      volunteer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      volunteer.skills.some((skill) =>
+        skill.toLowerCase().includes(searchTerm.toLowerCase())
+      )
   );
 
   const handleAssignIncident = (volunteerId, incidentId) => {
@@ -255,18 +324,22 @@ const ManageVolunteers = () => {
     <div className="p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Manage Volunteers</h1>
-        <p className="text-gray-500 mt-1">View and manage registered volunteers</p>
+        <p className="text-gray-500 mt-1">
+          View and manage registered volunteers
+        </p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Volunteers</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Volunteers
+            </CardTitle>
             <Heart className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockVolunteers.length}</div>
+            <div className="text-2xl font-bold">{volunteers.length}</div>
             <p className="text-xs text-gray-500">Registered volunteers</p>
           </CardContent>
         </Card>
@@ -276,21 +349,19 @@ const ManageVolunteers = () => {
             <Heart className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {mockVolunteers.filter(v => v.available).length}
-            </div>
+            <div className="text-2xl font-bold">{volunteers.length}</div>
             <p className="text-xs text-gray-500">Ready for assignments</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Active Assignments</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Active Assignments
+            </CardTitle>
             <Heart className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {mockVolunteers.reduce((sum, v) => sum + v.assigned, 0)}
-            </div>
+            <div className="text-2xl font-bold">{0}</div>
             <p className="text-xs text-gray-500">Total active</p>
           </CardContent>
         </Card>
@@ -318,85 +389,81 @@ const ManageVolunteers = () => {
       <Card>
         <CardHeader>
           <CardTitle>All Volunteers</CardTitle>
-          <CardDescription>Complete list of registered volunteers</CardDescription>
+          <CardDescription>
+            Complete list of registered volunteers
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Skills</TableHead>
-                <TableHead>Availability</TableHead>
-                <TableHead>Assigned</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredVolunteers.map((volunteer) => (
-                <TableRow key={volunteer.id}>
-                  <TableCell className="font-medium">#{volunteer.id}</TableCell>
-                  <TableCell>{volunteer.name}</TableCell>
-                  <TableCell>{volunteer.email}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{volunteer.skills}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={volunteer.available ? "default" : "outline"}>
-                      {volunteer.available ? "Available" : "Unavailable"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{volunteer.assigned}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Dialog>
-                        <DialogTrigger>
-                          <Button size="sm" variant="outline">
-                            <UserPlus className="h-4 w-4 mr-1" />
-                            Assign
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Assign Incident</DialogTitle>
-                            <DialogDescription>Select an incident to assign to {volunteer.name}</DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4 py-4">
-                            <Select onValueChange={(value) => handleAssignIncident(volunteer.id, value)}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select incident" />
-                                <SelectContent>
-                                  {mockIncidents.filter(i => i.status !== "Resolved").map((incident) => (
-                                    <SelectItem key={incident.id} value={incident.id}>
-                                      {incident.type} - {incident.location} ({incident.severity})
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </SelectTrigger>
-                            </Select>
-                            <Button className="w-full">Confirm Assignment</Button>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                      <Button size="sm" variant="ghost">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleDelete(volunteer.id)}
-                      >
-                        <Trash2 className="h-4 w-4 text-red-500" />
-                      </Button>
-                    </div>
-                  </TableCell>
+          {loading ? (
+            <div className="text-center py-4">Loading volunteers...</div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Skills</TableHead>
+                  <TableHead>Availability</TableHead>
+                  <TableHead>Assigned</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredVolunteers.map((volunteer) => (
+                  <TableRow key={volunteer.id}>
+                    <TableCell className="font-medium">
+                      #{volunteer.id}
+                    </TableCell>
+                    <TableCell>{`${volunteer.first_name} ${volunteer.last_name}`}</TableCell>
+                    <TableCell>{volunteer.email}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {volunteer.skills &&
+                          volunteer.skills.map((skill, index) => (
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              {skill}
+                            </Badge>
+                          ))}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          volunteer.availability === "Available"
+                            ? "default"
+                            : "outline"
+                        }
+                      >
+                        {volunteer.availability}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">{volunteer.assigned}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="ghost">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleDelete(volunteer.id)}
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

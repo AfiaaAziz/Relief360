@@ -11,6 +11,38 @@ app.use(express.json());
 
 app.get("/", (req, res) => res.send({ status: "ok" }));
 
+// GET /api/volunteers
+app.get("/api/volunteers", async (req, res) => {
+  try {
+    const query = `
+      SELECT id, first_name, last_name, email, phone, age, availability, address, experience, motivation, skills, created_at
+      FROM volunteers
+      ORDER BY created_at DESC
+    `;
+    const result = await db.query(query);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Fetch volunteers error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// GET /api/hospitals
+app.get("/api/hospitals", async (req, res) => {
+  try {
+    const query = `
+      SELECT id, hospital_name, address, phone, emergency_phone, email, total_beds, icu_beds, emergency_beds, ambulances, staff_count, contact_name, contact_position, contact_phone, contact_email, services, created_at
+      FROM hospital_registrations
+      ORDER BY created_at DESC
+    `;
+    const result = await db.query(query);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Fetch hospitals error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // POST /api/contact
 app.post("/api/contact", async (req, res) => {
   const { name, email, phone, department, subject, message, priority } =
@@ -201,12 +233,10 @@ app.post("/api/volunteer-registration", async (req, res) => {
 
     // Handle duplicate email error
     if (err.code === "23505" && err.constraint === "volunteers_email_key") {
-      return res
-        .status(409)
-        .json({
-          message:
-            "This email address is already registered. Please use a different email or contact support if you need to update your registration.",
-        });
+      return res.status(409).json({
+        message:
+          "This email address is already registered. Please use a different email or contact support if you need to update your registration.",
+      });
     }
 
     res.status(500).json({ message: "Internal server error" });
