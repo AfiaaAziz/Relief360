@@ -33,3 +33,20 @@ CREATE TABLE IF NOT EXISTS hospital_registrations (
   data_sharing BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS volunteers (
+  id SERIAL PRIMARY KEY,
+  first_name VARCHAR(255) NOT NULL,
+  last_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  phone VARCHAR(50) NOT NULL,
+  age VARCHAR(20) NOT NULL,
+  availability VARCHAR(50) NOT NULL,
+  address TEXT NOT NULL,
+  experience TEXT,
+  motivation TEXT NOT NULL,
+  terms_accepted BOOLEAN NOT NULL DEFAULT false,
+  background_check BOOLEAN NOT NULL DEFAULT false,
+  skills TEXT[], -- Array of skill IDs
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);

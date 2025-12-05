@@ -16,7 +16,7 @@ const VolunteerRegistration = () => {
     experience: "",
     motivation: "",
     termsAccepted: false,
-    backgroundCheck: false
+    backgroundCheck: false,
   });
 
   const skills = [
@@ -34,30 +34,87 @@ const VolunteerRegistration = () => {
     if (checked) {
       setSelectedSkills([...selectedSkills, skillId]);
     } else {
-      setSelectedSkills(selectedSkills.filter(id => id !== skillId));
+      setSelectedSkills(selectedSkills.filter((id) => id !== skillId));
     }
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = () => {
-    if (!formData.firstName || !formData.lastName || !formData.email || 
-        !formData.phone || !formData.age || !formData.availability || 
-        !formData.address || !formData.motivation || !formData.termsAccepted || 
-        !formData.backgroundCheck || selectedSkills.length === 0) {
+  const handleSubmit = async () => {
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.age ||
+      !formData.availability ||
+      !formData.address ||
+      !formData.motivation ||
+      !formData.termsAccepted ||
+      !formData.backgroundCheck ||
+      selectedSkills.length === 0
+    ) {
       alert("Please fill in all required fields");
       return;
     }
 
     setIsSubmitting(true);
-    
-    setTimeout(() => {
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/volunteer-registration",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            age: formData.age,
+            availability: formData.availability,
+            address: formData.address,
+            experience: formData.experience,
+            motivation: formData.motivation,
+            termsAccepted: formData.termsAccepted,
+            backgroundCheck: formData.backgroundCheck,
+            selectedSkills: selectedSkills,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 4000);
+        // Reset form
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          age: "",
+          availability: "",
+          address: "",
+          experience: "",
+          motivation: "",
+          termsAccepted: false,
+          backgroundCheck: false,
+        });
+        setSelectedSkills([]);
+      } else {
+        const errorData = await response.json();
+        alert(`Registration failed: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An error occurred while submitting the form. Please try again.");
+    } finally {
       setIsSubmitting(false);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 4000);
-    }, 2000);
+    }
   };
 
   return (
@@ -65,7 +122,10 @@ const VolunteerRegistration = () => {
       {showToast && (
         <div className="fixed top-4 right-4 bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 animate-slide-in">
           <div className="font-semibold">Registration Successful!</div>
-          <div className="text-sm">Welcome to our volunteer network. You'll receive training materials via email.</div>
+          <div className="text-sm">
+            Welcome to our volunteer network. You'll receive training materials
+            via email.
+          </div>
         </div>
       )}
 
@@ -76,7 +136,8 @@ const VolunteerRegistration = () => {
               <span className="text-green-600">Join</span> Our Volunteer Network
             </h2>
             <p className="text-xl text-gray-600">
-              Be a hero in your community. Help save lives and support those in need during emergencies.
+              Be a hero in your community. Help save lives and support those in
+              need during emergencies.
             </p>
           </div>
 
@@ -87,7 +148,8 @@ const VolunteerRegistration = () => {
               </div>
               <h3 className="text-lg font-semibold mb-2">Make a Difference</h3>
               <p className="text-sm text-gray-600">
-                Your skills and time can save lives and help communities recover faster.
+                Your skills and time can save lives and help communities recover
+                faster.
               </p>
             </div>
 
@@ -97,7 +159,8 @@ const VolunteerRegistration = () => {
               </div>
               <h3 className="text-lg font-semibold mb-2">Free Training</h3>
               <p className="text-sm text-gray-600">
-                Comprehensive training programs to prepare you for emergency response.
+                Comprehensive training programs to prepare you for emergency
+                response.
               </p>
             </div>
 
@@ -107,7 +170,8 @@ const VolunteerRegistration = () => {
               </div>
               <h3 className="text-lg font-semibold mb-2">Community Network</h3>
               <p className="text-sm text-gray-600">
-                Connect with like-minded volunteers and build lasting friendships.
+                Connect with like-minded volunteers and build lasting
+                friendships.
               </p>
             </div>
           </div>
@@ -119,10 +183,11 @@ const VolunteerRegistration = () => {
                 Volunteer Registration
               </h3>
               <p className="text-gray-600 mt-2">
-                Join our network of heroes. All fields marked with * are required.
+                Join our network of heroes. All fields marked with * are
+                required.
               </p>
             </div>
-            
+
             <div className="p-6">
               <div className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
@@ -130,10 +195,12 @@ const VolunteerRegistration = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       First Name *
                     </label>
-                    <input 
+                    <input
                       type="text"
                       value={formData.firstName}
-                      onChange={(e) => handleInputChange('firstName', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("firstName", e.target.value)
+                      }
                       placeholder="Enter your first name"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
                     />
@@ -143,10 +210,12 @@ const VolunteerRegistration = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Last Name *
                     </label>
-                    <input 
+                    <input
                       type="text"
                       value={formData.lastName}
-                      onChange={(e) => handleInputChange('lastName', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("lastName", e.target.value)
+                      }
                       placeholder="Enter your last name"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
                     />
@@ -158,10 +227,12 @@ const VolunteerRegistration = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Email Address *
                     </label>
-                    <input 
+                    <input
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
                       placeholder="your.email@example.com"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
                     />
@@ -171,10 +242,12 @@ const VolunteerRegistration = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Phone Number *
                     </label>
-                    <input 
+                    <input
                       type="tel"
                       value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("phone", e.target.value)
+                      }
                       placeholder="Your phone number"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
                     />
@@ -186,9 +259,9 @@ const VolunteerRegistration = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Age *
                     </label>
-                    <select 
+                    <select
                       value={formData.age}
-                      onChange={(e) => handleInputChange('age', e.target.value)}
+                      onChange={(e) => handleInputChange("age", e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white"
                     >
                       <option value="">Select age group</option>
@@ -204,9 +277,11 @@ const VolunteerRegistration = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Availability *
                     </label>
-                    <select 
+                    <select
                       value={formData.availability}
-                      onChange={(e) => handleInputChange('availability', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("availability", e.target.value)
+                      }
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white"
                     >
                       <option value="">When can you volunteer?</option>
@@ -222,9 +297,11 @@ const VolunteerRegistration = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Address *
                   </label>
-                  <textarea 
+                  <textarea
                     value={formData.address}
-                    onChange={(e) => handleInputChange('address', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("address", e.target.value)
+                    }
                     placeholder="Your full address"
                     rows="3"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none"
@@ -237,11 +314,16 @@ const VolunteerRegistration = () => {
                   </label>
                   <div className="grid md:grid-cols-2 gap-4">
                     {skills.map((skill) => (
-                      <label key={skill.id} className="flex items-center space-x-2 cursor-pointer">
-                        <input 
+                      <label
+                        key={skill.id}
+                        className="flex items-center space-x-2 cursor-pointer"
+                      >
+                        <input
                           type="checkbox"
                           checked={selectedSkills.includes(skill.id)}
-                          onChange={(e) => handleSkillChange(skill.id, e.target.checked)}
+                          onChange={(e) =>
+                            handleSkillChange(skill.id, e.target.checked)
+                          }
                           className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                         />
                         <span className="text-sm">{skill.label}</span>
@@ -254,9 +336,11 @@ const VolunteerRegistration = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Previous Experience (Optional)
                   </label>
-                  <textarea 
+                  <textarea
                     value={formData.experience}
-                    onChange={(e) => handleInputChange('experience', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("experience", e.target.value)
+                    }
                     placeholder="Describe any relevant volunteer experience, certifications, or training..."
                     rows="4"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none"
@@ -267,16 +351,50 @@ const VolunteerRegistration = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Why do you want to volunteer? *
                   </label>
-                  <textarea 
+                  <textarea
                     value={formData.motivation}
-                    onChange={(e) => handleInputChange('motivation', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("motivation", e.target.value)
+                    }
                     placeholder="Tell us what motivates you to help others..."
                     rows="4"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none"
                   />
                 </div>
 
-                <button 
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={formData.termsAccepted}
+                      onChange={(e) =>
+                        handleInputChange("termsAccepted", e.target.checked)
+                      }
+                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1"
+                    />
+                    <label className="text-sm text-gray-700">
+                      I accept the terms and conditions and agree to participate
+                      as a volunteer *
+                    </label>
+                  </div>
+
+                  <div className="flex items-start space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={formData.backgroundCheck}
+                      onChange={(e) =>
+                        handleInputChange("backgroundCheck", e.target.checked)
+                      }
+                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1"
+                    />
+                    <label className="text-sm text-gray-700">
+                      I consent to a background check as required for volunteer
+                      work *
+                    </label>
+                  </div>
+                </div>
+
+                <button
                   onClick={handleSubmit}
                   disabled={isSubmitting || selectedSkills.length === 0}
                   className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
@@ -298,7 +416,9 @@ const VolunteerRegistration = () => {
           </div>
 
           <div className="mt-8 p-6 bg-green-50 rounded-lg border border-green-200">
-            <h3 className="text-lg font-semibold text-green-700 mb-2">What's Next?</h3>
+            <h3 className="text-lg font-semibold text-green-700 mb-2">
+              What's Next?
+            </h3>
             <ul className="text-sm text-gray-700 space-y-1">
               <li>• You'll receive a welcome email with training materials</li>
               <li>• Complete online safety and emergency response training</li>

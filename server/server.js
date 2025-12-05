@@ -133,6 +133,86 @@ app.post("/api/hospital-registration", async (req, res) => {
   }
 });
 
+// POST /api/volunteer-registration
+app.post("/api/volunteer-registration", async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    age,
+    availability,
+    address,
+    experience,
+    motivation,
+    termsAccepted,
+    backgroundCheck,
+    selectedSkills,
+  } = req.body;
+
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !phone ||
+    !age ||
+    !availability ||
+    !address ||
+    !motivation ||
+    termsAccepted === undefined ||
+    backgroundCheck === undefined ||
+    !selectedSkills ||
+    selectedSkills.length === 0
+  ) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const insertQuery = `
+      INSERT INTO volunteers (
+        first_name, last_name, email, phone, age, availability, address,
+        experience, motivation, terms_accepted, background_check, skills
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      RETURNING id, created_at
+    `;
+    const values = [
+      firstName,
+      lastName,
+      email,
+      phone,
+      age,
+      availability,
+      address,
+      experience || null,
+      motivation,
+      termsAccepted,
+      backgroundCheck,
+      selectedSkills,
+    ];
+
+    const result = await db.query(insertQuery, values);
+
+    res
+      .status(201)
+      .json({ id: result.rows[0].id, created_at: result.rows[0].created_at });
+  } catch (err) {
+    console.error("Insert volunteer registration error", err);
+
+    // Handle duplicate email error
+    if (err.code === "23505" && err.constraint === "volunteers_email_key") {
+      return res
+        .status(409)
+        .json({
+          message:
+            "This email address is already registered. Please use a different email or contact support if you need to update your registration.",
+        });
+    }
+
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
