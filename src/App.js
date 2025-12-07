@@ -27,6 +27,16 @@ import ManageHospitals from "./pages/admin/ManageHospitals";
 import ManageIncidents from "./pages/admin/ManageIncidents";
 import ManageVolunteers from "./pages/admin/ManageVolunteers";
 
+// Volunteer Dashboard Pages
+import VolunteerDashboard from "./pages/volunteer/VolunteerDashboard";
+import Assignments from "./pages/volunteer/Assignments";
+import Donations from "./pages/volunteer/Donations";
+import EmergencyPlans from "./pages/volunteer/EmergencyPlans";
+import Profile from "./pages/volunteer/Profile";
+import VolunteerHospitals from "./pages/volunteer/VolunteerHospitals";
+
+// Profile page without layout
+
 // Layout
 import DashboardLayout from "./layouts/DashboardLayout";
 
@@ -86,6 +96,37 @@ function App() {
               </Routes>
             </DashboardLayout>
           }
+        />
+
+        {/* VOLUNTEER DASHBOARD ROUTES */}
+        <Route
+          path="/volunteer-dashboard/*"
+          element={
+            <DashboardLayout role="volunteer" key="volunteer-layout">
+              <Routes>
+                <Route index element={<VolunteerDashboard />} />
+                <Route path="assignments" element={<Assignments />} />
+                <Route path="donations" element={<Donations />} />
+                <Route path="emergency-plans" element={<EmergencyPlans />} />
+                <Route path="hospitals" element={<VolunteerHospitals />} />
+
+                {/* Catch all for volunteer routes */}
+                <Route
+                  path="*"
+                  element={<Navigate to="/volunteer-dashboard" />}
+                />
+              </Routes>
+            </DashboardLayout>
+          }
+        />
+
+        {/* VOLUNTEER PROFILE PAGE - FULL WIDTH */}
+        <Route path="/volunteer-dashboard/profile" element={<Profile />} />
+
+        {/* VOLUNTEER EMERGENCY PLANS PAGE - FULL WIDTH */}
+        <Route
+          path="/volunteer-dashboard/emergency-plans"
+          element={<EmergencyPlans />}
         />
 
         {/* Global catch-all route */}

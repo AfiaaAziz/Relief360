@@ -326,4 +326,20 @@ router.get("/volunteers/available", async (req, res) => {
   }
 });
 
+// GET /api/incidents/volunteers
+router.get("/volunteers", async (req, res) => {
+  try {
+    const query = `
+      SELECT id, first_name, last_name, email, phone, age, availability, address, skills, assigned
+      FROM volunteers
+      ORDER BY created_at DESC
+    `;
+    const result = await db.query(query);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Fetch volunteers error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 module.exports = router;

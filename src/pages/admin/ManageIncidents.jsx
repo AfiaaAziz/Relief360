@@ -59,7 +59,9 @@ const assignVolunteer = async (incidentId, volunteerId) => {
 
 const fetchVolunteers = async () => {
   try {
-    const response = await fetch("http://localhost:5000/api/volunteers");
+    const response = await fetch(
+      "http://localhost:5000/api/incidents/volunteers"
+    );
     if (!response.ok) {
       throw new Error("Failed to fetch volunteers");
     }
@@ -184,32 +186,37 @@ const Select = ({ value, onValueChange, children, defaultValue }) => {
 
   // Extract options from Trigger children (matching your usage structure)
   const childrenArray = React.Children.toArray(children);
-  const trigger = childrenArray.find(child => child.type.displayName === "SelectTrigger");
-  
+  const trigger = childrenArray.find(
+    (child) => child.type.displayName === "SelectTrigger"
+  );
+
   let options = [];
   if (trigger) {
     const triggerChildren = React.Children.toArray(trigger.props.children);
-    options = triggerChildren.filter(child => child.type.displayName === "SelectItem");
+    options = triggerChildren.filter(
+      (child) => child.type.displayName === "SelectItem"
+    );
   }
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isOpen && !event.target.closest('.custom-select-container')) {
+      if (isOpen && !event.target.closest(".custom-select-container")) {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
   return (
     <div className="relative custom-select-container">
-      {trigger && React.cloneElement(trigger, { 
-        onClick: () => setIsOpen(!isOpen),
-        selectedValue: activeValue,
-      })}
-      
+      {trigger &&
+        React.cloneElement(trigger, {
+          onClick: () => setIsOpen(!isOpen),
+          selectedValue: activeValue,
+        })}
+
       {isOpen && (
         <div className="absolute z-[9999] mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg">
           <div className="max-h-60 overflow-y-auto py-1">
@@ -218,7 +225,9 @@ const Select = ({ value, onValueChange, children, defaultValue }) => {
                 <div
                   key={option.props.value}
                   className={`relative cursor-pointer select-none py-2 px-3 text-sm hover:bg-gray-100 ${
-                    activeValue === option.props.value ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-900"
+                    activeValue === option.props.value
+                      ? "bg-blue-50 text-blue-700 font-medium"
+                      : "text-gray-900"
                   }`}
                   onClick={() => handleSelect(option.props.value)}
                 >
@@ -226,7 +235,9 @@ const Select = ({ value, onValueChange, children, defaultValue }) => {
                 </div>
               ))
             ) : (
-              <div className="py-2 px-3 text-sm text-gray-500">No options available</div>
+              <div className="py-2 px-3 text-sm text-gray-500">
+                No options available
+              </div>
             )}
           </div>
         </div>
@@ -235,20 +246,29 @@ const Select = ({ value, onValueChange, children, defaultValue }) => {
   );
 };
 
-const SelectTrigger = ({ children, onClick, selectedValue, className = "" }) => {
+const SelectTrigger = ({
+  children,
+  onClick,
+  selectedValue,
+  className = "",
+}) => {
   const childrenArray = React.Children.toArray(children);
-  
+
   // Logic to find display text: Check specific SelectItem or fallback to placeholder
   const selectedItem = childrenArray.find(
-    (child) => child.type.displayName === "SelectItem" && child.props.value === selectedValue
+    (child) =>
+      child.type.displayName === "SelectItem" &&
+      child.props.value === selectedValue
   );
   const placeholderItem = childrenArray.find(
     (child) => child.type.displayName === "SelectValue"
   );
-  
-  const displayText = selectedItem 
-    ? selectedItem.props.children 
-    : (placeholderItem ? placeholderItem.props.placeholder : "Select...");
+
+  const displayText = selectedItem
+    ? selectedItem.props.children
+    : placeholderItem
+    ? placeholderItem.props.placeholder
+    : "Select...";
 
   return (
     <div
@@ -618,18 +638,16 @@ const ManageIncidents = () => {
                               >
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select volunteer" />
-                                  {volunteers
-                                    .filter((v) => v.availability)
-                                    .map((volunteer) => (
-                                      <SelectItem
-                                        key={volunteer.id}
-                                        value={volunteer.id.toString()}
-                                      >
-                                        {volunteer.first_name}{" "}
-                                        {volunteer.last_name} -{" "}
-                                        {volunteer.skills.join(", ")}
-                                      </SelectItem>
-                                    ))}
+                                  {volunteers.map((volunteer) => (
+                                    <SelectItem
+                                      key={volunteer.id}
+                                      value={volunteer.id.toString()}
+                                    >
+                                      {volunteer.first_name}{" "}
+                                      {volunteer.last_name} -{" "}
+                                      {volunteer.skills.join(", ")}
+                                    </SelectItem>
+                                  ))}
                                 </SelectTrigger>
                               </Select>
                               <Button

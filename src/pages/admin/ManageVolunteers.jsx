@@ -126,25 +126,30 @@ const Select = ({ onValueChange, children, defaultValue, value }) => {
 
   // Extract options and trigger from children
   const childrenArray = React.Children.toArray(children);
-  const trigger = childrenArray.find(child => child.type.displayName === "SelectTrigger");
-  
+  const trigger = childrenArray.find(
+    (child) => child.type.displayName === "SelectTrigger"
+  );
+
   // In your usage, SelectItems are inside SelectTrigger. We need to extract them.
   let options = [];
   if (trigger) {
     const triggerChildren = React.Children.toArray(trigger.props.children);
-    options = triggerChildren.filter(child => child.type && child.type.displayName === "SelectItem");
+    options = triggerChildren.filter(
+      (child) => child.type && child.type.displayName === "SelectItem"
+    );
   }
 
   return (
     <div className="relative">
-      {trigger && React.cloneElement(trigger, { 
-        onClick: () => setIsOpen(!isOpen),
-        selectedValue: activeValue,
-        isOpen,
-        // Pass the handleSelect to the trigger so it can pass it to children if needed, 
-        // though we render options separately below for the custom dropdown.
-      })}
-      
+      {trigger &&
+        React.cloneElement(trigger, {
+          onClick: () => setIsOpen(!isOpen),
+          selectedValue: activeValue,
+          isOpen,
+          // Pass the handleSelect to the trigger so it can pass it to children if needed,
+          // though we render options separately below for the custom dropdown.
+        })}
+
       {isOpen && (
         <div className="absolute z-[9999] mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg">
           <div className="max-h-60 overflow-y-auto p-1">
@@ -152,7 +157,9 @@ const Select = ({ onValueChange, children, defaultValue, value }) => {
               <div
                 key={option.props.value}
                 className={`relative flex cursor-default select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 ${
-                  activeValue === option.props.value ? "bg-gray-100 font-medium" : ""
+                  activeValue === option.props.value
+                    ? "bg-gray-100 font-medium"
+                    : ""
                 }`}
                 onClick={() => handleSelect(option.props.value)}
               >
@@ -166,11 +173,18 @@ const Select = ({ onValueChange, children, defaultValue, value }) => {
   );
 };
 
-const SelectTrigger = ({ children, onClick, selectedValue, className = "" }) => {
+const SelectTrigger = ({
+  children,
+  onClick,
+  selectedValue,
+  className = "",
+}) => {
   // Find the label for the selected value
   const childrenArray = React.Children.toArray(children);
   const selectedItem = childrenArray.find(
-    (child) => child.type.displayName === "SelectItem" && child.props.value === selectedValue
+    (child) =>
+      child.type.displayName === "SelectItem" &&
+      child.props.value === selectedValue
   );
   const placeholder = childrenArray.find(
     (child) => child.type.displayName === "SelectValue"
@@ -183,7 +197,11 @@ const SelectTrigger = ({ children, onClick, selectedValue, className = "" }) => 
       className={`flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       <span className="block truncate">
-        {selectedItem ? selectedItem.props.children : (placeholder ? placeholder.props.placeholder : "Select...")}
+        {selectedItem
+          ? selectedItem.props.children
+          : placeholder
+          ? placeholder.props.placeholder
+          : "Select..."}
       </span>
       <span className="ml-2 opacity-50">▼</span>
     </button>
@@ -322,7 +340,7 @@ const ManageVolunteers = () => {
       try {
         // Fetch volunteers
         const volunteersResponse = await fetch(
-          "http://localhost:5000/api/volunteers"
+          "http://localhost:5000/api/incidents/volunteers"
         );
         if (volunteersResponse.ok) {
           const volunteersData = await volunteersResponse.json();
@@ -381,7 +399,7 @@ const ManageVolunteers = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            volunteerId: assigningVolunteer.id,
+            volunteer_id: assigningVolunteer.id,
             notes: assignmentNotes,
           }),
         }
@@ -744,16 +762,20 @@ const ManageVolunteers = () => {
       {isEditOpen && editingVolunteer && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div
-            className="bg-white rounded-lg shadow-lg w-full max-w-md"
+            // UPDATED LINE: Added max-h-[90vh], flex, and flex-col
+            className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-6 border-b border-gray-100">
+            {/* Header - Added flex-shrink-0 so it doesn't shrink */}
+            <div className="p-6 border-b border-gray-100 flex-shrink-0">
               <h2 className="text-xl font-semibold">Edit Volunteer</h2>
               <p className="text-sm text-gray-500 mt-1">
                 Update volunteer information
               </p>
             </div>
-            <div className="p-6 space-y-4">
+            
+            {/* Body - UPDATED LINE: Added overflow-y-auto for scrolling */}
+            <div className="p-6 space-y-4 overflow-y-auto">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium">First Name</label>
@@ -896,7 +918,9 @@ const ManageVolunteers = () => {
                   }
                 />
               </div>
-              <div className="flex gap-2 pt-4">
+              
+              {/* Buttons - Added padding bottom to ensure visibility */}
+              <div className="flex gap-2 pt-4 pb-2">
                 <Button onClick={handleUpdate} className="flex-1">
                   Save Changes
                 </Button>
@@ -915,7 +939,8 @@ const ManageVolunteers = () => {
           </div>
         </div>
       )}
-
+          
+      
       {/* Assign Dialog */}
       {isAssignOpen && assigningVolunteer && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">

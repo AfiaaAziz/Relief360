@@ -7,7 +7,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "../components/ui/Card";
+} from "../components/ui/card";
 
 const About = () => {
   const values = [

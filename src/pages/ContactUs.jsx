@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Send, MessageCircle, AlertTriangle } from "lucide-react";
-import Button from "../components/ui/Button";
-import Input from "../components/ui/Input";
-import Textarea from "../components/ui/Textarea";
-import Label from "../components/ui/Label";
+import button from "../components/ui/button";
+import Input from "../components/ui/input";
+import Textarea from "../components/ui/textarea";
+import Label from "../components/ui/label";
 import contactSupportImage from "../assets/images/contactSupport.png";
 import {
   Card,
@@ -11,14 +11,14 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "../components/ui/Card";
+} from "../components/ui/card";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../components/ui/Select";
+} from "../components/ui/select";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,7 +109,7 @@ const Contact = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          
+
           {/* Content */}
           <div className="container mx-auto px-4 max-w-4xl text-center relative z-10">
             <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
@@ -331,7 +331,7 @@ const Contact = () => {
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                    <Button
+                    <button
                       type="submit"
                       variant="info"
                       size="lg"
@@ -349,15 +349,15 @@ const Contact = () => {
                           Send Message
                         </>
                       )}
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       type="button"
                       variant="outline"
                       size="lg"
                       onClick={resetForm}
                     >
                       Reset Form
-                    </Button>
+                    </button>
                   </div>
                 </form>
               </CardContent>
