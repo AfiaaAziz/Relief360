@@ -273,6 +273,8 @@ const ManageVolunteers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [volunteers, setVolunteers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingVolunteer, setEditingVolunteer] = useState(null);
 
   useEffect(() => {
     const fetchVolunteers = async () => {
@@ -312,12 +314,94 @@ const ManageVolunteers = () => {
     });
   };
 
-  const handleDelete = (volunteerId) => {
-    toast({
-      title: "Volunteer Removed",
-      description: "The volunteer has been removed from the system",
-      variant: "destructive",
-    });
+  const handleDelete = async (volunteerId) => {
+    if (!window.confirm("Are you sure you want to delete this volunteer?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/volunteers/${volunteerId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setVolunteers(volunteers.filter((v) => v.id !== volunteerId));
+        toast({
+          title: "Volunteer Deleted",
+          description:
+            "The volunteer has been successfully removed from the system",
+          variant: "destructive",
+        });
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Delete Failed",
+          description: error.message || "Failed to delete volunteer",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting volunteer:", error);
+      toast({
+        title: "Delete Failed",
+        description: "An error occurred while deleting the volunteer",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEdit = (volunteer) => {
+    setEditingVolunteer({ ...volunteer });
+    setIsEditOpen(true);
+  };
+
+  const handleUpdate = async () => {
+    if (!editingVolunteer) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/volunteers/${editingVolunteer.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editingVolunteer),
+        }
+      );
+
+      if (response.ok) {
+        setVolunteers(
+          volunteers.map((v) =>
+            v.id === editingVolunteer.id ? editingVolunteer : v
+          )
+        );
+        setIsEditOpen(false);
+        setEditingVolunteer(null);
+        toast({
+          title: "Volunteer Updated",
+          description:
+            "The volunteer information has been successfully updated",
+        });
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Update Failed",
+          description: error.message || "Failed to update volunteer",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating volunteer:", error);
+      toast({
+        title: "Update Failed",
+        description: "An error occurred while updating the volunteer",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -447,7 +531,11 @@ const ManageVolunteers = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="ghost">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleEdit(volunteer)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
@@ -466,6 +554,184 @@ const ManageVolunteers = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Dialog */}
+      {isEditOpen && editingVolunteer && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div
+            className="bg-white rounded-lg shadow-lg w-full max-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b border-gray-100">
+              <h2 className="text-xl font-semibold">Edit Volunteer</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Update volunteer information
+              </p>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">First Name</label>
+                  <Input
+                    value={editingVolunteer.first_name}
+                    onChange={(e) =>
+                      setEditingVolunteer({
+                        ...editingVolunteer,
+                        first_name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Last Name</label>
+                  <Input
+                    value={editingVolunteer.last_name}
+                    onChange={(e) =>
+                      setEditingVolunteer({
+                        ...editingVolunteer,
+                        last_name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Email</label>
+                <Input
+                  type="email"
+                  value={editingVolunteer.email}
+                  onChange={(e) =>
+                    setEditingVolunteer({
+                      ...editingVolunteer,
+                      email: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Phone</label>
+                <Input
+                  value={editingVolunteer.phone}
+                  onChange={(e) =>
+                    setEditingVolunteer({
+                      ...editingVolunteer,
+                      phone: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Age</label>
+                  <Input
+                    type="number"
+                    value={editingVolunteer.age}
+                    onChange={(e) =>
+                      setEditingVolunteer({
+                        ...editingVolunteer,
+                        age: parseInt(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Availability</label>
+                  <Select
+                    onValueChange={(value) =>
+                      setEditingVolunteer({
+                        ...editingVolunteer,
+                        availability: value,
+                      })
+                    }
+                    defaultValue={editingVolunteer.availability}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select availability" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Available">Available</SelectItem>
+                      <SelectItem value="Unavailable">Unavailable</SelectItem>
+                      <SelectItem value="Part-time">Part-time</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Address</label>
+                <Input
+                  value={editingVolunteer.address}
+                  onChange={(e) =>
+                    setEditingVolunteer({
+                      ...editingVolunteer,
+                      address: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Experience</label>
+                <Input
+                  value={editingVolunteer.experience || ""}
+                  onChange={(e) =>
+                    setEditingVolunteer({
+                      ...editingVolunteer,
+                      experience: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Motivation</label>
+                <Input
+                  value={editingVolunteer.motivation}
+                  onChange={(e) =>
+                    setEditingVolunteer({
+                      ...editingVolunteer,
+                      motivation: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">
+                  Skills (comma-separated)
+                </label>
+                <Input
+                  value={
+                    editingVolunteer.skills
+                      ? editingVolunteer.skills.join(", ")
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setEditingVolunteer({
+                      ...editingVolunteer,
+                      skills: e.target.value
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter((s) => s),
+                    })
+                  }
+                />
+              </div>
+              <div className="flex gap-2 pt-4">
+                <Button onClick={handleUpdate} className="flex-1">
+                  Save Changes
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsEditOpen(false);
+                    setEditingVolunteer(null);
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

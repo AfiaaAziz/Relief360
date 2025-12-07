@@ -243,6 +243,240 @@ app.post("/api/volunteer-registration", async (req, res) => {
   }
 });
 
+// PUT /api/volunteers/:id
+app.put("/api/volunteers/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    first_name,
+    last_name,
+    email,
+    phone,
+    age,
+    availability,
+    address,
+    experience,
+    motivation,
+    skills,
+  } = req.body;
+
+  if (
+    !first_name ||
+    !last_name ||
+    !email ||
+    !phone ||
+    !age ||
+    !availability ||
+    !address ||
+    !motivation
+  ) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const updateQuery = `
+      UPDATE volunteers
+      SET first_name = $1, last_name = $2, email = $3, phone = $4, age = $5,
+          availability = $6, address = $7, experience = $8, motivation = $9, skills = $10
+      WHERE id = $11
+      RETURNING id
+    `;
+    const values = [
+      first_name,
+      last_name,
+      email,
+      phone,
+      age,
+      availability,
+      address,
+      experience || null,
+      motivation,
+      skills || [],
+      id,
+    ];
+
+    const result = await db.query(updateQuery, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Volunteer not found" });
+    }
+
+    res.json({
+      message: "Volunteer updated successfully",
+      id: result.rows[0].id,
+    });
+  } catch (err) {
+    console.error("Update volunteer error", err);
+
+    // Handle duplicate email error
+    if (err.code === "23505" && err.constraint === "volunteers_email_key") {
+      return res.status(409).json({
+        message: "This email address is already in use by another volunteer.",
+      });
+    }
+
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// PUT /api/hospitals/:id
+app.put("/api/hospitals/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    hospital_name,
+    address,
+    phone,
+    emergency_phone,
+    email,
+    total_beds,
+    icu_beds,
+    emergency_beds,
+    ambulances,
+    staff_count,
+    contact_name,
+    contact_position,
+    contact_phone,
+    contact_email,
+    services,
+  } = req.body;
+
+  try {
+    const updates = [];
+    const values = [];
+    let paramIndex = 1;
+
+    if (hospital_name !== undefined) {
+      updates.push(`hospital_name = $${paramIndex++}`);
+      values.push(hospital_name);
+    }
+    if (address !== undefined) {
+      updates.push(`address = $${paramIndex++}`);
+      values.push(address);
+    }
+    if (phone !== undefined) {
+      updates.push(`phone = $${paramIndex++}`);
+      values.push(phone);
+    }
+    if (emergency_phone !== undefined) {
+      updates.push(`emergency_phone = $${paramIndex++}`);
+      values.push(emergency_phone);
+    }
+    if (email !== undefined) {
+      updates.push(`email = $${paramIndex++}`);
+      values.push(email);
+    }
+    if (total_beds !== undefined) {
+      updates.push(`total_beds = $${paramIndex++}`);
+      values.push(total_beds);
+    }
+    if (icu_beds !== undefined) {
+      updates.push(`icu_beds = $${paramIndex++}`);
+      values.push(icu_beds);
+    }
+    if (emergency_beds !== undefined) {
+      updates.push(`emergency_beds = $${paramIndex++}`);
+      values.push(emergency_beds);
+    }
+    if (ambulances !== undefined) {
+      updates.push(`ambulances = $${paramIndex++}`);
+      values.push(ambulances);
+    }
+    if (staff_count !== undefined) {
+      updates.push(`staff_count = $${paramIndex++}`);
+      values.push(staff_count);
+    }
+    if (contact_name !== undefined) {
+      updates.push(`contact_name = $${paramIndex++}`);
+      values.push(contact_name);
+    }
+    if (contact_position !== undefined) {
+      updates.push(`contact_position = $${paramIndex++}`);
+      values.push(contact_position);
+    }
+    if (contact_phone !== undefined) {
+      updates.push(`contact_phone = $${paramIndex++}`);
+      values.push(contact_phone);
+    }
+    if (contact_email !== undefined) {
+      updates.push(`contact_email = $${paramIndex++}`);
+      values.push(contact_email);
+    }
+    if (services !== undefined) {
+      updates.push(`services = $${paramIndex++}`);
+      values.push(services);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ message: "No fields to update" });
+    }
+
+    const updateQuery = `
+      UPDATE hospital_registrations
+      SET ${updates.join(", ")}
+      WHERE id = $${paramIndex}
+      RETURNING id
+    `;
+    values.push(id);
+
+    const result = await db.query(updateQuery, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Hospital not found" });
+    }
+
+    res.json({
+      message: "Hospital updated successfully",
+      id: result.rows[0].id,
+    });
+  } catch (err) {
+    console.error("Update hospital error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// DELETE /api/hospitals/:id
+app.delete("/api/hospitals/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deleteQuery = `DELETE FROM hospital_registrations WHERE id = $1 RETURNING id`;
+    const result = await db.query(deleteQuery, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Hospital not found" });
+    }
+
+    res.json({
+      message: "Hospital deleted successfully",
+      id: result.rows[0].id,
+    });
+  } catch (err) {
+    console.error("Delete hospital error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// DELETE /api/volunteers/:id
+app.delete("/api/volunteers/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deleteQuery = `DELETE FROM volunteers WHERE id = $1 RETURNING id`;
+    const result = await db.query(deleteQuery, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Volunteer not found" });
+    }
+
+    res.json({
+      message: "Volunteer deleted successfully",
+      id: result.rows[0].id,
+    });
+  } catch (err) {
+    console.error("Delete volunteer error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

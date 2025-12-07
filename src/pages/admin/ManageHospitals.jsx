@@ -1,9 +1,19 @@
-import React, { useState } from "react";
-import { Search, CheckCircle, XCircle, Edit, Trash2, Building2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import {
+  Search,
+  CheckCircle,
+  XCircle,
+  Edit,
+  Trash2,
+  Building2,
+} from "lucide-react";
 
-// Create simple UI components
 const Card = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>{children}</div>
+  <div
+    className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}
+  >
+    {children}
+  </div>
 );
 
 const CardHeader = ({ children, className = "" }) => (
@@ -11,7 +21,9 @@ const CardHeader = ({ children, className = "" }) => (
 );
 
 const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>{children}</h3>
+  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+    {children}
+  </h3>
 );
 
 const CardDescription = ({ children, className = "" }) => (
@@ -29,14 +41,23 @@ const Badge = ({ children, variant = "default" }) => {
     destructive: "bg-red-100 text-red-800",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]}`}>
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]}`}
+    >
       {children}
     </span>
   );
 };
 
-const Button = ({ children, variant = "default", size = "default", className = "", ...props }) => {
-  const base = "inline-flex items-center justify-center rounded-md font-medium transition-colors";
+const Button = ({
+  children,
+  variant = "default",
+  size = "default",
+  className = "",
+  ...props
+}) => {
+  const base =
+    "inline-flex items-center justify-center rounded-md font-medium transition-colors";
   const sizes = {
     default: "h-10 px-4 py-2",
     sm: "h-9 rounded-md px-3 text-sm",
@@ -47,10 +68,25 @@ const Button = ({ children, variant = "default", size = "default", className = "
     outline: "border border-gray-300 bg-transparent hover:bg-gray-50",
     ghost: "hover:bg-gray-100",
   };
-  return <button className={`${base} ${sizes[size]} ${variants[variant]} ${className}`} {...props}>{children}</button>;
+  return (
+    <button
+      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
 };
 
-const Input = ({ type = "text", placeholder, value, onChange, defaultValue, id, className = "" }) => (
+const Input = ({
+  type = "text",
+  placeholder,
+  value,
+  onChange,
+  defaultValue,
+  id,
+  className = "",
+}) => (
   <input
     type={type}
     id={id}
@@ -72,33 +108,42 @@ const TableHeader = ({ children }) => <thead>{children}</thead>;
 const TableBody = ({ children }) => <tbody>{children}</tbody>;
 const TableRow = ({ children }) => <tr className="border-b">{children}</tr>;
 const TableHead = ({ children }) => (
-  <th className="h-12 px-4 text-left align-middle font-medium text-gray-500">{children}</th>
+  <th className="h-12 px-4 text-left align-middle font-medium text-gray-500">
+    {children}
+  </th>
 );
 const TableCell = ({ children, className = "" }) => (
   <td className={`p-4 align-middle ${className}`}>{children}</td>
 );
 
-// Label Component
 const Label = ({ children, htmlFor, className = "" }) => (
   <label htmlFor={htmlFor} className={`text-sm font-medium ${className}`}>
     {children}
   </label>
 );
 
-// Dialog Component
 const Dialog = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const childrenArray = React.Children.toArray(children);
-  const trigger = childrenArray.find(child => child.type.displayName === "DialogTrigger");
-  const content = childrenArray.find(child => child.type.displayName === "DialogContent");
-  
+  const trigger = childrenArray.find(
+    (child) => child.type.displayName === "DialogTrigger"
+  );
+  const content = childrenArray.find(
+    (child) => child.type.displayName === "DialogContent"
+  );
+
   return (
     <>
-      {trigger && React.cloneElement(trigger, { onClick: () => setIsOpen(true) })}
+      {trigger &&
+        React.cloneElement(trigger, { onClick: () => setIsOpen(true) })}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setIsOpen(false)}>
-          {content && React.cloneElement(content, { onClose: () => setIsOpen(false) })}
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setIsOpen(false)}
+        >
+          {content &&
+            React.cloneElement(content, { onClose: () => setIsOpen(false) })}
         </div>
       )}
     </>
@@ -114,21 +159,26 @@ DialogTrigger.displayName = "DialogTrigger";
 
 const DialogContent = ({ children, onClose, className = "" }) => {
   const childrenArray = React.Children.toArray(children);
-  const header = childrenArray.find(child => child.type.displayName === "DialogHeader");
-  const otherChildren = childrenArray.filter(child => child.type.displayName !== "DialogHeader");
-  
+  const header = childrenArray.find(
+    (child) => child.type.displayName === "DialogHeader"
+  );
+  const otherChildren = childrenArray.filter(
+    (child) => child.type.displayName !== "DialogHeader"
+  );
+
   return (
-    <div className={`bg-white rounded-lg shadow-lg w-full max-w-md ${className}`} onClick={(e) => e.stopPropagation()}>
-      <button 
+    <div
+      className={`bg-white rounded-lg shadow-lg w-full max-w-md ${className}`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
         onClick={onClose}
         className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
       >
         ✕
       </button>
       {header}
-      <div className="p-6">
-        {otherChildren}
-      </div>
+      <div className="p-6">{otherChildren}</div>
     </div>
   );
 };
@@ -136,9 +186,13 @@ DialogContent.displayName = "DialogContent";
 
 const DialogHeader = ({ children, className = "" }) => {
   const childrenArray = React.Children.toArray(children);
-  const title = childrenArray.find(child => child.type.displayName === "DialogTitle");
-  const description = childrenArray.find(child => child.type.displayName === "DialogDescription");
-  
+  const title = childrenArray.find(
+    (child) => child.type.displayName === "DialogTitle"
+  );
+  const description = childrenArray.find(
+    (child) => child.type.displayName === "DialogDescription"
+  );
+
   return (
     <div className={`p-6 border-b border-gray-100 ${className}`}>
       {title}
@@ -158,15 +212,6 @@ const DialogDescription = ({ children, className = "" }) => (
 );
 DialogDescription.displayName = "DialogDescription";
 
-// Mock data
-const mockHospitals = [
-  { id: 1, name: "City General Hospital", location: "Downtown", beds: 150, doctors: 45, ambulances: 8, contact: "021-1234567" },
-  { id: 2, name: "North Medical Center", location: "North District", beds: 85, doctors: 28, ambulances: 5, contact: "021-2345678" },
-  { id: 3, name: "South Emergency Hospital", location: "South District", beds: 120, doctors: 35, ambulances: 7, contact: "021-3456789" },
-  { id: 4, name: "West Community Clinic", location: "West Side", beds: 40, doctors: 15, ambulances: 3, contact: "021-4567890" },
-  { id: 5, name: "East Care Hospital", location: "East District", beds: 95, doctors: 32, ambulances: 6, contact: "021-5678901" },
-];
-
 // Simple toast function
 const useToast = () => {
   const toast = (options) => {
@@ -179,10 +224,30 @@ const useToast = () => {
 const ManageHospitals = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
+  const [hospitals, setHospitals] = useState([]);
 
-  const filteredHospitals = mockHospitals.filter(hospital =>
-    hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    hospital.location.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    const fetchHospitals = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/hospitals");
+        if (response.ok) {
+          const data = await response.json();
+          setHospitals(data);
+        } else {
+          console.error("Failed to fetch hospitals");
+        }
+      } catch (error) {
+        console.error("Error fetching hospitals:", error);
+      }
+    };
+
+    fetchHospitals();
+  }, []);
+
+  const filteredHospitals = hospitals.filter(
+    (hospital) =>
+      hospital.hospital_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      hospital.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleApprove = (hospitalId) => {
@@ -200,37 +265,105 @@ const ManageHospitals = () => {
     });
   };
 
-  const handleDelete = (hospitalId) => {
-    toast({
-      title: "Hospital Removed",
-      description: "The hospital has been removed from the network",
-      variant: "destructive",
-    });
+  const handleDelete = async (hospitalId) => {
+    if (!window.confirm("Are you sure you want to delete this hospital?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/hospitals/${hospitalId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setHospitals(hospitals.filter((h) => h.id !== hospitalId));
+        toast({
+          title: "Hospital Deleted",
+          description:
+            "The hospital has been successfully removed from the system",
+          variant: "destructive",
+        });
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Delete Failed",
+          description: error.message || "Failed to delete hospital",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting hospital:", error);
+      toast({
+        title: "Delete Failed",
+        description: "An error occurred while deleting the hospital",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleUpdateAvailability = () => {
-    toast({
-      title: "Availability Updated",
-      description: "Hospital availability has been updated successfully",
-    });
+  const handleUpdateAvailability = async (hospitalId, updatedData) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/hospitals/${hospitalId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData),
+        }
+      );
+
+      if (response.ok) {
+        // Refresh the hospitals list
+        const fetchResponse = await fetch(
+          "http://localhost:5000/api/hospitals"
+        );
+        if (fetchResponse.ok) {
+          const data = await fetchResponse.json();
+          setHospitals(data);
+        }
+
+        toast({
+          title: "Hospital Updated",
+          description: "Hospital information has been updated successfully",
+        });
+      } else {
+        throw new Error("Failed to update hospital");
+      }
+    } catch (error) {
+      console.error("Error updating hospital:", error);
+      toast({
+        title: "Update Failed",
+        description: "Failed to update hospital information",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <div className="p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Manage Hospitals</h1>
-        <p className="text-gray-500 mt-1">Manage hospital registrations and availability</p>
+        <p className="text-gray-500 mt-1">
+          Manage hospital registrations and availability
+        </p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Hospitals</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Hospitals
+            </CardTitle>
             <Building2 className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockHospitals.length}</div>
+            <div className="text-2xl font-bold">{hospitals.length}</div>
             <p className="text-xs text-gray-500">Active hospitals</p>
           </CardContent>
         </Card>
@@ -241,14 +374,16 @@ const ManageHospitals = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockHospitals.reduce((sum, h) => sum + h.beds, 0)}
+              {hospitals.reduce((sum, h) => sum + (h.total_beds || 0), 0)}
             </div>
             <p className="text-xs text-gray-500">Available beds</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Pending Approval</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pending Approval
+            </CardTitle>
             <Building2 className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
@@ -280,7 +415,9 @@ const ManageHospitals = () => {
       <Card>
         <CardHeader>
           <CardTitle>All Hospitals</CardTitle>
-          <CardDescription>Manage hospital registrations and availability</CardDescription>
+          <CardDescription>
+            Manage hospital registrations and availability
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -289,7 +426,9 @@ const ManageHospitals = () => {
                 <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Location</TableHead>
-                <TableHead>Beds</TableHead>
+                <TableHead>Total Beds</TableHead>
+                <TableHead>ICU Beds</TableHead>
+                <TableHead>Emergency Beds</TableHead>
                 <TableHead>Doctors</TableHead>
                 <TableHead>Ambulances</TableHead>
                 <TableHead>Contact</TableHead>
@@ -300,16 +439,36 @@ const ManageHospitals = () => {
               {filteredHospitals.map((hospital) => (
                 <TableRow key={hospital.id}>
                   <TableCell className="font-medium">#{hospital.id}</TableCell>
-                  <TableCell>{hospital.name}</TableCell>
-                  <TableCell>{hospital.location}</TableCell>
+                  <TableCell>{hospital.hospital_name}</TableCell>
+                  <TableCell>{hospital.address}</TableCell>
                   <TableCell>
-                    <Badge variant={hospital.beds > 40 ? "default" : "secondary"}>
-                      {hospital.beds}
+                    <Badge
+                      variant={
+                        hospital.total_beds > 40 ? "default" : "secondary"
+                      }
+                    >
+                      {hospital.total_beds}
                     </Badge>
                   </TableCell>
-                  <TableCell>{hospital.doctors}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={hospital.icu_beds > 10 ? "default" : "secondary"}
+                    >
+                      {hospital.icu_beds}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        hospital.emergency_beds > 5 ? "default" : "secondary"
+                      }
+                    >
+                      {hospital.emergency_beds}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{hospital.staff_count}</TableCell>
                   <TableCell>{hospital.ambulances}</TableCell>
-                  <TableCell>{hospital.contact}</TableCell>
+                  <TableCell>{hospital.phone}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Dialog>
@@ -321,16 +480,39 @@ const ManageHospitals = () => {
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>Update Hospital Availability</DialogTitle>
-                            <DialogDescription>Update resource availability for {hospital.name}</DialogDescription>
+                            <DialogTitle>
+                              Update Hospital Availability
+                            </DialogTitle>
+                            <DialogDescription>
+                              Update resource availability for{" "}
+                              {hospital.hospital_name}
+                            </DialogDescription>
                           </DialogHeader>
                           <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                              <Label htmlFor="beds">Available Beds</Label>
+                              <Label htmlFor="beds">Total Beds</Label>
                               <Input
                                 id="beds"
                                 type="number"
-                                defaultValue={hospital.beds}
+                                defaultValue={hospital.total_beds}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="icu_beds">ICU Beds</Label>
+                              <Input
+                                id="icu_beds"
+                                type="number"
+                                defaultValue={hospital.icu_beds}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="emergency_beds">
+                                Emergency Beds
+                              </Label>
+                              <Input
+                                id="emergency_beds"
+                                type="number"
+                                defaultValue={hospital.emergency_beds}
                               />
                             </div>
                             <div className="space-y-2">
@@ -338,18 +520,43 @@ const ManageHospitals = () => {
                               <Input
                                 id="doctors"
                                 type="number"
-                                defaultValue={hospital.doctors}
+                                defaultValue={hospital.staff_count}
                               />
                             </div>
                             <div className="space-y-2">
-                              <Label htmlFor="ambulances">Available Ambulances</Label>
+                              <Label htmlFor="ambulances">
+                                Available Ambulances
+                              </Label>
                               <Input
                                 id="ambulances"
                                 type="number"
                                 defaultValue={hospital.ambulances}
                               />
                             </div>
-                            <Button onClick={handleUpdateAvailability} className="w-full">
+                            <Button
+                              onClick={() => {
+                                const beds =
+                                  document.getElementById("beds").value;
+                                const icuBeds =
+                                  document.getElementById("icu_beds").value;
+                                const emergencyBeds =
+                                  document.getElementById(
+                                    "emergency_beds"
+                                  ).value;
+                                const doctors =
+                                  document.getElementById("doctors").value;
+                                const ambulances =
+                                  document.getElementById("ambulances").value;
+                                handleUpdateAvailability(hospital.id, {
+                                  total_beds: parseInt(beds) || 0,
+                                  icu_beds: parseInt(icuBeds) || 0,
+                                  emergency_beds: parseInt(emergencyBeds) || 0,
+                                  staff_count: parseInt(doctors) || 0,
+                                  ambulances: parseInt(ambulances) || 0,
+                                });
+                              }}
+                              className="w-full"
+                            >
                               Save Changes
                             </Button>
                           </div>
@@ -375,21 +582,25 @@ const ManageHospitals = () => {
       <Card>
         <CardHeader>
           <CardTitle>Pending Approvals</CardTitle>
-          <CardDescription>Review and approve new hospital registrations</CardDescription>
+          <CardDescription>
+            Review and approve new hospital registrations
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center justify-between p-4 border rounded-lg">
+              <div
+                key={i}
+                className="flex items-center justify-between p-4 border rounded-lg"
+              >
                 <div>
-                  <p className="font-semibold">New Hospital Registration #{i}</p>
+                  <p className="font-semibold">
+                    New Hospital Registration #{i}
+                  </p>
                   <p className="text-sm text-gray-500">Submitted 2 days ago</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleApprove(i)}
-                  >
+                  <Button size="sm" onClick={() => handleApprove(i)}>
                     <CheckCircle className="h-4 w-4 mr-1" />
                     Approve
                   </Button>
