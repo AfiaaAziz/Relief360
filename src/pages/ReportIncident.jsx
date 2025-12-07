@@ -12,27 +12,72 @@ const IncidentReportForm = () => {
     contact: "",
     reporterName: "",
     reporterEmail: "",
-    media: null
+    media: null,
   });
 
   const handleInputChange = (e) => {
     const { id, value, type, files } = e.target;
-    if (type === 'file') {
-      setFormData(prev => ({ ...prev, [id]: files }));
+    if (type === "file") {
+      setFormData((prev) => ({ ...prev, [id]: files }));
     } else {
-      setFormData(prev => ({ ...prev, [id]: value }));
+      setFormData((prev) => ({ ...prev, [id]: value }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+
+    try {
+      // Map form data to API expected format
+      const apiData = {
+        title: `${formData.incidentType}: ${formData.title}`,
+        description:
+          formData.description +
+          (formData.reporterEmail
+            ? `\n\nReporter Email: ${formData.reporterEmail}`
+            : ""),
+        location: formData.location,
+        severity: formData.severity.toLowerCase(),
+        contact_person: formData.reporterName,
+        contact_phone: formData.contact,
+      };
+
+      const response = await fetch("http://localhost:5000/api/incidents", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(apiData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit incident report");
+      }
+
+      const result = await response.json();
+      alert(
+        `Incident Reported Successfully!\nIncident ID: ${result.id}\nEmergency services have been notified. You will receive updates via email.`
+      );
+
+      // Reset form
+      setFormData({
+        incidentType: "",
+        severity: "",
+        title: "",
+        description: "",
+        location: "",
+        contact: "",
+        reporterName: "",
+        reporterEmail: "",
+        media: null,
+      });
+    } catch (error) {
+      console.error("Error submitting incident:", error);
+      alert("Failed to submit incident report. Please try again.");
+    } finally {
       setIsSubmitting(false);
-      alert("Incident Reported Successfully!\nEmergency services have been notified. You will receive updates via email.");
-    }, 2000);
+    }
   };
 
   return (
@@ -43,7 +88,8 @@ const IncidentReportForm = () => {
             <span className="text-red-600">Report</span> Emergency
           </h2>
           <p className="text-xl text-gray-600">
-            Quick and accurate incident reporting helps us respond faster and save lives.
+            Quick and accurate incident reporting helps us respond faster and
+            save lives.
           </p>
         </div>
 
@@ -54,18 +100,22 @@ const IncidentReportForm = () => {
               Emergency Incident Report
             </h2>
             <p className="text-gray-600 mt-2">
-              Please provide as much detail as possible. All fields marked with * are required.
+              Please provide as much detail as possible. All fields marked with
+              * are required.
             </p>
           </div>
-          
+
           <div className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="incidentType" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="incidentType"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Incident Type *
                   </label>
-                  <select 
+                  <select
                     id="incidentType"
                     value={formData.incidentType}
                     onChange={handleInputChange}
@@ -84,10 +134,13 @@ const IncidentReportForm = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="severity" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="severity"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Severity Level *
                   </label>
-                  <select 
+                  <select
                     id="severity"
                     value={formData.severity}
                     onChange={handleInputChange}
@@ -95,7 +148,9 @@ const IncidentReportForm = () => {
                     required
                   >
                     <option value="">Select severity</option>
-                    <option value="critical">Critical - Life Threatening</option>
+                    <option value="critical">
+                      Critical - Life Threatening
+                    </option>
                     <option value="high">High - Immediate Response</option>
                     <option value="medium">Medium - Urgent</option>
                     <option value="low">Low - Non-urgent</option>
@@ -104,10 +159,13 @@ const IncidentReportForm = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Incident Title *
                 </label>
-                <input 
+                <input
                   id="title"
                   type="text"
                   value={formData.title}
@@ -119,10 +177,13 @@ const IncidentReportForm = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Detailed Description *
                 </label>
-                <textarea 
+                <textarea
                   id="description"
                   value={formData.description}
                   onChange={handleInputChange}
@@ -134,11 +195,14 @@ const IncidentReportForm = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="location"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Location Address *
                   </label>
                   <div className="relative">
-                    <input 
+                    <input
                       id="location"
                       type="text"
                       value={formData.location}
@@ -152,10 +216,13 @@ const IncidentReportForm = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="contact" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="contact"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Contact Number *
                   </label>
-                  <input 
+                  <input
                     id="contact"
                     type="tel"
                     value={formData.contact}
@@ -169,10 +236,13 @@ const IncidentReportForm = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="reporterName" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="reporterName"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Your Name *
                   </label>
-                  <input 
+                  <input
                     id="reporterName"
                     type="text"
                     value={formData.reporterName}
@@ -184,10 +254,13 @@ const IncidentReportForm = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="reporterEmail" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="reporterEmail"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Email Address
                   </label>
-                  <input 
+                  <input
                     id="reporterEmail"
                     type="email"
                     value={formData.reporterEmail}
@@ -199,7 +272,10 @@ const IncidentReportForm = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="media" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="media"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Photos/Videos (Optional)
                 </label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-red-300 transition-colors cursor-pointer">
@@ -210,7 +286,7 @@ const IncidentReportForm = () => {
                   <p className="text-xs text-gray-500">
                     PNG, JPG, MP4 up to 10MB each
                   </p>
-                  <input 
+                  <input
                     id="media"
                     type="file"
                     multiple
@@ -222,8 +298,8 @@ const IncidentReportForm = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
                   className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
                 >
@@ -239,8 +315,8 @@ const IncidentReportForm = () => {
                     </>
                   )}
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Save as Draft
@@ -251,7 +327,9 @@ const IncidentReportForm = () => {
         </div>
 
         <div className="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
-          <h3 className="text-lg font-semibold text-blue-600 mb-2">What happens next?</h3>
+          <h3 className="text-lg font-semibold text-blue-600 mb-2">
+            What happens next?
+          </h3>
           <ul className="text-sm text-gray-600 space-y-1">
             <li>• Your report is immediately sent to emergency dispatch</li>
             <li>• You'll receive a confirmation email with your incident ID</li>

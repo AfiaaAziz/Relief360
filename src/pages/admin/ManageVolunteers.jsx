@@ -1,5 +1,15 @@
+// ManageVolunteers.jsx
+
 import React, { useState, useEffect } from "react";
-import { Search, UserPlus, Edit, Trash2, Heart } from "lucide-react";
+import {
+  Search,
+  UserPlus,
+  Edit,
+  Trash2,
+  Heart,
+  UserCheck,
+  X,
+} from "lucide-react";
 
 // Create simple UI components
 const Card = ({ children, className = "" }) => (
@@ -102,68 +112,92 @@ const TableCell = ({ children, className = "" }) => (
 );
 
 // Simple Select Component
-const Select = ({ onValueChange, children, defaultValue }) => {
-  const [selectedValue, setSelectedValue] = useState(defaultValue || "");
+const Select = ({ onValueChange, children, defaultValue, value }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  // Handle both controlled (value) and uncontrolled (defaultValue) modes
+  const [internalValue, setInternalValue] = useState(defaultValue || "");
+  const activeValue = value !== undefined ? value : internalValue;
 
-  const handleChange = (e) => {
-    const newValue = e.target.value;
-    setSelectedValue(newValue);
+  const handleSelect = (newValue) => {
+    setInternalValue(newValue);
     if (onValueChange) onValueChange(newValue);
+    setIsOpen(false);
   };
 
+  // Extract options and trigger from children
   const childrenArray = React.Children.toArray(children);
-  const trigger = childrenArray.find(
-    (child) => child.type.displayName === "SelectTrigger"
-  );
-  const content = childrenArray.find(
-    (child) => child.type.displayName === "SelectContent"
-  );
+  const trigger = childrenArray.find(child => child.type.displayName === "SelectTrigger");
+  
+  // In your usage, SelectItems are inside SelectTrigger. We need to extract them.
+  let options = [];
+  if (trigger) {
+    const triggerChildren = React.Children.toArray(trigger.props.children);
+    options = triggerChildren.filter(child => child.type && child.type.displayName === "SelectItem");
+  }
 
   return (
     <div className="relative">
-      {trigger &&
-        React.cloneElement(trigger, {
-          value: selectedValue,
-          onChange: handleChange,
-        })}
-      {content}
+      {trigger && React.cloneElement(trigger, { 
+        onClick: () => setIsOpen(!isOpen),
+        selectedValue: activeValue,
+        isOpen,
+        // Pass the handleSelect to the trigger so it can pass it to children if needed, 
+        // though we render options separately below for the custom dropdown.
+      })}
+      
+      {isOpen && (
+        <div className="absolute z-[9999] mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg">
+          <div className="max-h-60 overflow-y-auto p-1">
+            {options.map((option) => (
+              <div
+                key={option.props.value}
+                className={`relative flex cursor-default select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 ${
+                  activeValue === option.props.value ? "bg-gray-100 font-medium" : ""
+                }`}
+                onClick={() => handleSelect(option.props.value)}
+              >
+                {option.props.children}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-const SelectTrigger = ({
-  value,
-  onChange,
-  children,
-  className = "",
-  ...props
-}) => (
-  <select
-    value={value}
-    onChange={onChange}
-    className={`flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ${className}`}
-    {...props}
-  >
-    {children}
-  </select>
-);
+const SelectTrigger = ({ children, onClick, selectedValue, className = "" }) => {
+  // Find the label for the selected value
+  const childrenArray = React.Children.toArray(children);
+  const selectedItem = childrenArray.find(
+    (child) => child.type.displayName === "SelectItem" && child.props.value === selectedValue
+  );
+  const placeholder = childrenArray.find(
+    (child) => child.type.displayName === "SelectValue"
+  );
+
+  return (
+    <button
+      type="button" // Important to prevent form submission
+      onClick={onClick}
+      className={`flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+    >
+      <span className="block truncate">
+        {selectedItem ? selectedItem.props.children : (placeholder ? placeholder.props.placeholder : "Select...")}
+      </span>
+      <span className="ml-2 opacity-50">▼</span>
+    </button>
+  );
+};
 SelectTrigger.displayName = "SelectTrigger";
 
-const SelectContent = ({ children, className = "" }) => (
-  <div className={`absolute z-50 mt-1 w-full ${className}`}>{children}</div>
-);
+const SelectContent = ({ children }) => null; // Not used in this structure but kept for compatibility
 SelectContent.displayName = "SelectContent";
 
-const SelectItem = ({ value, children }) => (
-  <option value={value}>{children}</option>
-);
+const SelectItem = ({ children }) => children; // Just a data holder
 SelectItem.displayName = "SelectItem";
 
-const SelectValue = ({ placeholder }) => (
-  <option value="" disabled>
-    {placeholder}
-  </option>
-);
+const SelectValue = ({ placeholder }) => null; // Just a data holder
 SelectValue.displayName = "SelectValue";
 
 // Dialog Component
@@ -202,6 +236,7 @@ const DialogTrigger = ({ children, onClick, ...props }) => (
 );
 DialogTrigger.displayName = "DialogTrigger";
 
+// 1. FIXED DIALOG CONTENT (Uses X icon)
 const DialogContent = ({ children, onClose, className = "" }) => {
   const childrenArray = React.Children.toArray(children);
   const header = childrenArray.find(
@@ -213,14 +248,15 @@ const DialogContent = ({ children, onClose, className = "" }) => {
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-lg w-full max-w-md ${className}`}
+      className={`bg-white rounded-lg shadow-lg w-full max-w-lg overflow-visible relative flex flex-col ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors"
       >
-        ✕
+        {/* Using the proper X icon here */}
+        <X className="h-5 w-5" />
       </button>
       {header}
       <div className="p-6">{otherChildren}</div>
@@ -272,28 +308,47 @@ const ManageVolunteers = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [volunteers, setVolunteers] = useState([]);
+  const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingVolunteer, setEditingVolunteer] = useState(null);
+  const [isAssignOpen, setIsAssignOpen] = useState(false);
+  const [assigningVolunteer, setAssigningVolunteer] = useState(null);
+  const [selectedIncident, setSelectedIncident] = useState("");
+  const [assignmentNotes, setAssignmentNotes] = useState("");
 
   useEffect(() => {
-    const fetchVolunteers = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/volunteers");
-        if (response.ok) {
-          const data = await response.json();
-          setVolunteers(data);
+        // Fetch volunteers
+        const volunteersResponse = await fetch(
+          "http://localhost:5000/api/volunteers"
+        );
+        if (volunteersResponse.ok) {
+          const volunteersData = await volunteersResponse.json();
+          setVolunteers(volunteersData);
         } else {
           console.error("Failed to fetch volunteers");
         }
+
+        // Fetch incidents
+        const incidentsResponse = await fetch(
+          "http://localhost:5000/api/incidents"
+        );
+        if (incidentsResponse.ok) {
+          const incidentsData = await incidentsResponse.json();
+          setIncidents(incidentsData);
+        } else {
+          console.error("Failed to fetch incidents");
+        }
       } catch (error) {
-        console.error("Error fetching volunteers:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVolunteers();
+    fetchData();
   }, []);
 
   const filteredVolunteers = volunteers.filter(
@@ -307,11 +362,125 @@ const ManageVolunteers = () => {
       )
   );
 
-  const handleAssignIncident = (volunteerId, incidentId) => {
-    toast({
-      title: "Incident Assigned",
-      description: `Incident ${incidentId} has been assigned to the volunteer`,
-    });
+  const handleAssign = (volunteer) => {
+    setAssigningVolunteer(volunteer);
+    setSelectedIncident("");
+    setAssignmentNotes("");
+    setIsAssignOpen(true);
+  };
+
+  const handleAssignSubmit = async () => {
+    if (!assigningVolunteer || !selectedIncident) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/incidents/${selectedIncident}/assign`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            volunteerId: assigningVolunteer.id,
+            notes: assignmentNotes,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // Update volunteer status to assigned
+        setVolunteers(
+          volunteers.map((v) =>
+            v.id === assigningVolunteer.id ? { ...v, assigned: true } : v
+          )
+        );
+        setIsAssignOpen(false);
+        setAssigningVolunteer(null);
+        toast({
+          title: "Volunteer Assigned",
+          description: `Volunteer has been successfully assigned to the incident`,
+        });
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Assignment Failed",
+          description: error.message || "Failed to assign volunteer",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error assigning volunteer:", error);
+      toast({
+        title: "Assignment Failed",
+        description: "An error occurred while assigning the volunteer",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUnassign = async (volunteerId) => {
+    if (!window.confirm("Are you sure you want to unassign this volunteer?")) {
+      return;
+    }
+
+    try {
+      // First, get the assignment to find the incident ID
+      const assignmentsResponse = await fetch(
+        `http://localhost:5000/api/incidents/assignments`
+      );
+      if (!assignmentsResponse.ok) {
+        throw new Error("Failed to fetch assignments");
+      }
+
+      const assignments = await assignmentsResponse.json();
+      const assignment = assignments.find(
+        (a) => a.volunteer_id === volunteerId
+      );
+
+      if (!assignment) {
+        toast({
+          title: "Unassignment Failed",
+          description: "No active assignment found for this volunteer",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:5000/api/incidents/${assignment.incident_id}/assign/${volunteerId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        // Update volunteer status to unassigned
+        setVolunteers(
+          volunteers.map((v) =>
+            v.id === volunteerId ? { ...v, assigned: false } : v
+          )
+        );
+        toast({
+          title: "Volunteer Unassigned",
+          description:
+            "Volunteer has been successfully unassigned from the incident",
+        });
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Unassignment Failed",
+          description: error.message || "Failed to unassign volunteer",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error unassigning volunteer:", error);
+      toast({
+        title: "Unassignment Failed",
+        description: "An error occurred while unassigning the volunteer",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDelete = async (volunteerId) => {
@@ -534,6 +703,22 @@ const ManageVolunteers = () => {
                         <Button
                           size="sm"
                           variant="ghost"
+                          onClick={() => handleAssign(volunteer)}
+                          disabled={volunteer.assigned}
+                        >
+                          <UserCheck className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleUnassign(volunteer.id)}
+                          disabled={!volunteer.assigned}
+                        >
+                          <X className="h-4 w-4 text-orange-500" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
                           onClick={() => handleEdit(volunteer)}
                         >
                           <Edit className="h-4 w-4" />
@@ -647,12 +832,10 @@ const ManageVolunteers = () => {
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select availability" />
-                    </SelectTrigger>
-                    <SelectContent>
                       <SelectItem value="Available">Available</SelectItem>
                       <SelectItem value="Unavailable">Unavailable</SelectItem>
                       <SelectItem value="Part-time">Part-time</SelectItem>
-                    </SelectContent>
+                    </SelectTrigger>
                   </Select>
                 </div>
               </div>
@@ -722,6 +905,68 @@ const ManageVolunteers = () => {
                   onClick={() => {
                     setIsEditOpen(false);
                     setEditingVolunteer(null);
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Assign Dialog */}
+      {isAssignOpen && assigningVolunteer && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div
+            className="bg-white rounded-lg shadow-lg w-full max-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b border-gray-100">
+              <h2 className="text-xl font-semibold">Assign Volunteer</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Assign {assigningVolunteer.first_name}{" "}
+                {assigningVolunteer.last_name} to an incident
+              </p>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="text-sm font-medium">Select Incident</label>
+                <Select
+                  onValueChange={setSelectedIncident}
+                  defaultValue={selectedIncident}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose an incident" />
+                    {incidents.map((incident) => (
+                      <SelectItem
+                        key={incident.id}
+                        value={incident.id.toString()}
+                      >
+                        {incident.title} - {incident.location}
+                      </SelectItem>
+                    ))}
+                  </SelectTrigger>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Assignment Notes</label>
+                <Input
+                  placeholder="Optional notes for this assignment"
+                  value={assignmentNotes}
+                  onChange={(e) => setAssignmentNotes(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2 pt-4">
+                <Button onClick={handleAssignSubmit} className="flex-1">
+                  Assign Volunteer
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsAssignOpen(false);
+                    setAssigningVolunteer(null);
                   }}
                   className="flex-1"
                 >
