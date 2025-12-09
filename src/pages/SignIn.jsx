@@ -1,8 +1,18 @@
 import { useState } from "react";
-import { Shield, Mail, Lock, Eye, EyeOff, AlertTriangle, Users, Hospital, UserCheck } from "lucide-react";
+import {
+  Shield,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertTriangle,
+  Users,
+  Hospital,
+  UserCheck,
+} from "lucide-react";
 import { Link } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -10,7 +20,7 @@ const Login = () => {
   const [userRole, setUserRole] = useState("");
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const navigate = useNavigate();
@@ -18,10 +28,10 @@ const Login = () => {
 
   const handleInputChange = (e) => {
     const { id, value, type, checked } = e.target;
-    if (type === 'checkbox') {
-      setFormData(prev => ({ ...prev, [id]: checked }));
+    if (type === "checkbox") {
+      setFormData((prev) => ({ ...prev, [id]: checked }));
     } else {
-      setFormData(prev => ({ ...prev, [id]: value }));
+      setFormData((prev) => ({ ...prev, [id]: value }));
     }
   };
 
@@ -32,14 +42,18 @@ const Login = () => {
       const user = await login(formData.email, formData.password);
       setIsSubmitting(false);
       const roleToUse = user?.role || userRole;
-      alert(`Login Successful!\nWelcome back! Redirecting to your ${roleToUse} dashboard...`);
+      alert(
+        `Login Successful!\nWelcome back! Redirecting to your ${roleToUse} dashboard...`
+      );
       // navigate based on role
-      if (roleToUse === 'admin') navigate('/admin-dashboard');
-      else if (roleToUse === 'volunteer') navigate('/volunteer-dashboard');
-      else navigate('/');
+      if (roleToUse === "admin") navigate("/admin-dashboard");
+      else if (roleToUse === "volunteer") navigate("/volunteer-dashboard");
+      else navigate("/");
     } catch (err) {
       setIsSubmitting(false);
-      const message = err.response?.data?.message || 'Login failed. Please check credentials.';
+      const message =
+        err.response?.data?.message ||
+        "Login failed. Please check credentials.";
       alert(message);
     }
   };
@@ -49,31 +63,30 @@ const Login = () => {
       value: "citizen",
       label: "Citizen",
       icon: AlertTriangle,
-      description: "Report incidents and receive alerts"
+      description: "Report incidents and receive alerts",
     },
     {
       value: "volunteer",
       label: "Volunteer",
       icon: Users,
-      description: "Respond to emergencies and help communities"
+      description: "Respond to emergencies and help communities",
     },
     {
       value: "hospital",
       label: "Hospital Staff",
       icon: Hospital,
-      description: "Manage hospital resources and capacity"
+      description: "Manage hospital resources and capacity",
     },
     {
       value: "admin",
       label: "Administrator",
       icon: UserCheck,
-      description: "Coordinate emergency response operations"
-    }
+      description: "Coordinate emergency response operations",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       <main className="py-20">
         <div className="container mx-auto px-4 max-w-md">
           <div className="text-center mb-8">
@@ -93,19 +106,24 @@ const Login = () => {
 
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
             <div className="p-6 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-center text-gray-900">Sign In</h2>
+              <h2 className="text-xl font-bold text-center text-gray-900">
+                Sign In
+              </h2>
               <p className="text-gray-600 text-center mt-2">
                 Enter your credentials to access your account
               </p>
             </div>
-            
+
             <div className="p-6">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="role"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Account Type *
                   </label>
-                  <select 
+                  <select
                     id="role"
                     value={userRole}
                     onChange={(e) => setUserRole(e.target.value)}
@@ -121,17 +139,20 @@ const Login = () => {
                   </select>
                   {userRole && (
                     <p className="text-xs text-gray-600">
-                      {roles.find(r => r.value === userRole)?.description}
+                      {roles.find((r) => r.value === userRole)?.description}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Email Address *
                   </label>
                   <div className="relative">
-                    <input 
+                    <input
                       id="email"
                       type="email"
                       value={formData.email}
@@ -145,11 +166,14 @@ const Login = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Password *
                   </label>
                   <div className="relative">
-                    <input 
+                    <input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       value={formData.password}
@@ -173,8 +197,8 @@ const Login = () => {
                   </div>
                 </div>
 
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
                   className="w-full bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
                 >
@@ -194,8 +218,8 @@ const Login = () => {
                 <div className="text-center">
                   <p className="text-sm text-gray-600">
                     Don't have an account?{" "}
-                    <Link 
-                      to="/signup" 
+                    <Link
+                      to="/signup"
                       className="text-blue-600 hover:underline font-medium"
                     >
                       Sign up here
@@ -213,8 +237,12 @@ const Login = () => {
               <span className="text-red-600 font-medium">Emergency Access</span>
             </div>
             <p className="text-sm text-gray-600">
-              In case of immediate emergency, you can report incidents without logging in. 
-              <Link to="/report-incident" className="text-red-600 hover:underline ml-1">
+              In case of immediate emergency, you can report incidents without
+              logging in.
+              <Link
+                to="/report-incident"
+                className="text-red-600 hover:underline ml-1"
+              >
                 Report Emergency Now →
               </Link>
             </p>

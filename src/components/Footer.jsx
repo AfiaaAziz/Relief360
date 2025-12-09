@@ -1,6 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { AlertTriangle, Heart, Phone, Mail, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import {
+  AlertTriangle,
+  Heart,
+  Phone,
+  Mail,
+  MapPin,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+} from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -48,11 +58,15 @@ export default function Footer() {
                   <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
                     Relief360
                   </span>
-                  <span className="text-xs text-gray-400">Emergency Response</span>
+                  <span className="text-xs text-gray-400">
+                    Emergency Response
+                  </span>
                 </div>
               </Link>
               <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                Connecting citizens, volunteers, hospitals, and emergency responders in real-time to save lives and manage disasters effectively.
+                Connecting citizens, volunteers, hospitals, and emergency
+                responders in real-time to save lives and manage disasters
+                effectively.
               </p>
               <div className="flex gap-4">
                 {socialLinks.map((social) => {
@@ -129,14 +143,18 @@ export default function Footer() {
                   <Mail className="w-4 h-4 text-red-600 mt-1 flex-shrink-0" />
                   <div>
                     <p className="text-gray-400 text-sm">Email</p>
-                    <p className="text-white font-semibold">support@relief360.com</p>
+                    <p className="text-white font-semibold">
+                      support@relief360.com
+                    </p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-red-600 mt-1 flex-shrink-0" />
                   <div>
                     <p className="text-gray-400 text-sm">Address</p>
-                    <p className="text-white font-semibold text-sm">Karachi, Pakistan</p>
+                    <p className="text-white font-semibold text-sm">
+                      Karachi, Pakistan
+                    </p>
                   </div>
                 </li>
               </ul>
@@ -150,7 +168,8 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           {/* Copyright */}
           <p className="text-gray-400 text-sm">
-            © {currentYear} Relief360. All rights reserved. Dedicated to emergency response and disaster management.
+            © {currentYear} Relief360. All rights reserved. Dedicated to
+            emergency response and disaster management.
           </p>
 
           {/* Legal Links */}
@@ -172,7 +191,10 @@ export default function Footer() {
       <div className="bg-gradient-to-r from-red-600 to-orange-500 py-3">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-2 text-white font-semibold">
           <Heart className="w-5 h-5" />
-          <span>In case of emergency, always dial 911 or use our Report Emergency feature</span>
+          <span>
+            In case of emergency, always dial 911 or use our Report Emergency
+            feature
+          </span>
         </div>
       </div>
     </footer>
