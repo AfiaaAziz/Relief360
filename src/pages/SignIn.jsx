@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Shield,
   Mail,
@@ -10,7 +10,7 @@ import {
   Hospital,
   UserCheck,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -25,6 +25,15 @@ const Login = () => {
 
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [searchParams] = useSearchParams();
+
+  // Auto-select admin role if coming from admin button
+  useEffect(() => {
+    const roleParam = searchParams.get("role");
+    if (roleParam === "admin") {
+      setUserRole("admin");
+    }
+  }, [searchParams]);
 
   const handleInputChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -38,7 +47,44 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
     try {
+      // Special handling for admin login
+      if (userRole === "admin") {
+        const response = await fetch(
+          "http://localhost:5000/api/auth/admin-login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: formData.email, // admin uses username instead of email
+              password: formData.password,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Admin login failed");
+        }
+
+        // Store admin token and user data
+        localStorage.setItem("token", data.token);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ email: "admin", role: "admin" })
+        );
+
+        setIsSubmitting(false);
+        alert("Admin login successful! Redirecting to dashboard...");
+        navigate("/admin-dashboard");
+        return;
+      }
+
+      // Regular user login for citizen, volunteer, hospital
       const user = await login(formData.email, formData.password);
       setIsSubmitting(false);
       const roleToUse = user?.role || userRole;
@@ -52,6 +98,7 @@ const Login = () => {
     } catch (err) {
       setIsSubmitting(false);
       const message =
+        err.message ||
         err.response?.data?.message ||
         "Login failed. Please check credentials.";
       alert(message);

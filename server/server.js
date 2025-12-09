@@ -39,6 +39,10 @@ function setCORSHeaders(res) {
 
 const JWT_SECRET = process.env.JWT_SECRET || "change-this-secret";
 
+// Static admin credentials (single admin for the system)
+const ADMIN_USERNAME = "admin@gmail.com";
+const ADMIN_PASSWORD = "admin123"; // Change this to your desired password
+
 function generateToken(user) {
   return jwt.sign(
     { id: user.id, email: user.email, role: user.role },
@@ -94,6 +98,36 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // --- Admin Login endpoint (static credentials) ---
+  if (pathname === "/api/auth/admin-login" && method === "POST") {
+    parseBody(req, async (err, body) => {
+      if (err) return sendJSON(res, 400, { message: "Invalid JSON" });
+      const { username, password } = body;
+
+      if (!username || !password) {
+        return sendJSON(res, 400, { message: "Missing username or password" });
+      }
+
+      // Validate against static admin credentials
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        // Create admin token
+        const adminToken = jwt.sign(
+          { id: "admin", email: "admin@relief360.local", role: "admin" },
+          JWT_SECRET,
+          { expiresIn: "7d" }
+        );
+
+        return sendJSON(res, 200, {
+          token: adminToken,
+          user: { id: "admin", email: "admin", role: "admin" },
+        });
+      } else {
+        return sendJSON(res, 401, { message: "Invalid admin credentials" });
+      }
+    });
+    return;
+  }
+
   if (pathname === "/api/auth/me" && method === "GET") {
     (async () => {
       try {
@@ -132,16 +166,7 @@ const server = http.createServer((req, res) => {
         const token = parts[1];
         const decoded = jwt.verify(token, JWT_SECRET);
 
-        // Try to find volunteer by user_id
-        const volRes = await db.query(
-          "SELECT * FROM volunteers WHERE user_id = $1 LIMIT 1",
-          [decoded.id]
-        );
-        if (volRes.rows.length > 0) {
-          return sendJSON(res, 200, volRes.rows[0]);
-        }
-
-        // Fallback: find by email
+        // Find by email (since user_id not available without migration)
         const userRes = await db.query(
           "SELECT email FROM users WHERE id = $1",
           [decoded.id]
@@ -197,7 +222,7 @@ const server = http.createServer((req, res) => {
         console.error("Fetch hospitals error", err);
         sendJSON(res, 500, { message: "Internal server error" });
       });
-  } else if (pathname === "/api/contact" && method === "POST") {
+  } else if (pathname === "/api/contact/send" && method === "POST") {
     // POST /api/contact
     parseBody(req, (err, body) => {
       if (err) return sendJSON(res, 400, { message: "Invalid JSON" });
@@ -281,18 +306,12 @@ const server = http.createServer((req, res) => {
         return sendJSON(res, 400, { message: "Missing required fields" });
       }
 
-      // If password is provided, create a user and link it
+      // Hash the password if provided
       (async () => {
         try {
-          let userId = null;
+          let hashedPassword = null;
           if (password) {
-            // create user with role 'hospital'
-            const hashed = await bcrypt.hash(password, 10);
-            const userRes = await db.query(
-              `INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, role`,
-              [email, hashed, "hospital"]
-            );
-            userId = userRes.rows[0].id;
+            hashedPassword = await bcrypt.hash(password, 10);
           }
 
           const insertQuery = `
@@ -300,7 +319,7 @@ const server = http.createServer((req, res) => {
               hospital_name, hospital_type, address, phone, emergency_phone, email,
               total_beds, icu_beds, emergency_beds, ambulances, staff_count,
               contact_name, contact_position, contact_phone, contact_email,
-              additional_info, services, terms, data_sharing, user_id
+              additional_info, services, terms, data_sharing, password_hash
             )
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
             RETURNING id, created_at
@@ -325,7 +344,7 @@ const server = http.createServer((req, res) => {
             services || [],
             terms,
             dataSharing,
-            userId,
+            hashedPassword,
           ];
 
           const result = await db.query(insertQuery, values);
@@ -350,8 +369,8 @@ const server = http.createServer((req, res) => {
       if (err) return sendJSON(res, 400, { message: "Invalid JSON" });
 
       const {
-        firstName,
-        lastName,
+        first_name,
+        last_name,
         email,
         phone,
         age,
@@ -359,25 +378,25 @@ const server = http.createServer((req, res) => {
         address,
         experience,
         motivation,
-        termsAccepted,
-        backgroundCheck,
-        selectedSkills,
+        terms_accepted,
+        background_check,
+        selected_skills,
         password,
       } = body;
 
       if (
-        !firstName ||
-        !lastName ||
+        !first_name ||
+        !last_name ||
         !email ||
         !phone ||
         !age ||
         !availability ||
         !address ||
         !motivation ||
-        termsAccepted === undefined ||
-        backgroundCheck === undefined ||
-        !selectedSkills ||
-        selectedSkills.length === 0
+        terms_accepted === undefined ||
+        background_check === undefined ||
+        !selected_skills ||
+        selected_skills.length === 0
       ) {
         return sendJSON(res, 400, { message: "Missing required fields" });
       }
@@ -397,14 +416,14 @@ const server = http.createServer((req, res) => {
           const insertQuery = `
             INSERT INTO volunteers (
               first_name, last_name, email, phone, age, availability, address,
-              experience, motivation, terms_accepted, background_check, skills, user_id
+              experience, motivation, terms_accepted, background_check, skills
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
             RETURNING id, created_at
           `;
           const values = [
-            firstName,
-            lastName,
+            first_name,
+            last_name,
             email,
             phone,
             age,
@@ -412,10 +431,9 @@ const server = http.createServer((req, res) => {
             address,
             experience || null,
             motivation,
-            termsAccepted,
-            backgroundCheck,
-            selectedSkills,
-            userId,
+            terms_accepted,
+            background_check,
+            selected_skills,
           ];
 
           const result = await db.query(insertQuery, values);

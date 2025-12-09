@@ -21,6 +21,8 @@ const HospitalRegistration = () => {
     contactPhone: "",
     contactEmail: "",
     additionalInfo: "",
+    password: "",
+    confirmPassword: "",
     terms: false,
     dataSharing: false,
   });
@@ -55,17 +57,39 @@ const HospitalRegistration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate password matching
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match. Please try again.");
+      return;
+    }
+
+    // Validate terms acceptance
+    if (!formData.terms) {
+      alert("Please accept the terms and conditions to continue.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const res = await fetch(`${apiBase}/api/hospital-registration`, {
+      // Prepare data for backend - exclude confirmPassword and convert strings to numbers
+      const { confirmPassword, ...dataToSend } = formData;
+      const processedData = {
+        ...dataToSend,
+        services: services,
+        totalBeds: parseInt(formData.totalBeds) || 0,
+        icuBeds: parseInt(formData.icuBeds) || 0,
+        emergencyBeds: parseInt(formData.emergencyBeds) || 0,
+        ambulances: parseInt(formData.ambulances) || 0,
+        staffCount: parseInt(formData.staffCount) || 0,
+      };
+
+      const res = await fetch(`${apiBase}/api/hospitals/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          services: services,
-        }),
+        body: JSON.stringify(processedData),
       });
 
       if (!res.ok) {
@@ -302,6 +326,44 @@ const HospitalRegistration = () => {
                     />
                   </div>
                 </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Password *
+                    </label>
+                    <input
+                      id="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      placeholder="Create a secure password"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Confirm Password *
+                    </label>
+                    <input
+                      id="confirmPassword"
+                      type="password"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      placeholder="Confirm your password"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Capacity Information */}
@@ -532,6 +594,44 @@ const HospitalRegistration = () => {
                   placeholder="Any additional information about your facility, special equipment, or emergency protocols..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-24"
                 />
+              </div>
+
+              {/* Terms and Conditions */}
+              <div className="space-y-4">
+                <div className="flex items-start space-x-2">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={formData.terms}
+                    onChange={handleInputChange}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
+                  />
+                  <label htmlFor="terms" className="text-sm text-gray-700">
+                    I agree to the{" "}
+                    <a href="#" className="text-blue-600 hover:underline">
+                      Terms and Conditions
+                    </a>{" "}
+                    and understand that my facility will participate in the
+                    emergency response network. *
+                  </label>
+                </div>
+
+                <div className="flex items-start space-x-2">
+                  <input
+                    type="checkbox"
+                    id="dataSharing"
+                    checked={formData.dataSharing}
+                    onChange={handleInputChange}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
+                  />
+                  <label
+                    htmlFor="dataSharing"
+                    className="text-sm text-gray-700"
+                  >
+                    I consent to sharing capacity and resource data with
+                    emergency services and partner organizations.
+                  </label>
+                </div>
               </div>
 
               <button

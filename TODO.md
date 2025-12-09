@@ -1,9 +1,11 @@
-# TODO: Fix Static Volunteer List in ManageIncidents
+# Admin Login Implementation
 
 ## Tasks
 
-- [x] Add state for volunteers in ManageIncidents.jsx
-- [x] Create fetchVolunteers function to get data from /api/volunteers
-- [x] Add useEffect to load volunteers on component mount
-- [x] Replace mockVolunteers with fetched volunteers in assign dialog
-- [x] Test the assignment functionality
+- [ ] Update adminLogin method in auth.service.ts to use hardcoded credentials (admin@gmail.com / admin123)
+- [ ] Test the admin login flow to ensure it works correctly
+
+## Completed
+
+- [x] Analyze existing admin login flow
+- [x] Confirm plan with user

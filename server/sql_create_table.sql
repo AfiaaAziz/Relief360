@@ -31,6 +31,8 @@ CREATE TABLE IF NOT EXISTS hospital_registrations (
   services TEXT[], -- Array of service IDs
   terms BOOLEAN NOT NULL DEFAULT false,
   data_sharing BOOLEAN NOT NULL DEFAULT false,
+  status VARCHAR(50) DEFAULT 'pending',
+  password_hash VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
@@ -49,6 +51,7 @@ CREATE TABLE IF NOT EXISTS volunteers (
   background_check BOOLEAN NOT NULL DEFAULT false,
   skills TEXT[], -- Array of skill IDs
   assigned BOOLEAN NOT NULL DEFAULT false,
+  password_hash VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 

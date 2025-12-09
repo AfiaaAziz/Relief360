@@ -3,20 +3,20 @@
 ## Overview
 
 Your existing database has these tables:
+
 - contactus
 - hospital_registrations
 - volunteers
 - incidents
 - volunteer_assignments
 
-**Missing:** users, citizens (needed for authentication)
+**Updated:** Authentication now stores passwords directly in volunteers and hospital_registrations tables
 
-The migration file `migration_add_auth.sql` will:
-1. ✅ Create `users` table (authentication)
-2. ✅ Link `volunteers` to `users` table
-3. ✅ Link `hospital_registrations` to `users` table
-4. ✅ Create `citizens` table
-5. ✅ Create indexes for performance
+The migration file `migration_add_password_to_volunteers.sql` will:
+
+1. ✅ Add `password_hash` column to `volunteers` table
+2. ✅ Add `password_hash` column to `hospital_registrations` table
+3. ✅ Set default password for existing records
 
 ---
 
@@ -33,32 +33,63 @@ Should show: `psql (PostgreSQL) 15.x` (or similar)
 
 ---
 
-### Step 2: Run the Migration
+### Step 2: Run the Password Migration
 
 ```bash
 # From your project root directory
 cd c:\Users\HP\Desktop\FSWD-PROJECT\relief-360
 
-# Run the migration file
-psql -d relief360 -f server/migration_add_auth.sql
+# Run the password migration file
+psql -d relief360 -f server/migration_add_password_to_volunteers.sql
 ```
 
 **Expected output:**
+
 ```
-CREATE TABLE
 ALTER TABLE
+UPDATE
 ALTER TABLE
-ALTER TABLE
-CREATE TABLE
-CREATE INDEX
-CREATE INDEX
-CREATE INDEX
-CREATE INDEX
-CREATE INDEX
-CREATE INDEX
+UPDATE
 ```
 
 If you see errors, read them carefully - they indicate what went wrong.
+
+---
+
+### Step 3: Verify the Migration
+
+Connect to database and check tables:
+
+```bash
+# Connect to database
+psql -d relief360
+
+# Inside psql, run these commands:
+\d volunteers                 # Should show password_hash column
+\d hospital_registrations     # Should show password_hash column
+```
+
+---
+
+## What Changed
+
+### Before (Complex User Table Approach)
+
+- Separate `users` table for authentication
+- `volunteers` and `hospital_registrations` linked via `user_id`
+- Complex relationships and data management
+
+### After (Simplified Direct Storage)
+
+- Passwords stored directly in `volunteers` and `hospital_registrations` tables
+- Login checks these tables directly
+- Simpler data model, easier maintenance
+
+### Migration Details
+
+- Added `password_hash` column to both tables
+- Set default password: `changeme123` for existing records
+- **⚠️ IMPORTANT:** Existing volunteers must change their password from `changeme123` on first login!
 
 ---
 
@@ -84,6 +115,7 @@ psql -d relief360
 ### Issue 1: "Database relief360 does not exist"
 
 **Solution:** Create the database first
+
 ```bash
 createdb relief360
 psql -d relief360 -f server/sql_create_table.sql
@@ -95,6 +127,7 @@ psql -d relief360 -f server/migration_add_auth.sql
 ### Issue 2: "Relation 'volunteers' does not exist"
 
 **Solution:** Run the original sql_create_table.sql first
+
 ```bash
 psql -d relief360 -f server/sql_create_table.sql
 psql -d relief360 -f server/migration_add_auth.sql
@@ -117,6 +150,7 @@ psql -d relief360 -f server/migration_add_auth.sql
 ## What Each Part Does
 
 ### Part 1: Create Users Table
+
 ```sql
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,              -- Auto-incrementing ID
@@ -134,6 +168,7 @@ CREATE TABLE IF NOT EXISTS users (
 ---
 
 ### Part 2: Link Volunteers to Users
+
 ```sql
 ALTER TABLE volunteers
 ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE;
@@ -144,6 +179,7 @@ ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE;
 ---
 
 ### Part 3: Link Hospital to Users
+
 ```sql
 ALTER TABLE hospital_registrations
 ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE;
@@ -154,6 +190,7 @@ ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE;
 ---
 
 ### Part 4: Create Citizens Table
+
 ```sql
 CREATE TABLE IF NOT EXISTS citizens (
   id SERIAL PRIMARY KEY,
@@ -175,6 +212,7 @@ CREATE TABLE IF NOT EXISTS citizens (
 ---
 
 ### Part 5: Create Indexes
+
 ```sql
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
@@ -195,6 +233,7 @@ psql -d relief360 -c "\dt"
 ```
 
 Should show:
+
 ```
              List of relations
  Schema |           Name           | Type  | Owner
@@ -217,6 +256,7 @@ psql -d relief360 -c "\d users"
 ```
 
 Should show:
+
 ```
                       Table "public.users"
    Column    |            Type             | Modifiers
@@ -239,6 +279,7 @@ psql -d relief360 -c "\d volunteers"
 ```
 
 Should show new `user_id` column:
+
 ```
  user_id | integer | FK to users(id)
 ```
@@ -287,6 +328,7 @@ Then re-run the migration after fixing the issue.
 ## Support
 
 If you get stuck:
+
 1. Check the error message carefully
 2. Make sure PostgreSQL is running: `psql --version`
 3. Make sure database exists: `psql -l`

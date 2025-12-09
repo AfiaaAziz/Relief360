@@ -64,7 +64,7 @@ export default function Navbar() {
               </Link>
 
               {/* Admin Panel */}
-              <Link to="/admin-dashboard">
+              <Link to="/sign-in?role=admin">
                 <button className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200">
                   Admin
                 </button>
@@ -118,7 +118,7 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  to="/admin-dashboard"
+                  to="/sign-in?role=admin"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <button className="w-full px-5 py-2.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold shadow-md hover:shadow-lg transition-all duration-200">

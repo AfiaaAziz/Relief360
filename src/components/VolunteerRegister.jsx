@@ -6,8 +6,8 @@ const VolunteerRegistration = () => {
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [showToast, setShowToast] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     phone: "",
     age: "",
@@ -17,8 +17,8 @@ const VolunteerRegistration = () => {
     motivation: "",
     password: "",
     confirmPassword: "",
-    termsAccepted: false,
-    backgroundCheck: false,
+    terms_accepted: false,
+    background_check: false,
   });
 
   const skills = [
@@ -45,20 +45,22 @@ const VolunteerRegistration = () => {
   };
 
   const handleSubmit = async () => {
+    console.log("Form Data:", formData);
+    console.log("Selected Skills:", selectedSkills);
     if (
-      !formData.firstName ||
-      !formData.lastName ||
+      !formData.first_name ||
+      !formData.last_name ||
       !formData.email ||
       !formData.phone ||
       !formData.age ||
       !formData.availability ||
       !formData.address ||
       !formData.motivation ||
-      !formData.termsAccepted ||
-      !formData.backgroundCheck ||
+      !formData.terms_accepted ||
+      !formData.background_check ||
       selectedSkills.length === 0
     ) {
-      alert("Please fill in all required fields");
+      alert("Please fill in all required fields. Check console for details.");
       return;
     }
 
@@ -86,8 +88,8 @@ const VolunteerRegistration = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            firstName: formData.firstName,
-            lastName: formData.lastName,
+            first_name: formData.first_name,
+            last_name: formData.last_name,
             email: formData.email,
             phone: formData.phone,
             age: formData.age,
@@ -95,9 +97,9 @@ const VolunteerRegistration = () => {
             address: formData.address,
             experience: formData.experience,
             motivation: formData.motivation,
-            termsAccepted: formData.termsAccepted,
-            backgroundCheck: formData.backgroundCheck,
-            selectedSkills: selectedSkills,
+            terms_accepted: formData.terms_accepted,
+            background_check: formData.background_check,
+            selected_skills: selectedSkills,
             password: formData.password,
           }),
         }
@@ -108,8 +110,8 @@ const VolunteerRegistration = () => {
         setTimeout(() => setShowToast(false), 4000);
         // Reset form
         setFormData({
-          firstName: "",
-          lastName: "",
+          first_name: "",
+          last_name: "",
           email: "",
           phone: "",
           age: "",
@@ -119,8 +121,8 @@ const VolunteerRegistration = () => {
           motivation: "",
           password: "",
           confirmPassword: "",
-          termsAccepted: false,
-          backgroundCheck: false,
+          terms_accepted: false,
+          background_check: false,
         });
         setSelectedSkills([]);
       } else {
@@ -215,9 +217,9 @@ const VolunteerRegistration = () => {
                     </label>
                     <input
                       type="text"
-                      value={formData.firstName}
+                      value={formData.first_name}
                       onChange={(e) =>
-                        handleInputChange("firstName", e.target.value)
+                        handleInputChange("first_name", e.target.value)
                       }
                       placeholder="Enter your first name"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
@@ -230,9 +232,9 @@ const VolunteerRegistration = () => {
                     </label>
                     <input
                       type="text"
-                      value={formData.lastName}
+                      value={formData.last_name}
                       onChange={(e) =>
-                        handleInputChange("lastName", e.target.value)
+                        handleInputChange("last_name", e.target.value)
                       }
                       placeholder="Enter your last name"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
@@ -416,9 +418,9 @@ const VolunteerRegistration = () => {
                   <div className="flex items-start space-x-2">
                     <input
                       type="checkbox"
-                      checked={formData.termsAccepted}
+                      checked={formData.terms_accepted}
                       onChange={(e) =>
-                        handleInputChange("termsAccepted", e.target.checked)
+                        handleInputChange("terms_accepted", e.target.checked)
                       }
                       className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1"
                     />
@@ -431,9 +433,9 @@ const VolunteerRegistration = () => {
                   <div className="flex items-start space-x-2">
                     <input
                       type="checkbox"
-                      checked={formData.backgroundCheck}
+                      checked={formData.background_check}
                       onChange={(e) =>
-                        handleInputChange("backgroundCheck", e.target.checked)
+                        handleInputChange("background_check", e.target.checked)
                       }
                       className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1"
                     />

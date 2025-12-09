@@ -38,10 +38,18 @@ const Contact = () => {
 
     try {
       const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const res = await fetch(`${apiBase}/api/contact`, {
+      const res = await fetch(`${apiBase}/api/contact/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          department: formData.department,
+          subject: formData.subject,
+          message: formData.message,
+          priority: formData.priority,
+        }),
       });
 
       if (!res.ok) {
