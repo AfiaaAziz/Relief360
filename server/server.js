@@ -1,6 +1,8 @@
 const http = require("http");
 const url = require("url");
 const db = require("./db");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 5000;
@@ -31,7 +33,18 @@ function setCORSHeaders(res) {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS"
   );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // Allow Authorization header for bearer tokens
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
+
+const JWT_SECRET = process.env.JWT_SECRET || "change-this-secret";
+
+function generateToken(user) {
+  return jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    JWT_SECRET,
+    { expiresIn: "7d" }
+  );
 }
 
 const server = http.createServer((req, res) => {
@@ -44,6 +57,111 @@ const server = http.createServer((req, res) => {
   if (method === "OPTIONS") {
     res.writeHead(200);
     res.end();
+    return;
+  }
+
+  // --- Auth endpoints ---
+  if (pathname === "/api/auth/login" && method === "POST") {
+    parseBody(req, async (err, body) => {
+      if (err) return sendJSON(res, 400, { message: "Invalid JSON" });
+      const { email, password } = body;
+      if (!email || !password)
+        return sendJSON(res, 400, { message: "Missing email or password" });
+      try {
+        const userResult = await db.query(
+          "SELECT id, email, password_hash, role, is_active FROM users WHERE email = $1",
+          [email]
+        );
+        if (userResult.rows.length === 0)
+          return sendJSON(res, 401, { message: "Invalid credentials" });
+        const user = userResult.rows[0];
+        const match = await bcrypt.compare(password, user.password_hash);
+        if (!match)
+          return sendJSON(res, 401, { message: "Invalid credentials" });
+        if (!user.is_active)
+          return sendJSON(res, 403, { message: "User is disabled" });
+        const token = generateToken(user);
+        // Return user (without password_hash)
+        sendJSON(res, 200, {
+          token,
+          user: { id: user.id, email: user.email, role: user.role },
+        });
+      } catch (e) {
+        console.error("Login error", e);
+        sendJSON(res, 500, { message: "Internal server error" });
+      }
+    });
+    return;
+  }
+
+  if (pathname === "/api/auth/me" && method === "GET") {
+    (async () => {
+      try {
+        const auth = req.headers["authorization"] || "";
+        const parts = auth.split(" ");
+        if (parts.length !== 2 || parts[0] !== "Bearer")
+          return sendJSON(res, 401, { message: "Missing or invalid token" });
+        const token = parts[1];
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const userResult = await db.query(
+          "SELECT id, email, role, is_active FROM users WHERE id = $1",
+          [decoded.id]
+        );
+        if (userResult.rows.length === 0)
+          return sendJSON(res, 404, { message: "User not found" });
+        const user = userResult.rows[0];
+        if (!user.is_active)
+          return sendJSON(res, 403, { message: "User disabled" });
+        sendJSON(res, 200, { id: user.id, email: user.email, role: user.role });
+      } catch (e) {
+        console.error("Auth me error", e);
+        sendJSON(res, 401, { message: "Invalid token" });
+      }
+    })();
+    return;
+  }
+
+  // GET /api/volunteers/me - return volunteer record for authenticated user
+  if (pathname === "/api/volunteers/me" && method === "GET") {
+    (async () => {
+      try {
+        const auth = req.headers["authorization"] || "";
+        const parts = auth.split(" ");
+        if (parts.length !== 2 || parts[0] !== "Bearer")
+          return sendJSON(res, 401, { message: "Missing or invalid token" });
+        const token = parts[1];
+        const decoded = jwt.verify(token, JWT_SECRET);
+
+        // Try to find volunteer by user_id
+        const volRes = await db.query(
+          "SELECT * FROM volunteers WHERE user_id = $1 LIMIT 1",
+          [decoded.id]
+        );
+        if (volRes.rows.length > 0) {
+          return sendJSON(res, 200, volRes.rows[0]);
+        }
+
+        // Fallback: find by email
+        const userRes = await db.query(
+          "SELECT email FROM users WHERE id = $1",
+          [decoded.id]
+        );
+        const email = userRes.rows[0]?.email;
+        if (email) {
+          const volByEmail = await db.query(
+            "SELECT * FROM volunteers WHERE email = $1 LIMIT 1",
+            [email]
+          );
+          if (volByEmail.rows.length > 0)
+            return sendJSON(res, 200, volByEmail.rows[0]);
+        }
+
+        sendJSON(res, 404, { message: "Volunteer profile not found" });
+      } catch (e) {
+        console.error("GET /api/volunteers/me error", e);
+        sendJSON(res, 401, { message: "Invalid token" });
+      }
+    })();
     return;
   }
 
@@ -141,6 +259,7 @@ const server = http.createServer((req, res) => {
         services,
         terms,
         dataSharing,
+        password,
       } = body;
 
       if (
@@ -162,49 +281,68 @@ const server = http.createServer((req, res) => {
         return sendJSON(res, 400, { message: "Missing required fields" });
       }
 
-      const insertQuery = `
-        INSERT INTO hospital_registrations (
-          hospital_name, hospital_type, address, phone, emergency_phone, email,
-          total_beds, icu_beds, emergency_beds, ambulances, staff_count,
-          contact_name, contact_position, contact_phone, contact_email,
-          additional_info, services, terms, data_sharing
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
-        RETURNING id, created_at
-      `;
-      const values = [
-        hospitalName,
-        hospitalType,
-        address,
-        phone,
-        emergencyPhone,
-        email,
-        totalBeds,
-        icuBeds,
-        emergencyBeds,
-        ambulances || null,
-        staffCount,
-        contactName,
-        contactPosition,
-        contactPhone,
-        contactEmail,
-        additionalInfo || null,
-        services || [],
-        terms,
-        dataSharing,
-      ];
+      // If password is provided, create a user and link it
+      (async () => {
+        try {
+          let userId = null;
+          if (password) {
+            // create user with role 'hospital'
+            const hashed = await bcrypt.hash(password, 10);
+            const userRes = await db.query(
+              `INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, role`,
+              [email, hashed, "hospital"]
+            );
+            userId = userRes.rows[0].id;
+          }
 
-      db.query(insertQuery, values)
-        .then((result) =>
+          const insertQuery = `
+            INSERT INTO hospital_registrations (
+              hospital_name, hospital_type, address, phone, emergency_phone, email,
+              total_beds, icu_beds, emergency_beds, ambulances, staff_count,
+              contact_name, contact_position, contact_phone, contact_email,
+              additional_info, services, terms, data_sharing, user_id
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+            RETURNING id, created_at
+          `;
+          const values = [
+            hospitalName,
+            hospitalType,
+            address,
+            phone,
+            emergencyPhone,
+            email,
+            totalBeds,
+            icuBeds,
+            emergencyBeds,
+            ambulances || null,
+            staffCount,
+            contactName,
+            contactPosition,
+            contactPhone,
+            contactEmail,
+            additionalInfo || null,
+            services || [],
+            terms,
+            dataSharing,
+            userId,
+          ];
+
+          const result = await db.query(insertQuery, values);
           sendJSON(res, 201, {
             id: result.rows[0].id,
             created_at: result.rows[0].created_at,
-          })
-        )
-        .catch((err) => {
+          });
+        } catch (err) {
           console.error("Insert hospital registration error", err);
-          sendJSON(res, 500, { message: "Internal server error" });
-        });
+          if (err.code === "23505") {
+            // unique violation
+            sendJSON(res, 409, { message: "This email already exists" });
+          } else {
+            sendJSON(res, 500, { message: "Internal server error" });
+          }
+        }
+      })();
     });
   } else if (pathname === "/api/volunteer-registration" && method === "POST") {
     // POST /api/volunteer-registration
@@ -224,6 +362,7 @@ const server = http.createServer((req, res) => {
         termsAccepted,
         backgroundCheck,
         selectedSkills,
+        password,
       } = body;
 
       if (
@@ -243,42 +382,50 @@ const server = http.createServer((req, res) => {
         return sendJSON(res, 400, { message: "Missing required fields" });
       }
 
-      const insertQuery = `
-        INSERT INTO volunteers (
-          first_name, last_name, email, phone, age, availability, address,
-          experience, motivation, terms_accepted, background_check, skills
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-        RETURNING id, created_at
-      `;
-      const values = [
-        firstName,
-        lastName,
-        email,
-        phone,
-        age,
-        availability,
-        address,
-        experience || null,
-        motivation,
-        termsAccepted,
-        backgroundCheck,
-        selectedSkills,
-      ];
+      (async () => {
+        try {
+          let userId = null;
+          if (password) {
+            const hashed = await bcrypt.hash(password, 10);
+            const userRes = await db.query(
+              `INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, role`,
+              [email, hashed, "volunteer"]
+            );
+            userId = userRes.rows[0].id;
+          }
 
-      db.query(insertQuery, values)
-        .then((result) =>
+          const insertQuery = `
+            INSERT INTO volunteers (
+              first_name, last_name, email, phone, age, availability, address,
+              experience, motivation, terms_accepted, background_check, skills, user_id
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            RETURNING id, created_at
+          `;
+          const values = [
+            firstName,
+            lastName,
+            email,
+            phone,
+            age,
+            availability,
+            address,
+            experience || null,
+            motivation,
+            termsAccepted,
+            backgroundCheck,
+            selectedSkills,
+            userId,
+          ];
+
+          const result = await db.query(insertQuery, values);
           sendJSON(res, 201, {
             id: result.rows[0].id,
             created_at: result.rows[0].created_at,
-          })
-        )
-        .catch((err) => {
+          });
+        } catch (err) {
           console.error("Insert volunteer registration error", err);
-          if (
-            err.code === "23505" &&
-            err.constraint === "volunteers_email_key"
-          ) {
+          if (err.code === "23505") {
             sendJSON(res, 409, {
               message:
                 "This email address is already registered. Please use a different email or contact support if you need to update your registration.",
@@ -286,7 +433,8 @@ const server = http.createServer((req, res) => {
           } else {
             sendJSON(res, 500, { message: "Internal server error" });
           }
-        });
+        }
+      })();
     });
   } else if (pathname.startsWith("/api/volunteers/") && method === "PUT") {
     // PUT /api/volunteers/:id
@@ -913,6 +1061,19 @@ const server = http.createServer((req, res) => {
     sendJSON(res, 404, { message: "Endpoint not found" });
   }
 });
+
+// Auth endpoints
+// POST /api/auth/login
+// GET /api/auth/me
+// Note: simple implementations using JWTs
+const AUTH_PREFIX = "/api/auth";
+
+// Add auth handlers before server.listen by wrapping previous logic; we already handle routes above,
+// so add explicit checks for auth endpoints at top-level by reopening server creation would be complex.
+// Instead, we handle them within the same request handler by checking their paths earlier. Add here for clarity.
+
+// To keep code structure simple, intercept auth routes via a small additional server wrapper is not necessary
+// because the main handler above will reach the following checks if path matches. (We will add them inline above.)
 
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

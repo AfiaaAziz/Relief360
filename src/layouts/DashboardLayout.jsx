@@ -14,33 +14,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-const Button = ({
-  children,
-  variant = "default",
-  className = "",
-  size,
-  ...props
-}) => {
-  const base =
-    "inline-flex items-center justify-center rounded-lg font-medium transition-colors";
-  const variants = {
-    default: "bg-blue-600 text-white hover:bg-blue-700",
-    ghost: "hover:bg-gray-100 text-gray-700",
-    outline: "border border-gray-300 hover:bg-gray-50 text-gray-700",
-  };
-  const sizes = { icon: "h-10 w-10", default: "h-11 px-4" };
-
-  return (
-    <button
-      className={`${base} ${variants[variant]} ${
-        sizes[size || "default"]
-      } ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-};
+import { Button } from "../components/ui/button";
 const navItems = {
   admin: [
     { icon: LayoutDashboard, label: "Dashboard", path: "/admin-dashboard" },
@@ -111,56 +85,56 @@ const DashboardLayout = ({ children, role = "citizen" }) => {
   const handleLogout = () => navigate("/");
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex">
-        <aside className="w-64 bg-white border-r border-gray-200 flex flex-col min-h-screen">
-          <div className="p-6 border-b border-gray-200">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
-              Relief360
-            </h1>
-            <p className="text-sm font-semibold mt-2 text-red-600 capitalize">
-              {role} Portal
-            </p>
-          </div>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Fixed Sidebar */}
+      <aside className="fixed left-0 top-0 w-64 bg-white border-r border-gray-200 flex flex-col h-screen z-50">
+        <div className="p-6 border-b border-gray-200">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+            Relief360
+          </h1>
+          <p className="text-sm font-semibold mt-2 text-red-600 capitalize">
+            {role} Portal
+          </p>
+        </div>
 
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {items.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          {items.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
 
-              return (
-                <Link key={item.path} to={item.path}>
-                  <Button
-                    variant={isActive ? "default" : "ghost"}
-                    className={`w-full justify-start h-11 ${
-                      isActive
-                        ? "bg-blue-600 hover:bg-blue-700 text-white"
-                        : "hover:bg-gray-100"
-                    }`}
-                  >
-                    <Icon className="mr-3 h-5 w-5" />
-                    {item.label}
-                  </Button>
-                </Link>
-              );
-            })}
-          </nav>
+            return (
+              <Link key={item.path} to={item.path}>
+                <Button
+                  variant={isActive ? "default" : "ghost"}
+                  className={`w-full justify-start h-11 ${
+                    isActive
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "hover:bg-gray-100"
+                  }`}
+                >
+                  <Icon className="mr-3 h-5 w-5" />
+                  {item.label}
+                </Button>
+              </Link>
+            );
+          })}
+        </nav>
 
-          <div className="p-4 border-t border-gray-200">
-            <Button
-              variant="outline"
-              className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50"
-              onClick={handleLogout}
-            >
-              <LogOut className="mr-3 h-5 w-5" /> Logout
-            </Button>
-          </div>
-        </aside>
+        <div className="p-4 border-t border-gray-200">
+          <Button
+            variant="outline"
+            className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50"
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-3 h-5 w-5" /> Logout
+          </Button>
+        </div>
+      </aside>
 
-        <main className="flex-1 overflow-y-auto bg-gray-50">
-          <div className="container mx-auto p-6 max-w-7xl">{children}</div>
-        </main>
-      </div>
+      {/* Main Content - Scrollable */}
+      <main className="ml-64 flex-1 overflow-y-auto bg-gray-50 h-screen">
+        <div className="container mx-auto p-6 max-w-7xl">{children}</div>
+      </main>
     </div>
   );
 };

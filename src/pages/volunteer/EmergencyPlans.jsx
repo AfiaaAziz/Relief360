@@ -1,4 +1,3 @@
-import DashboardLayout from "../../layouts/DashboardLayout";
 import {
   Card,
   CardContent,
@@ -126,8 +125,7 @@ const EmergencyPlans = () => {
   };
 
   return (
-    <DashboardLayout role="volunteer">
-      <div className="space-y-6">
+    <div className="space-y-6">
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-3xl font-bold">Emergency Plan Manager</h1>
@@ -300,9 +298,8 @@ const EmergencyPlans = () => {
               </p>
             </CardContent>
           </Card>
-        )}
+        )}  
       </div>
-    </DashboardLayout>
   );
 };
 

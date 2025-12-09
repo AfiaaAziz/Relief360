@@ -109,6 +109,7 @@ function App() {
                 <Route path="donations" element={<Donations />} />
                 <Route path="emergency-plans" element={<EmergencyPlans />} />
                 <Route path="hospitals" element={<VolunteerHospitals />} />
+                <Route path="profile" element={<Profile />} />
 
                 {/* Catch all for volunteer routes */}
                 <Route
@@ -118,15 +119,6 @@ function App() {
               </Routes>
             </DashboardLayout>
           }
-        />
-
-        {/* VOLUNTEER PROFILE PAGE - FULL WIDTH */}
-        <Route path="/volunteer-dashboard/profile" element={<Profile />} />
-
-        {/* VOLUNTEER EMERGENCY PLANS PAGE - FULL WIDTH */}
-        <Route
-          path="/volunteer-dashboard/emergency-plans"
-          element={<EmergencyPlans />}
         />
 
         {/* Global catch-all route */}

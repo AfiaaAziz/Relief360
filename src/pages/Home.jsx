@@ -1,5 +1,6 @@
 import React from "react";
 import { AlertTriangle, Users, Hospital, MapPin, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 import heroImage from "../assets/images/HeroImage.jpg";
 
 const Button = ({
@@ -57,15 +58,19 @@ const Home = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4 mb-14">
-          <Button variant="hero" size="lg">
-            <AlertTriangle className="h-5 w-5" />
-            Report Emergency
-          </Button>
+          <Link to="/report-incident">
+            <Button variant="hero" size="lg">
+              <AlertTriangle className="h-5 w-5" />
+              Report Emergency
+            </Button>
+          </Link>
 
-          <Button variant="secondary" size="lg">
-            <Users className="h-5 w-5" />
-            Join as Volunteer
-          </Button>
+          <Link to="/volunteer-register">
+            <Button variant="secondary" size="lg">
+              <Users className="h-5 w-5" />
+              Join as Volunteer
+            </Button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">

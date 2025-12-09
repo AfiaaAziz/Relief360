@@ -6,8 +6,8 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import { input } from "../../components/ui/input";
-import { label } from "../../components/ui/label";
+import Input from "../../components/ui/input";
+import Label from "../../components/ui/label";
 import {
   Select,
   SelectContent,
@@ -26,18 +26,25 @@ import { useToast } from "../../hooks/use-toast";
 import { DollarSign, Package, Heart } from "lucide-react";
 
 const Donations = () => {
+  const { toast } = useToast();
   const [moneyData, setMoneyData] = useState({ amount: "", method: "" });
   const [supplyData, setSupplyData] = useState({ item: "", quantity: "" });
 
   const handleMoneyDonation = (e) => {
     e.preventDefault();
-    alert(`Thank you for donating PKR ${moneyData.amount}!`);
+    toast({
+      title: "Donation Successful",
+      description: `Thank you for donating PKR ${moneyData.amount}!`,
+    });
     setMoneyData({ amount: "", method: "" });
   };
 
   const handleSupplyDonation = (e) => {
     e.preventDefault();
-    alert(`Thank you for donating ${supplyData.quantity} ${supplyData.item}!`);
+    toast({
+      title: "Donation Recorded",
+      description: `Thank you for donating ${supplyData.quantity} ${supplyData.item}!`,
+    });
     setSupplyData({ item: "", quantity: "" });
   };
 
@@ -87,8 +94,8 @@ const Donations = () => {
             <CardContent>
               <form onSubmit={handleMoneyDonation} className="space-y-6">
                 <div className="space-y-2">
-                  <label htmlFor="amount">Amount (PKR) *</label>
-                  <input
+                  <Label htmlFor="amount">Amount (PKR) *</Label>
+                  <Input
                     id="amount"
                     type="number"
                     placeholder="Enter amount"
@@ -119,7 +126,7 @@ const Donations = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="method">Payment Method *</label>
+                  <Label htmlFor="method">Payment Method *</Label>
                   <Select
                     value={moneyData.method}
                     onValueChange={(value) =>
@@ -158,7 +165,7 @@ const Donations = () => {
             <CardContent>
               <form onSubmit={handleSupplyDonation} className="space-y-6">
                 <div className="space-y-2">
-                  <label htmlFor="item">Item Type *</label>
+                  <Label htmlFor="item">Item Type *</Label>
                   <Select
                     value={supplyData.item}
                     onValueChange={(value) =>
@@ -181,8 +188,8 @@ const Donations = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="quantity">Quantity *</label>
-                  <input
+                  <Label htmlFor="quantity">Quantity *</Label>
+                  <Input
                     id="quantity"
                     type="number"
                     placeholder="Enter quantity"

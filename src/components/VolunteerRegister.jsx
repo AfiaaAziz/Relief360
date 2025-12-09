@@ -15,6 +15,8 @@ const VolunteerRegistration = () => {
     address: "",
     experience: "",
     motivation: "",
+    password: "",
+    confirmPassword: "",
     termsAccepted: false,
     backgroundCheck: false,
   });
@@ -60,6 +62,19 @@ const VolunteerRegistration = () => {
       return;
     }
 
+    if (!formData.password) {
+      alert("Please provide a password for your account.");
+      return;
+    }
+    if (formData.password.length < 6) {
+      alert("Password must be at least 6 characters.");
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -83,6 +98,7 @@ const VolunteerRegistration = () => {
             termsAccepted: formData.termsAccepted,
             backgroundCheck: formData.backgroundCheck,
             selectedSkills: selectedSkills,
+            password: formData.password,
           }),
         }
       );
@@ -101,6 +117,8 @@ const VolunteerRegistration = () => {
           address: "",
           experience: "",
           motivation: "",
+          password: "",
+          confirmPassword: "",
           termsAccepted: false,
           backgroundCheck: false,
         });
@@ -249,6 +267,38 @@ const VolunteerRegistration = () => {
                         handleInputChange("phone", e.target.value)
                       }
                       placeholder="Your phone number"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Password *
+                    </label>
+                    <input
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) =>
+                        handleInputChange("password", e.target.value)
+                      }
+                      placeholder="Create a password"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Confirm Password *
+                    </label>
+                    <input
+                      type="password"
+                      value={formData.confirmPassword}
+                      onChange={(e) =>
+                        handleInputChange("confirmPassword", e.target.value)
+                      }
+                      placeholder="Confirm password"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
                     />
                   </div>

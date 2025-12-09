@@ -1,4 +1,3 @@
-import DashboardLayout from "../../layouts/DashboardLayout";
 import {
   Card,
   CardContent,
@@ -7,9 +6,9 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import { input } from "../../components/ui/input";
-import { label } from "../../components/ui/label";
-import { textarea } from "../../components/ui/textarea";
+import Input from "../../components/ui/input";
+import Label from "../../components/ui/label";
+import Textarea from "../../components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -44,8 +43,7 @@ const Profile = () => {
   };
 
   return (
-    <DashboardLayout role="volunteer">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Profile Settings</h1>
           <p className="text-muted-foreground mt-1">
@@ -64,8 +62,8 @@ const Profile = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label htmlFor="name">Full Name *</label>
-                <input
+                <Label htmlFor="name">Full Name *</Label>
+                <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) =>
@@ -76,8 +74,8 @@ const Profile = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="email">Email *</label>
-                <input
+                <Label htmlFor="email">Email *</Label>
+                <Input
                   id="email"
                   type="email"
                   value={formData.email}
@@ -89,8 +87,8 @@ const Profile = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="phone">Phone Number *</label>
-                <input
+                <Label htmlFor="phone">Phone Number *</Label>
+                <Input
                   id="phone"
                   value={formData.phone}
                   onChange={(e) =>
@@ -101,8 +99,8 @@ const Profile = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="bio">Bio</label>
-                <textarea
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea
                   id="bio"
                   rows={4}
                   value={formData.bio}
@@ -132,7 +130,7 @@ const Profile = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <label htmlFor="skills">Primary Skills *</label>
+              <Label htmlFor="skills">Primary Skills *</Label>
               <Select
                 value={formData.skills}
                 onValueChange={(value) =>
@@ -160,7 +158,7 @@ const Profile = () => {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="experience">Experience Level</label>
+              <Label htmlFor="experience">Experience Level</Label>
               <Select
                 value={formData.experience}
                 onValueChange={(value) =>
@@ -242,7 +240,6 @@ const Profile = () => {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
   );
 };
 
