@@ -5,9 +5,9 @@ import { ContactController } from './contact.controller';
 import { ContactMessage } from './entities/contact-message.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ContactMessage])],
-  controllers: [ContactController],
-  providers: [ContactService],
-  exports: [ContactService],
+    imports: [TypeOrmModule.forFeature([ContactMessage])],
+    controllers: [ContactController],
+    providers: [ContactService],
+    exports: [ContactService],
 })
-export class ContactModule {}
+export class ContactModule { }

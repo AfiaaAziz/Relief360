@@ -10,32 +10,33 @@ import { User } from './modules/auth/entities/user.entity';
 import { Volunteer } from './modules/volunteers/entities/volunteer.entity';
 import { Hospital } from './modules/hospitals/entities/hospital.entity';
 import { Incident } from './modules/incidents/entities/incident.entity';
+import { VolunteerAssignment } from './modules/incidents/entities/volunteer-assignment.entity';
 import { ContactMessage } from './modules/contact/entities/contact-message.entity';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
-    }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.PG_HOST || 'localhost',
-      port: parseInt(process.env.PG_PORT) || 5432,
-      database: process.env.PG_DATABASE || 'relief360',
-      username: process.env.PG_USER,
-      password: process.env.PG_PASSWORD,
-      entities: [User, Volunteer, Hospital, Incident, ContactMessage],
-      synchronize: false,
-      logging: false,
-    }),
-    AuthModule,
-    VolunteersModule,
-    HospitalsModule,
-    IncidentsModule,
-    ContactModule,
-  ],
-  controllers: [],
-  providers: [],
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: '.env',
+        }),
+        TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: process.env.PG_HOST || 'localhost',
+            port: parseInt(process.env.PG_PORT) || 5432,
+            database: process.env.PG_DATABASE || 'relief360',
+            username: process.env.PG_USER,
+            password: process.env.PG_PASSWORD,
+            entities: [User, Volunteer, Hospital, Incident, ContactMessage],
+            synchronize: false,
+            logging: false,
+        }),
+        AuthModule,
+        VolunteersModule,
+        HospitalsModule,
+        IncidentsModule,
+        ContactModule,
+    ],
+    controllers: [],
+    providers: [],
 })
-export class AppModule {}
+export class AppModule { }

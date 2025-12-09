@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS volunteers (
   motivation TEXT NOT NULL,
   terms_accepted BOOLEAN NOT NULL DEFAULT false,
   background_check BOOLEAN NOT NULL DEFAULT false,
-  skills TEXT[], -- Array of skill IDs
+  skills TEXT[], 
   assigned BOOLEAN NOT NULL DEFAULT false,
   password_hash VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()

@@ -9,7 +9,7 @@ import {
 @Entity('incidents')
 export class Incident {
     @PrimaryGeneratedColumn()
-    incident_id: number;
+    id: number;
 
     @Column()
     title: string;
@@ -20,9 +20,6 @@ export class Incident {
     @Column()
     location: string;
 
-    @Column()
-    incident_type: string;
-
     @Column({
         type: 'enum',
         enum: ['low', 'medium', 'high', 'critical'],
@@ -32,10 +29,22 @@ export class Incident {
 
     @Column({
         type: 'enum',
-        enum: ['reported', 'in_progress', 'resolved'],
-        default: 'reported',
+        enum: ['pending', 'in_progress', 'resolved'],
+        default: 'pending',
     })
     status: string;
+
+    @Column('text', { array: true, nullable: true })
+    required_skills: string[];
+
+    @Column({ nullable: true })
+    estimated_duration: string;
+
+    @Column({ nullable: true })
+    contact_person: string;
+
+    @Column({ nullable: true })
+    contact_phone: string;
 
     @Column({ nullable: true })
     reported_by_user_id: number;
@@ -47,7 +56,7 @@ export class Incident {
     assigned_hospital_id: number;
 
     @CreateDateColumn()
-    reported_at: Date;
+    created_at: Date;
 
     @UpdateDateColumn()
     updated_at: Date;

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, UseGuards, Request, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, UseGuards, Request, Body, Param } from '@nestjs/common';
 import { VolunteersService } from './volunteers.service';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CreateVolunteerDto } from './dto/create-volunteer.dto';
@@ -28,5 +28,17 @@ export class VolunteersController {
     @UseGuards(JwtGuard)
     async updateProfile(@Request() req, @Body() updateVolunteerDto: UpdateVolunteerDto) {
         return this.volunteersService.update(req.user.id, updateVolunteerDto);
+    }
+
+    @Put(':id')
+    @UseGuards(JwtGuard)
+    async updateVolunteer(@Param('id') id: string, @Body() updateVolunteerDto: UpdateVolunteerDto) {
+        return this.volunteersService.update(+id, updateVolunteerDto);
+    }
+
+    @Delete(':id')
+    @UseGuards(JwtGuard)
+    async deleteVolunteer(@Param('id') id: string) {
+        return this.volunteersService.remove(+id);
     }
 }

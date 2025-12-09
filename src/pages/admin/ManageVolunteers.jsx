@@ -340,7 +340,7 @@ const ManageVolunteers = () => {
       try {
         // Fetch volunteers
         const volunteersResponse = await fetch(
-          "http://localhost:5000/api/incidents/volunteers"
+          "http://localhost:5000/api/volunteers"
         );
         if (volunteersResponse.ok) {
           const volunteersData = await volunteersResponse.json();
@@ -773,7 +773,7 @@ const ManageVolunteers = () => {
                 Update volunteer information
               </p>
             </div>
-            
+
             {/* Body - UPDATED LINE: Added overflow-y-auto for scrolling */}
             <div className="p-6 space-y-4 overflow-y-auto">
               <div className="grid grid-cols-2 gap-4">
@@ -918,7 +918,7 @@ const ManageVolunteers = () => {
                   }
                 />
               </div>
-              
+
               {/* Buttons - Added padding bottom to ensure visibility */}
               <div className="flex gap-2 pt-4 pb-2">
                 <Button onClick={handleUpdate} className="flex-1">
@@ -939,8 +939,7 @@ const ManageVolunteers = () => {
           </div>
         </div>
       )}
-          
-      
+
       {/* Assign Dialog */}
       {isAssignOpen && assigningVolunteer && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">

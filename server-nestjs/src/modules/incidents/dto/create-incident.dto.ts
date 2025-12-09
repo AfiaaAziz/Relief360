@@ -1,4 +1,4 @@
-import { IsString, IsEnum } from 'class-validator';
+import { IsString, IsEnum, IsOptional } from 'class-validator';
 
 export class CreateIncidentDto {
     @IsString()
@@ -10,9 +10,14 @@ export class CreateIncidentDto {
     @IsString()
     location: string;
 
-    @IsString()
-    incident_type: string;
-
     @IsEnum(['low', 'medium', 'high', 'critical'])
     severity: string;
+
+    @IsOptional()
+    @IsString()
+    contact_person?: string;
+
+    @IsOptional()
+    @IsString()
+    contact_phone?: string;
 }

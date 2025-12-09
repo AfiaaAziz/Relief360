@@ -62,5 +62,8 @@ export class VolunteersService {
         });
     }
 
-
+    async remove(id: number) {
+        const result = await this.volunteersRepository.delete(id);
+        return { deleted: result.affected > 0 };
+    }
 }

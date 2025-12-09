@@ -12,7 +12,12 @@ export class HospitalsService {
         private hospitalsRepository: Repository<Hospital>,
     ) { }
 
-    async findAll() {
+    async findAll(status?: string) {
+        if (status) {
+            return this.hospitalsRepository.find({
+                where: { status },
+            });
+        }
         return this.hospitalsRepository.find();
     }
 
@@ -74,5 +79,15 @@ export class HospitalsService {
         });
     }
 
+    async updateStatus(id: number, status: string) {
+        await this.hospitalsRepository.update(id, { status });
+        return this.hospitalsRepository.findOne({
+            where: { id },
+        });
+    }
 
+    async remove(id: number) {
+        const result = await this.hospitalsRepository.delete(id);
+        return { deleted: result.affected > 0 };
+    }
 }

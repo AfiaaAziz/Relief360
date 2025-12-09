@@ -66,7 +66,9 @@ const Hospitals = () => {
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hospitals");
+        const response = await fetch(
+          "http://localhost:3001/api/hospitals?status=approved"
+        );
         if (response.ok) {
           const data = await response.json();
           setHospitals(data);
@@ -132,69 +134,76 @@ const Hospitals = () => {
         </Card>
       </div>
 
-      {/* Hospitals Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>All Hospitals</CardTitle>
-          <CardDescription>
-            List of all registered hospitals and their details
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Total Beds</TableHead>
-                <TableHead>ICU Beds</TableHead>
-                <TableHead>Emergency Beds</TableHead>
-                <TableHead>Doctors</TableHead>
-                <TableHead>Ambulances</TableHead>
-                <TableHead>Contact</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {hospitals.map((hospital) => (
-                <TableRow key={hospital.id}>
-                  <TableCell className="font-medium">#{hospital.id}</TableCell>
-                  <TableCell>{hospital.hospital_name}</TableCell>
-                  <TableCell>{hospital.address}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        hospital.total_beds > 40 ? "default" : "secondary"
-                      }
-                    >
-                      {hospital.total_beds}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={hospital.icu_beds > 10 ? "default" : "secondary"}
-                    >
-                      {hospital.icu_beds}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        hospital.emergency_beds > 5 ? "default" : "secondary"
-                      }
-                    >
-                      {hospital.emergency_beds}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{hospital.staff_count}</TableCell>
-                  <TableCell>{hospital.ambulances}</TableCell>
-                  <TableCell>{hospital.phone}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      {/* Hospital Profiles */}
+      <div>
+        <h2 className="text-2xl font-semibold mb-4">Hospital Profiles</h2>
+        <p className="text-gray-500 mb-6">
+          See how hospitals in our network share their capacity and coordinate
+          during emergencies.
+        </p>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {hospitals.map((hospital) => {
+            const availability =
+              hospital.total_beds > 200 ? "Available" : "Limited";
+            const availabilityVariant =
+              availability === "Available" ? "default" : "secondary";
+            return (
+              <Card key={hospital.id} className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      {hospital.hospital_name}
+                    </h3>
+                    <p className="text-sm text-gray-500">{hospital.address}</p>
+                    <p className="text-sm text-gray-600">{hospital.phone}</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Badge variant={availabilityVariant}>{availability}</Badge>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <div className="text-2xl font-bold text-blue-600">
+                        {hospital.total_beds}
+                      </div>
+                      <div className="text-xs text-gray-500">Beds</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {hospital.icu_beds}
+                      </div>
+                      <div className="text-xs text-gray-500">ICU</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-red-600">
+                        {hospital.emergency_beds}
+                      </div>
+                      <div className="text-xs text-gray-500">Emergency</div>
+                    </div>
+                  </div>
+                  {hospital.services && hospital.services.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">
+                        Specialized Services:
+                      </h4>
+                      <div className="flex flex-wrap gap-1">
+                        {hospital.services.map((service, index) => (
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="text-xs"
+                          >
+                            {service}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
