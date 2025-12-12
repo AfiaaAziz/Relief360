@@ -92,6 +92,7 @@ export class AuthService {
 
     async validateUser(userId: number) {
         // First check volunteers table
+        // table
         let account: Volunteer | Hospital | null = await this.volunteersRepository.findOne({
             where: { id: userId },
         });
