@@ -35,6 +35,15 @@ import EmergencyPlans from "./pages/volunteer/EmergencyPlans";
 import Profile from "./pages/volunteer/Profile";
 import VolunteerHospitals from "./pages/volunteer/VolunteerHospitals";
 
+// Citizen Dashboard Pages
+import CitizenDashboard from "./pages/citizen/CitizenDashboard";
+import CitizenReportIncident from "./pages/citizen/ReportIncident";
+import EmergencyContacts from "./pages/citizen/EmergencyContacts";
+import CitizenSafetyTips from "./pages/citizen/SafetyTips";
+import Hospitals from "./pages/citizen/Hospitals";
+import MyIncidents from "./pages/citizen/MyIncidents";
+import Feedback from "./pages/citizen/Feedback";
+
 // Profile page without layout
 
 // Layout
@@ -115,6 +124,31 @@ function App() {
                 <Route
                   path="*"
                   element={<Navigate to="/volunteer-dashboard" />}
+                />
+              </Routes>
+            </DashboardLayout>
+          }
+        />
+
+        {/* CITIZEN DASHBOARD ROUTES */}
+        <Route
+          path="/citizen-dashboard/*"
+          element={
+            <DashboardLayout role="citizen" key="citizen-layout">
+              <Routes>
+                <Route index element={<CitizenDashboard />} />
+                <Route path="report" element={<CitizenReportIncident />} />
+                <Route path="contacts" element={<EmergencyContacts />} />
+
+                <Route path="safety" element={<CitizenSafetyTips />} />
+                <Route path="hospitals" element={<Hospitals />} />
+                <Route path="incidents" element={<MyIncidents />} />
+                <Route path="feedback" element={<Feedback />} />
+
+                {/* Catch all for citizen routes */}
+                <Route
+                  path="*"
+                  element={<Navigate to="/citizen-dashboard" />}
                 />
               </Routes>
             </DashboardLayout>

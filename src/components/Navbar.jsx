@@ -63,6 +63,14 @@ export default function Navbar() {
                 </button>
               </Link>
 
+
+              {/* Citizen Dashboard */}
+              <Link to="/citizen-dashboard">
+                <button className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200">
+                  Citizen
+                </button>
+              </Link>
+
               {/* Admin Panel */}
               <Link to="/sign-in?role=admin">
                 <button className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200">
@@ -107,6 +115,7 @@ export default function Navbar() {
                   </button>
                 </Link>
 
+
                 <Link
                   to="/report-incident"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -114,6 +123,15 @@ export default function Navbar() {
                   <button className="w-full flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-600 to-orange-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200">
                     <AlertTriangle className="w-5 h-5" />
                     Report Emergency
+                  </button>
+                </Link>
+
+                <Link
+                  to="/citizen-dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <button className="w-full px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold shadow-md hover:shadow-lg transition-all duration-200">
+                    Citizen Dashboard
                   </button>
                 </Link>
 

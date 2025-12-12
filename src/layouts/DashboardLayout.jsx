@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+
 const navItems = {
   admin: [
     { icon: LayoutDashboard, label: "Dashboard", path: "/admin-dashboard" },
@@ -74,6 +75,39 @@ const navItems = {
       path: "/volunteer-dashboard/hospitals",
     },
   ],
+  citizen: [
+    { icon: LayoutDashboard, label: "Dashboard", path: "/citizen-dashboard" },
+    {
+      icon: AlertCircle,
+      label: "Report Incident",
+      path: "/citizen-dashboard/report",
+    },
+    {
+      icon: Building2,
+      label: "Hospitals",
+      path: "/citizen-dashboard/hospitals",
+    },
+    {
+      icon: Heart,
+      label: "Safety Tips",
+      path: "/citizen-dashboard/safety",
+    },
+    {
+      icon: Users,
+      label: "Emergency Contacts",
+      path: "/citizen-dashboard/contacts",
+    },
+    {
+      icon: MessageSquare,
+      label: "My Incidents",
+      path: "/citizen-dashboard/incidents",
+    },
+    {
+      icon: DollarSign,
+      label: "Feedback",
+      path: "/citizen-dashboard/feedback",
+    },
+  ],
 };
 
 const DashboardLayout = ({ children, role = "citizen" }) => {
@@ -131,9 +165,11 @@ const DashboardLayout = ({ children, role = "citizen" }) => {
         </div>
       </aside>
 
+
+
       {/* Main Content - Scrollable */}
       <main className="ml-64 flex-1 overflow-y-auto bg-gray-50 h-screen">
-        <div className="container mx-auto p-6 max-w-7xl">{children}</div>
+        <div className="p-4">{children}</div>
       </main>
     </div>
   );

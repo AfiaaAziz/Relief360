@@ -1,72 +1,35 @@
-# Port Configuration and API Endpoints Fix
+# TODO: Convert Feedback.jsx from TypeScript to JavaScript
 
-## Current Status
+## Information Gathered
+- Current Feedback.jsx uses TypeScript syntax: `handleSubmit = (e: React.FormEvent)`
+- Current file uses absolute paths with `@/` alias
+- Volunteer dashboard uses relative paths with `../../` pattern
+- Citizen dashboard files currently use absolute paths
+- Need to maintain exact same UI/functionality
 
-- Node server runs on port 5000
-- NestJS server runs on port 5001
-- Frontend points to localhost:5000
+## Plan
+1. Remove TypeScript type annotation from `handleSubmit` function parameter
+2. Convert all absolute paths (`@/`) to relative paths (`../../`) based on volunteer dashboard pattern:
+   - `@/layouts/DashboardLayout` → `../../layouts/DashboardLayout`
+   - `@/components/ui/card` → `../../components/ui/card`
+   - `@/components/ui/button` → `../../components/ui/button`
+   - `@/components/ui/input` → `../../components/ui/input`
+   - `@/components/ui/label` → `../../components/ui/label`
+   - `@/components/ui/textarea` → `../../components/ui/textarea`
+   - `@/hooks/use-toast` → `../../hooks/use-toast`
 
-## Required Changes
+## Dependent Files to be edited
+- `relief-360/src/pages/citizen/Feedback.jsx` (main file to convert)
 
-- [ ] Change Node server port to 5001
-- [ ] Change NestJS server port to 5000
-- [ ] Verify frontend API calls work with Nest server
-- [ ] Add missing API endpoints to Nest server if needed
 
-## API Endpoints Analysis
+## Followup steps
+- Verify the converted file maintains identical UI and functionality
+- Test that all imports work correctly with relative paths
 
-### Node Server Endpoints:
 
-- /api/auth/login (POST)
-- /api/auth/admin-login (POST)
-- /api/auth/me (GET)
-- /api/volunteers/me (GET)
-- /api/volunteers (GET)
-- /api/hospitals (GET)
-- /api/contact/send (POST)
-- /api/hospital-registration (POST)
-- /api/volunteer-registration (POST)
-- /api/volunteers/:id (PUT)
-- /api/hospitals/:id (PUT)
-- /api/hospitals/pending (GET)
-- /api/hospitals/:id/status (PUT)
-- /api/hospitals/:id (DELETE)
-- /api/volunteers/:id (DELETE)
-- /api/incidents (GET, POST)
-- /api/incidents/:id (PUT, DELETE)
-- /api/incidents/:id/volunteers (GET)
-- /api/incidents/:id/assign (POST)
-- /api/incidents/:id/assign/:volunteerId (DELETE)
-- /api/incidents/volunteers/available (GET)
-- /api/incidents/volunteers (GET)
+## Status: COMPLETED
 
-### Nest Server Current Endpoints:
-
-- /api/auth/login (POST)
-- /api/auth/admin-login (POST)
-- /api/auth/me (GET)
-- /api/volunteers (GET)
-- /api/volunteers/me (GET, PUT)
-- /api/volunteer-registration (POST)
-- /api/hospitals (GET, POST, PUT, DELETE)
-- /api/incidents (GET, POST, PUT, DELETE)
-- /api/incidents/:id/assign (POST)
-- /api/incidents/:id/assign/:volunteerId (DELETE)
-- /api/incidents/volunteers (GET)
-
-### Missing in Nest:
-
-- /api/contact/send (POST)
-- /api/hospital-registration (POST) - but has /api/hospitals POST
-- /api/hospitals/pending (GET)
-- /api/hospitals/:id/status (PUT)
-- /api/incidents/:id/volunteers (GET)
-- /api/incidents/volunteers/available (GET)
-- /api/volunteers/:id (PUT, DELETE)
-- /api/hospitals/:id (PUT, DELETE) - has them but may need different logic
-
-### Frontend API Calls:
-
-- AuthContext: /api/auth/login, /api/auth/me, /api/auth/signup
-- VolunteerRegister: /api/volunteer-registration
-- HospitalRegistration: /api/hospitals/register
+### Changes Made:
+1. ✅ Removed TypeScript type annotation from `handleSubmit` function parameter
+2. ✅ Converted all absolute paths to relative paths following volunteer dashboard pattern
+3. ✅ Maintained exact same UI and functionality
