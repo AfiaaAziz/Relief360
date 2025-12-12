@@ -1,5 +1,10 @@
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Building2 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -26,7 +31,6 @@ const Hospitals = () => {
 
     fetchHospitals();
   }, []);
-
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -75,7 +79,9 @@ const Hospitals = () => {
               <div className="text-2xl font-bold">
                 {hospitals.reduce((sum, h) => sum + (h.emergency_beds || 0), 0)}
               </div>
-              <p className="text-xs text-muted-foreground">Emergency capacity</p>
+              <p className="text-xs text-muted-foreground">
+                Emergency capacity
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -103,17 +109,23 @@ const Hospitals = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">{hospital.phone}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {hospital.phone}
+                      </p>
                     </div>
                     <div className="flex items-center justify-between">
-                      <Badge variant={availabilityVariant}>{availability}</Badge>
+                      <Badge variant={availabilityVariant}>
+                        {availability}
+                      </Badge>
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-center">
                       <div>
                         <div className="text-2xl font-bold text-blue-600">
                           {hospital.total_beds}
                         </div>
-                        <div className="text-xs text-muted-foreground">Beds</div>
+                        <div className="text-xs text-muted-foreground">
+                          Beds
+                        </div>
                       </div>
                       <div>
                         <div className="text-2xl font-bold text-green-600">
@@ -125,7 +137,9 @@ const Hospitals = () => {
                         <div className="text-2xl font-bold text-red-600">
                           {hospital.emergency_beds}
                         </div>
-                        <div className="text-xs text-muted-foreground">Emergency</div>
+                        <div className="text-xs text-muted-foreground">
+                          Emergency
+                        </div>
                       </div>
                     </div>
                     {hospital.services && hospital.services.length > 0 && (
@@ -151,7 +165,6 @@ const Hospitals = () => {
               );
             })}
           </div>
-
         </div>
       </div>
     </div>

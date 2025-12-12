@@ -165,8 +165,6 @@ const DashboardLayout = ({ children, role = "citizen" }) => {
         </div>
       </aside>
 
-
-
       {/* Main Content - Scrollable */}
       <main className="ml-64 flex-1 overflow-y-auto bg-gray-50 h-screen">
         <div className="p-4">{children}</div>

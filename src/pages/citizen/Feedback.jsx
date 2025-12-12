@@ -1,5 +1,10 @@
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import Input from "../../components/ui/input";
 import Label from "../../components/ui/label";
@@ -16,15 +21,14 @@ const Feedback = () => {
     message: "",
   });
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     toast({
       title: "Feedback Submitted",
       description: "Thank you for your feedback. We'll review it shortly.",
     });
-    
+
     setFormData({ name: "", email: "", message: "" });
   };
 
@@ -33,7 +37,9 @@ const Feedback = () => {
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Feedback</h1>
-          <p className="text-muted-foreground mt-1">Help us improve Relief360 with your suggestions</p>
+          <p className="text-muted-foreground mt-1">
+            Help us improve Relief360 with your suggestions
+          </p>
         </div>
 
         <Card className="border-success">
@@ -42,7 +48,9 @@ const Feedback = () => {
               <MessageSquare className="h-6 w-6 text-success" />
               <div>
                 <CardTitle>We Value Your Feedback</CardTitle>
-                <CardDescription>Your input helps us serve you better</CardDescription>
+                <CardDescription>
+                  Your input helps us serve you better
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -51,7 +59,9 @@ const Feedback = () => {
         <Card>
           <CardHeader>
             <CardTitle>Share Your Thoughts</CardTitle>
-            <CardDescription>Tell us about your experience or suggest improvements</CardDescription>
+            <CardDescription>
+              Tell us about your experience or suggest improvements
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -61,7 +71,9 @@ const Feedback = () => {
                   id="name"
                   placeholder="Your name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -73,7 +85,9 @@ const Feedback = () => {
                   type="email"
                   placeholder="your.email@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -85,7 +99,9 @@ const Feedback = () => {
                   placeholder="Share your feedback, suggestions, or concerns..."
                   rows={8}
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -109,7 +125,9 @@ const Feedback = () => {
               </div>
               <div>
                 <p className="font-semibold">Email Support</p>
-                <p className="text-sm text-muted-foreground">support@relief360.com</p>
+                <p className="text-sm text-muted-foreground">
+                  support@relief360.com
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
@@ -118,11 +136,12 @@ const Feedback = () => {
               </div>
               <div>
                 <p className="font-semibold">Help Center</p>
-                <p className="text-sm text-muted-foreground">Visit our FAQ and documentation</p>
+                <p className="text-sm text-muted-foreground">
+                  Visit our FAQ and documentation
+                </p>
               </div>
             </div>
           </CardContent>
-
         </Card>
       </div>
     </div>

@@ -1,9 +1,27 @@
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
 import { mockIncidents } from "../../utils/mockData";
 import { Eye } from "lucide-react";
 import { useState } from "react";
@@ -14,18 +32,25 @@ const MyIncidents = () => {
 
   const getSeverityColor = (severity) => {
     switch (severity.toLowerCase()) {
-      case "critical": return "destructive";
-      case "high": return "default";
-      case "medium": return "secondary";
-      default: return "outline";
+      case "critical":
+        return "destructive";
+      case "high":
+        return "default";
+      case "medium":
+        return "secondary";
+      default:
+        return "outline";
     }
   };
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
-      case "resolved": return "default";
-      case "in progress": return "secondary";
-      default: return "outline";
+      case "resolved":
+        return "default";
+      case "in progress":
+        return "secondary";
+      default:
+        return "outline";
     }
   };
 
@@ -39,13 +64,17 @@ const MyIncidents = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">My Incidents</h1>
-          <p className="text-muted-foreground mt-1">Track all your reported incidents</p>
+          <p className="text-muted-foreground mt-1">
+            Track all your reported incidents
+          </p>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Incident History</CardTitle>
-            <CardDescription>View details and status of your reported incidents</CardDescription>
+            <CardDescription>
+              View details and status of your reported incidents
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -76,8 +105,8 @@ const MyIncidents = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="sm"
                         onClick={() => handleViewTimeline(incident)}
                       >
@@ -95,7 +124,9 @@ const MyIncidents = () => {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Incident Timeline - {selectedIncident?.id}</DialogTitle>
+              <DialogTitle>
+                Incident Timeline - {selectedIncident?.id}
+              </DialogTitle>
               <DialogDescription>
                 Track the progress of your incident report
               </DialogDescription>
@@ -108,7 +139,9 @@ const MyIncidents = () => {
                 </div>
                 <div className="pb-4">
                   <p className="font-semibold">Incident Reported</p>
-                  <p className="text-sm text-muted-foreground">{selectedIncident?.date} 10:30 AM</p>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedIncident?.date} 10:30 AM
+                  </p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -118,7 +151,9 @@ const MyIncidents = () => {
                 </div>
                 <div className="pb-4">
                   <p className="font-semibold">Volunteer Assigned</p>
-                  <p className="text-sm text-muted-foreground">{selectedIncident?.date} 11:15 AM</p>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedIncident?.date} 11:15 AM
+                  </p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -128,7 +163,9 @@ const MyIncidents = () => {
                 </div>
                 <div className="pb-4">
                   <p className="font-semibold">Response Team Dispatched</p>
-                  <p className="text-sm text-muted-foreground">{selectedIncident?.date} 12:00 PM</p>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedIncident?.date} 12:00 PM
+                  </p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -136,12 +173,13 @@ const MyIncidents = () => {
                   <div className="w-3 h-3 rounded-full bg-muted" />
                 </div>
                 <div>
-                  <p className="font-semibold text-muted-foreground">Awaiting Resolution</p>
+                  <p className="font-semibold text-muted-foreground">
+                    Awaiting Resolution
+                  </p>
                 </div>
               </div>
             </div>
           </DialogContent>
-
         </Dialog>
       </div>
     </div>

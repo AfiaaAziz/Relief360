@@ -1,10 +1,25 @@
-
-
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordion";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../../components/ui/accordion";
 import { safetyTips } from "../../utils/mockData";
-import { Shield, Flame, Droplets, ZapOff, AlertTriangle, Sun } from "lucide-react";
+import {
+  Shield,
+  Flame,
+  Droplets,
+  ZapOff,
+  AlertTriangle,
+  Sun,
+} from "lucide-react";
 
 const iconMap = {
   Earthquake: ZapOff,
@@ -28,7 +43,9 @@ const SafetyTips = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Safety Tips</h1>
-          <p className="text-muted-foreground mt-1">Essential emergency preparedness guidelines</p>
+          <p className="text-muted-foreground mt-1">
+            Essential emergency preparedness guidelines
+          </p>
         </div>
 
         <Card className="border-success">
@@ -37,7 +54,9 @@ const SafetyTips = () => {
               <Shield className="h-6 w-6 text-success" />
               <div>
                 <CardTitle>Emergency Preparedness Guide</CardTitle>
-                <CardDescription>Learn how to stay safe during different types of emergencies</CardDescription>
+                <CardDescription>
+                  Learn how to stay safe during different types of emergencies
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -59,7 +78,9 @@ const SafetyTips = () => {
                         </div>
                         <div className="text-left">
                           <CardTitle>{category}</CardTitle>
-                          <CardDescription>Safety guidelines and precautions</CardDescription>
+                          <CardDescription>
+                            Safety guidelines and precautions
+                          </CardDescription>
                         </div>
                       </div>
                     </AccordionTrigger>
@@ -68,7 +89,10 @@ const SafetyTips = () => {
                     <CardContent className="pt-0">
                       <ul className="space-y-3">
                         {tips.map((tip, index) => (
-                          <li key={index} className="flex gap-3 p-3 bg-muted rounded-lg">
+                          <li
+                            key={index}
+                            className="flex gap-3 p-3 bg-muted rounded-lg"
+                          >
                             <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
                               {index + 1}
                             </div>
@@ -83,7 +107,6 @@ const SafetyTips = () => {
             );
           })}
         </Accordion>
-
       </div>
     </div>
   );

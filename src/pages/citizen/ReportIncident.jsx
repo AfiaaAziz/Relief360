@@ -1,11 +1,21 @@
-
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import Input from "../../components/ui/input";
 import Label from "../../components/ui/label";
 import Textarea from "../../components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import { useState } from "react";
 import { useToast } from "../../hooks/use-toast";
 import { Upload, MapPin } from "lucide-react";
@@ -19,16 +29,17 @@ const ReportIncident = () => {
     location: "",
   });
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    const trackingId = `INC${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
-    
+    const trackingId = `INC${Math.floor(Math.random() * 10000)
+      .toString()
+      .padStart(4, "0")}`;
+
     toast({
       title: "Incident Reported Successfully",
       description: `Your tracking ID is: ${trackingId}. We will respond shortly.`,
     });
-    
+
     setFormData({ type: "", severity: "", description: "", location: "" });
   };
 
@@ -37,19 +48,28 @@ const ReportIncident = () => {
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Report Incident</h1>
-          <p className="text-muted-foreground mt-1">Submit an emergency incident report</p>
+          <p className="text-muted-foreground mt-1">
+            Submit an emergency incident report
+          </p>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Incident Details</CardTitle>
-            <CardDescription>Please provide as much information as possible</CardDescription>
+            <CardDescription>
+              Please provide as much information as possible
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="type">Incident Type *</Label>
-                <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, type: value })
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select incident type" />
                   </SelectTrigger>
@@ -67,7 +87,12 @@ const ReportIncident = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="severity">Severity Level *</Label>
-                <Select value={formData.severity} onValueChange={(value) => setFormData({ ...formData, severity: value })}>
+                <Select
+                  value={formData.severity}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, severity: value })
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select severity" />
                   </SelectTrigger>
@@ -87,7 +112,9 @@ const ReportIncident = () => {
                   placeholder="Describe the incident in detail..."
                   rows={5}
                   value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -99,7 +126,9 @@ const ReportIncident = () => {
                     id="location"
                     placeholder="Enter your location"
                     value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, location: e.target.value })
+                    }
                     required
                   />
                   <Button type="button" variant="outline" size="icon">
@@ -112,9 +141,18 @@ const ReportIncident = () => {
                 <Label htmlFor="media">Upload Photo/Video (Optional)</Label>
                 <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
                   <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
-                  <p className="text-xs text-muted-foreground mt-1">PNG, JPG, MP4 up to 10MB</p>
-                  <Input type="file" className="hidden" id="media" accept="image/*,video/*" />
+                  <p className="text-sm text-muted-foreground">
+                    Click to upload or drag and drop
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    PNG, JPG, MP4 up to 10MB
+                  </p>
+                  <Input
+                    type="file"
+                    className="hidden"
+                    id="media"
+                    accept="image/*,video/*"
+                  />
                 </div>
               </div>
 
@@ -123,7 +161,6 @@ const ReportIncident = () => {
               </Button>
             </form>
           </CardContent>
-
         </Card>
       </div>
     </div>

@@ -1,5 +1,10 @@
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { mockEmergencyContacts } from "../../utils/mockData";
 import { Phone, Ambulance, Shield, Flame, Heart } from "lucide-react";
@@ -22,13 +27,14 @@ const EmergencyContacts = () => {
     return iconMap.Default;
   };
 
-
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Emergency Contacts</h1>
-          <p className="text-muted-foreground mt-1">Quick access to essential emergency hotlines</p>
+          <p className="text-muted-foreground mt-1">
+            Quick access to essential emergency hotlines
+          </p>
         </div>
 
         <Card className="border-emergency">
@@ -36,8 +42,12 @@ const EmergencyContacts = () => {
             <div className="flex items-center gap-2">
               <Phone className="h-6 w-6 text-emergency" />
               <div>
-                <CardTitle className="text-emergency">Emergency Hotlines</CardTitle>
-                <CardDescription>Call these numbers immediately during emergencies</CardDescription>
+                <CardTitle className="text-emergency">
+                  Emergency Hotlines
+                </CardTitle>
+                <CardDescription>
+                  Call these numbers immediately during emergencies
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -81,7 +91,9 @@ const EmergencyContacts = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="p-4 bg-warning/10 border-l-4 border-warning rounded">
-              <p className="font-semibold text-warning">When Calling Emergency Services</p>
+              <p className="font-semibold text-warning">
+                When Calling Emergency Services
+              </p>
               <ul className="mt-2 space-y-1 text-sm list-disc list-inside">
                 <li>Stay calm and speak clearly</li>
                 <li>Provide your exact location</li>
@@ -91,14 +103,16 @@ const EmergencyContacts = () => {
               </ul>
             </div>
             <div className="p-4 bg-info/10 border-l-4 border-info rounded">
-              <p className="font-semibold text-info">Non-Emergency Situations</p>
+              <p className="font-semibold text-info">
+                Non-Emergency Situations
+              </p>
               <p className="mt-2 text-sm">
-                For non-urgent matters, consider visiting your local police station or hospital directly.
-                Reserve emergency hotlines for critical situations only.
+                For non-urgent matters, consider visiting your local police
+                station or hospital directly. Reserve emergency hotlines for
+                critical situations only.
               </p>
             </div>
           </CardContent>
-
         </Card>
       </div>
     </div>
