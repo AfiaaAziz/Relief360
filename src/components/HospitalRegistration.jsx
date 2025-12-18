@@ -94,9 +94,11 @@ const HospitalRegistration = () => {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Failed to register hospital");
+        const errorMessage = err.message || err.error || `Failed to register hospital (${res.status})`;
+        throw new Error(errorMessage);
       }
 
+      const result = await res.json();
       setIsSubmitting(false);
       alert(
         "Hospital Registration Successful!\nYour facility has been added to our emergency response network."
@@ -119,6 +121,8 @@ const HospitalRegistration = () => {
         contactPhone: "",
         contactEmail: "",
         additionalInfo: "",
+        password: "",
+        confirmPassword: "",
         terms: false,
         dataSharing: false,
       });
@@ -126,9 +130,8 @@ const HospitalRegistration = () => {
     } catch (error) {
       setIsSubmitting(false);
       console.error("Hospital registration submit error:", error);
-      alert(
-        "Sorry, we couldn't register your hospital. Please try again later."
-      );
+      const errorMessage = error.message || "Sorry, we couldn't register your hospital. Please try again later.";
+      alert(errorMessage);
     }
   };
 

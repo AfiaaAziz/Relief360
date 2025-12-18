@@ -10,24 +10,38 @@ import {
 
 const Card = ({ children, className = "" }) => (
   <div
-    className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}
+    className={`rounded-2xl border-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-sm ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.2)'
+    }}
   >
     {children}
   </div>
 );
 
 const CardHeader = ({ children, className = "" }) => (
-  <div className={`p-6 border-b border-gray-100 ${className}`}>{children}</div>
+  <div 
+    className={`p-6 border-b-2 ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.3)',
+      paddingTop: '1.75rem',
+      paddingBottom: '1.75rem'
+    }}
+  >
+    {children}
+  </div>
 );
 
 const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+  <h3 className={`text-xl font-black text-white ${className}`} style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', lineHeight: '1.3', paddingBottom: '0.25rem' }}>
     {children}
   </h3>
 );
 
 const CardDescription = ({ children, className = "" }) => (
-  <p className={`text-sm text-gray-500 mt-1 ${className}`}>{children}</p>
+  <p className={`text-sm text-white/90 mt-2 font-semibold ${className}`} style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.2)' }}>{children}</p>
 );
 
 const CardContent = ({ children, className = "" }) => (
@@ -36,13 +50,26 @@ const CardContent = ({ children, className = "" }) => (
 
 const Badge = ({ children, variant = "default" }) => {
   const styles = {
-    default: "bg-green-100 text-green-800",
-    secondary: "bg-gray-100 text-gray-800",
-    destructive: "bg-red-100 text-red-800",
+    default: {
+      background: 'linear-gradient(135deg, #6aa84f 0%, #38761d 100%)',
+      color: '#ffffff',
+      borderColor: '#38761d'
+    },
+    secondary: {
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      borderColor: '#16537e'
+    },
+    destructive: {
+      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+      color: '#ffffff',
+      borderColor: '#990000'
+    },
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]}`}
+      className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-bold shadow-lg border-2"
+      style={styles[variant]}
     >
       {children}
     </span>
@@ -57,20 +84,36 @@ const Button = ({
   ...props
 }) => {
   const base =
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors";
+    "inline-flex items-center justify-center font-bold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl";
   const sizes = {
-    default: "h-10 px-4 py-2",
-    sm: "h-9 rounded-md px-3 text-sm",
+    default: "h-12 px-6 py-3 rounded-xl text-base",
+    sm: "h-10 rounded-lg px-4 text-sm",
   };
   const variants = {
-    default: "bg-blue-600 text-white hover:bg-blue-700",
-    destructive: "bg-red-600 text-white hover:bg-red-700",
-    outline: "border border-gray-300 bg-transparent hover:bg-gray-50",
-    ghost: "hover:bg-gray-100",
+    default: {
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      boxShadow: '0 4px 15px rgba(22, 83, 126, 0.4)'
+    },
+    destructive: {
+      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+      color: '#ffffff',
+      boxShadow: '0 4px 15px rgba(255, 53, 53, 0.4)'
+    },
+    outline: {
+      border: '2px solid #16537e',
+      background: 'transparent',
+      color: '#16537e',
+    },
+    ghost: {
+      background: 'transparent',
+      color: '#16537e',
+    },
   };
   return (
     <button
-      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
+      className={`${base} ${sizes[size]} ${className}`}
+      style={variants[variant]}
       {...props}
     >
       {children}
@@ -108,12 +151,19 @@ const TableHeader = ({ children }) => <thead>{children}</thead>;
 const TableBody = ({ children }) => <tbody>{children}</tbody>;
 const TableRow = ({ children }) => <tr className="border-b">{children}</tr>;
 const TableHead = ({ children }) => (
-  <th className="h-12 px-4 text-left align-middle font-medium text-gray-500">
+  <th 
+    className="h-14 px-4 text-left align-middle font-bold text-base"
+    style={{
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      textShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+    }}
+  >
     {children}
   </th>
 );
 const TableCell = ({ children, className = "" }) => (
-  <td className={`p-4 align-middle ${className}`}>{children}</td>
+  <td className={`p-4 align-middle text-gray-800 font-medium ${className}`}>{children}</td>
 );
 
 const Label = ({ children, htmlFor, className = "" }) => (
@@ -225,23 +275,49 @@ const ManageHospitals = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [hospitals, setHospitals] = useState([]);
+  const [pendingHospitals, setPendingHospitals] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchHospitals = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/hospitals");
+      if (response.ok) {
+        const data = await response.json();
+        setHospitals(data.filter((h) => h.status !== "pending"));
+      } else {
+        console.error("Failed to fetch hospitals");
+      }
+    } catch (error) {
+      console.error("Error fetching hospitals:", error);
+    }
+  };
+
+  const fetchPendingHospitals = async () => {
+    try {
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+      const response = await fetch("http://localhost:5000/api/hospitals/pending", {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPendingHospitals(data);
+      } else {
+        console.error("Failed to fetch pending hospitals");
+      }
+    } catch (error) {
+      console.error("Error fetching pending hospitals:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchHospitals = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/hospitals");
-        if (response.ok) {
-          const data = await response.json();
-          setHospitals(data);
-        } else {
-          console.error("Failed to fetch hospitals");
-        }
-      } catch (error) {
-        console.error("Error fetching hospitals:", error);
-      }
+    const loadData = async () => {
+      setLoading(true);
+      await Promise.all([fetchHospitals(), fetchPendingHospitals()]);
+      setLoading(false);
     };
-
-    fetchHospitals();
+    loadData();
   }, []);
 
   const filteredHospitals = hospitals.filter(
@@ -250,19 +326,81 @@ const ManageHospitals = () => {
       hospital.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleApprove = (hospitalId) => {
-    toast({
-      title: "Hospital Approved",
-      description: "The hospital has been approved and added to the network",
-    });
+  const handleApprove = async (hospitalId) => {
+    try {
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+      const response = await fetch(
+        `http://localhost:5000/api/hospitals/${hospitalId}/status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ status: "approved" }),
+        }
+      );
+
+      if (response.ok) {
+        setPendingHospitals((prev) =>
+          prev.filter((h) => h.id !== hospitalId)
+        );
+        await fetchHospitals(); // Refresh approved hospitals
+        toast({
+          title: "Hospital Approved",
+          description: "The hospital has been approved and added to the network",
+        });
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to approve hospital");
+      }
+    } catch (error) {
+      console.error("Error approving hospital:", error);
+      toast({
+        title: "Approval Failed",
+        description: error.message || "Failed to approve hospital",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleReject = (hospitalId) => {
-    toast({
-      title: "Hospital Rejected",
-      description: "The hospital registration has been rejected",
-      variant: "destructive",
-    });
+  const handleReject = async (hospitalId) => {
+    if (!window.confirm("Are you sure you want to reject this hospital registration? This action cannot be undone.")) {
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+      const response = await fetch(
+        `http://localhost:5000/api/hospitals/${hospitalId}`,
+        {
+          method: "DELETE",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        }
+      );
+
+      if (response.ok) {
+        setPendingHospitals((prev) =>
+          prev.filter((h) => h.id !== hospitalId)
+        );
+        toast({
+          title: "Hospital Rejected",
+          description: "The hospital registration has been permanently removed",
+          variant: "destructive",
+        });
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to reject hospital");
+      }
+    } catch (error) {
+      console.error("Error rejecting hospital:", error);
+      toast({
+        title: "Rejection Failed",
+        description: error.message || "Failed to reject hospital",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDelete = async (hospitalId) => {
@@ -271,10 +409,14 @@ const ManageHospitals = () => {
     }
 
     try {
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
         `http://localhost:5000/api/hospitals/${hospitalId}`,
         {
           method: "DELETE",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
         }
       );
 
@@ -306,12 +448,14 @@ const ManageHospitals = () => {
 
   const handleUpdateAvailability = async (hospitalId, updatedData) => {
     try {
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
         `http://localhost:5000/api/hospitals/${hospitalId}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify(updatedData),
         }
@@ -319,36 +463,48 @@ const ManageHospitals = () => {
 
       if (response.ok) {
         // Refresh the hospitals list
-        const fetchResponse = await fetch(
-          "http://localhost:5000/api/hospitals"
-        );
-        if (fetchResponse.ok) {
-          const data = await fetchResponse.json();
-          setHospitals(data);
-        }
-
+        await fetchHospitals();
         toast({
           title: "Hospital Updated",
           description: "Hospital information has been updated successfully",
         });
       } else {
-        throw new Error("Failed to update hospital");
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || "Failed to update hospital");
       }
     } catch (error) {
       console.error("Error updating hospital:", error);
       toast({
         title: "Update Failed",
-        description: "Failed to update hospital information",
+        description: error.message || "Failed to update hospital information",
         variant: "destructive",
       });
     }
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div 
+      className="p-6 space-y-6 relative overflow-hidden min-h-screen"
+      style={{
+        background: 'radial-gradient(circle at 20% 50%, rgba(106, 168, 79, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(22, 83, 126, 0.15) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)'
+      }}
+    >
       <div>
-        <h1 className="text-3xl font-bold">Manage Hospitals</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 
+          className="text-5xl md:text-6xl font-black mb-3"
+          style={{
+            background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 50%, #38761d 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            textShadow: '0 4px 20px rgba(22, 83, 126, 0.2)',
+            lineHeight: '1.2',
+            paddingBottom: '0.5rem'
+          }}
+        >
+          Manage Hospitals
+        </h1>
+        <p className="text-xl md:text-2xl font-bold mt-3" style={{ color: '#16537e' }}>
           Manage hospital registrations and availability
         </p>
       </div>
@@ -387,7 +543,7 @@ const ManageHospitals = () => {
             <Building2 className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3</div>
+            <div className="text-2xl font-bold">{loading ? '...' : pendingHospitals.length}</div>
             <p className="text-xs text-gray-500">Awaiting review</p>
           </CardContent>
         </Card>
@@ -534,7 +690,7 @@ const ManageHospitals = () => {
                               />
                             </div>
                             <Button
-                              onClick={() => {
+                              onClick={async () => {
                                 const beds =
                                   document.getElementById("beds").value;
                                 const icuBeds =
@@ -547,13 +703,20 @@ const ManageHospitals = () => {
                                   document.getElementById("doctors").value;
                                 const ambulances =
                                   document.getElementById("ambulances").value;
-                                handleUpdateAvailability(hospital.id, {
-                                  total_beds: parseInt(beds) || 0,
-                                  icu_beds: parseInt(icuBeds) || 0,
-                                  emergency_beds: parseInt(emergencyBeds) || 0,
-                                  staff_count: parseInt(doctors) || 0,
+                                await handleUpdateAvailability(hospital.id, {
+                                  totalBeds: parseInt(beds) || 0,
+                                  icuBeds: parseInt(icuBeds) || 0,
+                                  emergencyBeds: parseInt(emergencyBeds) || 0,
+                                  staffCount: parseInt(doctors) || 0,
                                   ambulances: parseInt(ambulances) || 0,
                                 });
+                                // Close dialog after update
+                                const dialog = document.querySelector(
+                                  ".fixed.inset-0.bg-black\\/50"
+                                );
+                                if (dialog) {
+                                  dialog.click();
+                                }
                               }}
                               className="w-full"
                             >
@@ -587,35 +750,54 @@ const ManageHospitals = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between p-4 border rounded-lg"
-              >
-                <div>
-                  <p className="font-semibold">
-                    New Hospital Registration #{i}
-                  </p>
-                  <p className="text-sm text-gray-500">Submitted 2 days ago</p>
+          {loading ? (
+            <div className="text-center py-4 text-gray-500">
+              Loading pending approvals...
+            </div>
+          ) : pendingHospitals.length === 0 ? (
+            <div className="text-center py-4 text-gray-500">
+              No pending hospital registrations
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {pendingHospitals.map((hospital) => (
+                <div
+                  key={hospital.id}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
+                  <div className="flex-1">
+                    <p className="font-semibold">
+                      {hospital.hospital_name}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {hospital.address} • {hospital.email}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Submitted:{" "}
+                      {new Date(hospital.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 ml-4">
+                    <Button
+                      size="sm"
+                      onClick={() => handleApprove(hospital.id)}
+                    >
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Approve
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleReject(hospital.id)}
+                    >
+                      <XCircle className="h-4 w-4 mr-1" />
+                      Remove
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" onClick={() => handleApprove(i)}>
-                    <CheckCircle className="h-4 w-4 mr-1" />
-                    Approve
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleReject(i)}
-                  >
-                    <XCircle className="h-4 w-4 mr-1" />
-                    Reject
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

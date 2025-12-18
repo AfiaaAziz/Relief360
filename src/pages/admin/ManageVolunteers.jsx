@@ -3,35 +3,49 @@
 import React, { useState, useEffect } from "react";
 import {
   Search,
-  UserPlus,
   Edit,
   Trash2,
   Heart,
   UserCheck,
   X,
+  Plus,
 } from "lucide-react";
 
-// Create simple UI components
+// Create simple UI components with new color palette
 const Card = ({ children, className = "" }) => (
   <div
-    className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}
+    className={`rounded-2xl border-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-sm ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.2)'
+    }}
   >
     {children}
   </div>
 );
 
 const CardHeader = ({ children, className = "" }) => (
-  <div className={`p-6 border-b border-gray-100 ${className}`}>{children}</div>
+  <div 
+    className={`p-6 border-b-2 ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.3)',
+      paddingTop: '1.75rem',
+      paddingBottom: '1.75rem'
+    }}
+  >
+    {children}
+  </div>
 );
 
 const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+  <h3 className={`text-xl font-black text-white ${className}`} style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', lineHeight: '1.3', paddingBottom: '0.25rem' }}>
     {children}
   </h3>
 );
 
 const CardDescription = ({ children, className = "" }) => (
-  <p className={`text-sm text-gray-500 mt-1 ${className}`}>{children}</p>
+  <p className={`text-sm text-white/90 mt-2 font-semibold ${className}`} style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.2)' }}>{children}</p>
 );
 
 const CardContent = ({ children, className = "" }) => (
@@ -40,14 +54,31 @@ const CardContent = ({ children, className = "" }) => (
 
 const Badge = ({ children, variant = "default" }) => {
   const styles = {
-    default: "bg-green-100 text-green-800",
-    secondary: "bg-gray-100 text-gray-800",
-    destructive: "bg-red-100 text-red-800",
-    outline: "border border-gray-300 text-gray-700",
+    default: {
+      background: 'linear-gradient(135deg, #6aa84f 0%, #38761d 100%)',
+      color: '#ffffff',
+      borderColor: '#38761d'
+    },
+    secondary: {
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      borderColor: '#16537e'
+    },
+    destructive: {
+      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+      color: '#ffffff',
+      borderColor: '#990000'
+    },
+    outline: {
+      border: '2px solid #16537e',
+      background: 'transparent',
+      color: '#16537e',
+    },
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]}`}
+      className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-bold shadow-lg border-2"
+      style={styles[variant]}
     >
       {children}
     </span>
@@ -62,20 +93,36 @@ const Button = ({
   ...props
 }) => {
   const base =
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors";
+    "inline-flex items-center justify-center font-bold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl";
   const sizes = {
-    default: "h-10 px-4 py-2",
-    sm: "h-9 rounded-md px-3 text-sm",
+    default: "h-12 px-6 py-3 rounded-xl text-base",
+    sm: "h-10 rounded-lg px-4 text-sm",
   };
   const variants = {
-    default: "bg-blue-600 text-white hover:bg-blue-700",
-    destructive: "bg-red-600 text-white hover:bg-red-700",
-    outline: "border border-gray-300 bg-transparent hover:bg-gray-50",
-    ghost: "hover:bg-gray-100",
+    default: {
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      boxShadow: '0 4px 15px rgba(22, 83, 126, 0.4)'
+    },
+    destructive: {
+      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+      color: '#ffffff',
+      boxShadow: '0 4px 15px rgba(255, 53, 53, 0.4)'
+    },
+    outline: {
+      border: '2px solid #16537e',
+      background: 'transparent',
+      color: '#16537e',
+    },
+    ghost: {
+      background: 'transparent',
+      color: '#16537e',
+    },
   };
   return (
     <button
-      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
+      className={`${base} ${sizes[size]} ${className}`}
+      style={variants[variant]}
       {...props}
     >
       {children}
@@ -103,12 +150,19 @@ const TableHeader = ({ children }) => <thead>{children}</thead>;
 const TableBody = ({ children }) => <tbody>{children}</tbody>;
 const TableRow = ({ children }) => <tr className="border-b">{children}</tr>;
 const TableHead = ({ children }) => (
-  <th className="h-12 px-4 text-left align-middle font-medium text-gray-500">
+  <th 
+    className="h-14 px-4 text-left align-middle font-bold text-base"
+    style={{
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      textShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+    }}
+  >
     {children}
   </th>
 );
 const TableCell = ({ children, className = "" }) => (
-  <td className={`p-4 align-middle ${className}`}>{children}</td>
+  <td className={`p-4 align-middle text-gray-800 font-medium ${className}`}>{children}</td>
 );
 
 // Simple Select Component
@@ -218,98 +272,7 @@ SelectItem.displayName = "SelectItem";
 const SelectValue = ({ placeholder }) => null; // Just a data holder
 SelectValue.displayName = "SelectValue";
 
-// Dialog Component
-const Dialog = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const childrenArray = React.Children.toArray(children);
-  const trigger = childrenArray.find(
-    (child) => child.type.displayName === "DialogTrigger"
-  );
-  const content = childrenArray.find(
-    (child) => child.type.displayName === "DialogContent"
-  );
-
-  return (
-    <>
-      {trigger &&
-        React.cloneElement(trigger, { onClick: () => setIsOpen(true) })}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-          onClick={() => setIsOpen(false)}
-        >
-          {content &&
-            React.cloneElement(content, { onClose: () => setIsOpen(false) })}
-        </div>
-      )}
-    </>
-  );
-};
-
-const DialogTrigger = ({ children, onClick, ...props }) => (
-  <div onClick={onClick} {...props}>
-    {children}
-  </div>
-);
-DialogTrigger.displayName = "DialogTrigger";
-
-// 1. FIXED DIALOG CONTENT (Uses X icon)
-const DialogContent = ({ children, onClose, className = "" }) => {
-  const childrenArray = React.Children.toArray(children);
-  const header = childrenArray.find(
-    (child) => child.type.displayName === "DialogHeader"
-  );
-  const otherChildren = childrenArray.filter(
-    (child) => child.type.displayName !== "DialogHeader"
-  );
-
-  return (
-    <div
-      className={`bg-white rounded-lg shadow-lg w-full max-w-lg overflow-visible relative flex flex-col ${className}`}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors"
-      >
-        {/* Using the proper X icon here */}
-        <X className="h-5 w-5" />
-      </button>
-      {header}
-      <div className="p-6">{otherChildren}</div>
-    </div>
-  );
-};
-DialogContent.displayName = "DialogContent";
-
-const DialogHeader = ({ children, className = "" }) => {
-  const childrenArray = React.Children.toArray(children);
-  const title = childrenArray.find(
-    (child) => child.type.displayName === "DialogTitle"
-  );
-  const description = childrenArray.find(
-    (child) => child.type.displayName === "DialogDescription"
-  );
-
-  return (
-    <div className={`p-6 border-b border-gray-100 ${className}`}>
-      {title}
-      {description}
-    </div>
-  );
-};
-DialogHeader.displayName = "DialogHeader";
-
-const DialogTitle = ({ children, className = "" }) => (
-  <h2 className={`text-xl font-semibold ${className}`}>{children}</h2>
-);
-DialogTitle.displayName = "DialogTitle";
-
-const DialogDescription = ({ children, className = "" }) => (
-  <p className={`text-sm text-gray-500 mt-1 ${className}`}>{children}</p>
-);
-DialogDescription.displayName = "DialogDescription";
+// Dialog components removed - not used in this component
 
 // Mock data removed - data now comes from database
 
@@ -334,6 +297,19 @@ const ManageVolunteers = () => {
   const [assigningVolunteer, setAssigningVolunteer] = useState(null);
   const [selectedIncident, setSelectedIncident] = useState("");
   const [assignmentNotes, setAssignmentNotes] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [newVolunteer, setNewVolunteer] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    age: "",
+    availability: "Available",
+    address: "",
+    experience: "",
+    motivation: "",
+    skills: [],
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -342,9 +318,9 @@ const ManageVolunteers = () => {
         const volunteersResponse = await fetch(
           "http://localhost:5000/api/volunteers"
         );
+        let volunteersData = [];
         if (volunteersResponse.ok) {
-          const volunteersData = await volunteersResponse.json();
-          setVolunteers(volunteersData);
+          volunteersData = await volunteersResponse.json();
         } else {
           console.error("Failed to fetch volunteers");
         }
@@ -353,12 +329,54 @@ const ManageVolunteers = () => {
         const incidentsResponse = await fetch(
           "http://localhost:5000/api/incidents"
         );
+        let incidentsData = [];
         if (incidentsResponse.ok) {
-          const incidentsData = await incidentsResponse.json();
-          setIncidents(incidentsData);
+          incidentsData = await incidentsResponse.json();
         } else {
           console.error("Failed to fetch incidents");
         }
+
+        // Fetch assignments to map volunteers to incidents
+        const assignmentsResponse = await fetch(
+          "http://localhost:5000/api/incidents/assignments/debug"
+        );
+        let assignmentsData = [];
+        if (assignmentsResponse.ok) {
+          try {
+            assignmentsData = await assignmentsResponse.json();
+          } catch (e) {
+            console.warn('Invalid or empty JSON from /api/incidents/assignments, treating as empty', e);
+            assignmentsData = [];
+          }
+        }
+
+        // Map assignments to volunteers
+        const volunteersWithAssignments = volunteersData.map((volunteer) => {
+          const assignment = assignmentsData.find(
+            (a) => Number(a.volunteer_id) === Number(volunteer.id)
+          );
+          if (assignment) {
+            const incident = incidentsData.find(
+              (i) => Number(i.id) === Number(assignment.incident_id)
+            );
+            return {
+              ...volunteer,
+              assigned: true,
+              assignedToIncidentId: assignment.incident_id,
+              assignedToIncidentTitle: incident ? incident.title : `Incident #${assignment.incident_id}`,
+            };
+          }
+          return {
+            ...volunteer,
+            skills: volunteer.skills || [],
+            assigned: volunteer.assigned || false,
+            assignedToIncidentId: null,
+            assignedToIncidentTitle: null,
+          };
+        });
+
+        setVolunteers(volunteersWithAssignments);
+        setIncidents(incidentsData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -367,18 +385,22 @@ const ManageVolunteers = () => {
     };
 
     fetchData();
+    // Refresh every 30 seconds for real-time updates
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
   }, []);
 
-  const filteredVolunteers = volunteers.filter(
-    (volunteer) =>
-      `${volunteer.first_name} ${volunteer.last_name}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      volunteer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      volunteer.skills.some((skill) =>
-        skill.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-  );
+  const filteredVolunteers = volunteers.filter((volunteer) => {
+    const fullName = `${volunteer.first_name} ${volunteer.last_name}`.toLowerCase();
+    const email = (volunteer.email || "").toLowerCase();
+    const skills = (volunteer.skills || []).map((s) => (s || "").toLowerCase());
+    const term = searchTerm.toLowerCase();
+    return (
+      fullName.includes(term) ||
+      email.includes(term) ||
+      skills.some((skill) => skill.includes(term))
+    );
+  });
 
   const handleAssign = (volunteer) => {
     setAssigningVolunteer(volunteer);
@@ -390,28 +412,85 @@ const ManageVolunteers = () => {
   const handleAssignSubmit = async () => {
     if (!assigningVolunteer || !selectedIncident) return;
 
+    // Validate IDs are numbers
+    const incidentId = Number(selectedIncident);
+    const volunteerId = Number(assigningVolunteer.id);
+    
+    if (isNaN(incidentId) || isNaN(volunteerId)) {
+      toast({
+        title: "Assignment Failed",
+        description: "Invalid incident or volunteer ID",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
-        `http://localhost:5000/api/incidents/${selectedIncident}/assign`,
+        `http://localhost:5000/api/incidents/${incidentId}/assign`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify({
-            volunteer_id: assigningVolunteer.id,
+            volunteer_id: volunteerId,
             notes: assignmentNotes,
           }),
         }
       );
 
       if (response.ok) {
-        // Update volunteer status to assigned
-        setVolunteers(
-          volunteers.map((v) =>
-            v.id === assigningVolunteer.id ? { ...v, assigned: true } : v
-          )
-        );
+        // Refresh data to get updated assignments
+        const fetchData = async () => {
+          const volunteersRes = await fetch("http://localhost:5000/api/volunteers");
+          const incidentsRes = await fetch("http://localhost:5000/api/incidents");
+          const assignmentsRes = await fetch("http://localhost:5000/api/incidents/assignments/debug");
+          
+          if (volunteersRes.ok && incidentsRes.ok && assignmentsRes.ok) {
+            const volunteersData = await volunteersRes.json();
+            const incidentsData = await incidentsRes.json();
+            let assignmentsData = [];
+            try {
+              assignmentsData = await assignmentsRes.json();
+            } catch (e) {
+              console.warn('Invalid JSON from assignments refresh, using empty array', e);
+              assignmentsData = [];
+            }
+            
+            const volunteersWithAssignments = volunteersData.map((volunteer) => {
+              const assignment = assignmentsData.find(
+                (a) => Number(a.volunteer_id) === Number(volunteer.id)
+              );
+              if (assignment) {
+                const incident = incidentsData.find(
+                  (i) => Number(i.id) === Number(assignment.incident_id)
+                );
+                return {
+                  ...volunteer,
+                  skills: volunteer.skills || [],
+                  assigned: true,
+                  assignedToIncidentId: assignment.incident_id,
+                  assignedToIncidentTitle: incident ? incident.title : `Incident #${assignment.incident_id}`,
+                };
+              }
+              return {
+                  ...volunteer,
+                  skills: volunteer.skills || [],
+                  assigned: volunteer.assigned || false,
+                  assignedToIncidentId: null,
+                  assignedToIncidentTitle: null,
+                };
+            });
+            
+            setVolunteers(volunteersWithAssignments);
+            setIncidents(incidentsData);
+          }
+        };
+        
+        await fetchData();
         setIsAssignOpen(false);
         setAssigningVolunteer(null);
         toast({
@@ -419,10 +498,10 @@ const ManageVolunteers = () => {
           description: `Volunteer has been successfully assigned to the incident`,
         });
       } else {
-        const error = await response.json();
+        const errorData = await response.json().catch(() => ({ message: "Unauthorized" }));
         toast({
           title: "Assignment Failed",
-          description: error.message || "Failed to assign volunteer",
+          description: errorData.message || "Failed to assign volunteer",
           variant: "destructive",
         });
       }
@@ -441,10 +520,21 @@ const ManageVolunteers = () => {
       return;
     }
 
+    // Validate volunteer ID
+    const validVolunteerId = Number(volunteerId);
+    if (isNaN(validVolunteerId)) {
+      toast({
+        title: "Unassignment Failed",
+        description: "Invalid volunteer ID",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       // First, get the assignment to find the incident ID
       const assignmentsResponse = await fetch(
-        `http://localhost:5000/api/incidents/assignments`
+        `http://localhost:5000/api/incidents/assignments/debug`
       );
       if (!assignmentsResponse.ok) {
         throw new Error("Failed to fetch assignments");
@@ -452,7 +542,7 @@ const ManageVolunteers = () => {
 
       const assignments = await assignmentsResponse.json();
       const assignment = assignments.find(
-        (a) => a.volunteer_id === volunteerId
+        (a) => Number(a.volunteer_id) === validVolunteerId
       );
 
       if (!assignment) {
@@ -464,20 +554,76 @@ const ManageVolunteers = () => {
         return;
       }
 
+      const incidentId = Number(assignment.incident_id);
+      if (isNaN(incidentId)) {
+        toast({
+          title: "Unassignment Failed",
+          description: "Invalid incident ID in assignment",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
-        `http://localhost:5000/api/incidents/${assignment.incident_id}/assign/${volunteerId}`,
+        `http://localhost:5000/api/incidents/${incidentId}/assign/${validVolunteerId}`,
         {
           method: "DELETE",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
         }
       );
 
       if (response.ok) {
-        // Update volunteer status to unassigned
-        setVolunteers(
-          volunteers.map((v) =>
-            v.id === volunteerId ? { ...v, assigned: false } : v
-          )
-        );
+        // Refresh data to get updated assignments
+        const fetchData = async () => {
+          const volunteersRes = await fetch("http://localhost:5000/api/volunteers");
+          const incidentsRes = await fetch("http://localhost:5000/api/incidents");
+          const assignmentsRes = await fetch("http://localhost:5000/api/incidents/assignments");
+          
+          if (volunteersRes.ok && incidentsRes.ok && assignmentsRes.ok) {
+            const volunteersData = await volunteersRes.json();
+            const incidentsData = await incidentsRes.json();
+            let assignmentsData = [];
+            try {
+              assignmentsData = await assignmentsRes.json();
+            } catch (e) {
+              console.warn('Invalid JSON from assignments refresh, using empty array', e);
+              assignmentsData = [];
+            }
+            
+            const volunteersWithAssignments = volunteersData.map((volunteer) => {
+              const assignment = assignmentsData.find(
+                (a) => Number(a.volunteer_id) === Number(volunteer.id)
+              );
+              if (assignment) {
+                const incident = incidentsData.find(
+                  (i) => Number(i.id) === Number(assignment.incident_id)
+                );
+                return {
+                  ...volunteer,
+                  skills: volunteer.skills || [],
+                  assigned: true,
+                  assignedToIncidentId: assignment.incident_id,
+                  assignedToIncidentTitle: incident ? incident.title : `Incident #${assignment.incident_id}`,
+                };
+              }
+              return {
+                  ...volunteer,
+                  skills: volunteer.skills || [],
+                  assigned: false,
+                  assignedToIncidentId: null,
+                  assignedToIncidentTitle: null,
+                };
+            });
+            
+            setVolunteers(volunteersWithAssignments);
+            setIncidents(incidentsData);
+          }
+        };
+        
+        await fetchData();
         toast({
           title: "Volunteer Unassigned",
           description:
@@ -506,16 +652,31 @@ const ManageVolunteers = () => {
       return;
     }
 
+    // Validate volunteer ID
+    const validVolunteerId = Number(volunteerId);
+    if (isNaN(validVolunteerId)) {
+      toast({
+        title: "Delete Failed",
+        description: "Invalid volunteer ID",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
-        `http://localhost:5000/api/volunteers/${volunteerId}`,
+        `http://localhost:5000/api/volunteers/${validVolunteerId}`,
         {
           method: "DELETE",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
         }
       );
 
       if (response.ok) {
-        setVolunteers(volunteers.filter((v) => v.id !== volunteerId));
+        setVolunteers(volunteers.filter((v) => Number(v.id) !== validVolunteerId));
         toast({
           title: "Volunteer Deleted",
           description:
@@ -548,22 +709,53 @@ const ManageVolunteers = () => {
   const handleUpdate = async () => {
     if (!editingVolunteer) return;
 
+    // Validate volunteer ID
+    const validVolunteerId = Number(editingVolunteer.id);
+    if (isNaN(validVolunteerId)) {
+      toast({
+        title: "Update Failed",
+        description: "Invalid volunteer ID",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+      
+      // Only send allowed fields for update (exclude id, password_hash, assigned, created_at)
+      const updateData = {
+        first_name: editingVolunteer.first_name,
+        last_name: editingVolunteer.last_name,
+        email: editingVolunteer.email,
+        phone: editingVolunteer.phone || "",
+        age: String(editingVolunteer.age || ""), // Ensure age is a string
+        availability: editingVolunteer.availability || "Available",
+        address: editingVolunteer.address || "",
+        experience: editingVolunteer.experience || "",
+        motivation: editingVolunteer.motivation || "",
+        selected_skills: editingVolunteer.skills || [], // Map skills to selected_skills
+        terms_accepted: editingVolunteer.terms_accepted || false,
+        background_check: editingVolunteer.background_check || false,
+      };
+
       const response = await fetch(
-        `http://localhost:5000/api/volunteers/${editingVolunteer.id}`,
+        `http://localhost:5000/api/volunteers/${validVolunteerId}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-          body: JSON.stringify(editingVolunteer),
+          body: JSON.stringify(updateData),
         }
       );
 
       if (response.ok) {
+        const updated = await response.json();
         setVolunteers(
           volunteers.map((v) =>
-            v.id === editingVolunteer.id ? editingVolunteer : v
+            Number(v.id) === validVolunteerId ? updated : v
           )
         );
         setIsEditOpen(false);
@@ -574,10 +766,10 @@ const ManageVolunteers = () => {
             "The volunteer information has been successfully updated",
         });
       } else {
-        const error = await response.json();
+        const errorData = await response.json().catch(() => ({ message: "Internal server error" }));
         toast({
           title: "Update Failed",
-          description: error.message || "Failed to update volunteer",
+          description: errorData.message || "Failed to update volunteer",
           variant: "destructive",
         });
       }
@@ -585,19 +777,106 @@ const ManageVolunteers = () => {
       console.error("Error updating volunteer:", error);
       toast({
         title: "Update Failed",
-        description: "An error occurred while updating the volunteer",
+        description: error.message || "An error occurred while updating the volunteer",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreate = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/volunteers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: newVolunteer.first_name,
+          last_name: newVolunteer.last_name,
+          email: newVolunteer.email,
+          phone: newVolunteer.phone || "",
+          age: newVolunteer.age || "",
+          availability: newVolunteer.availability || "Available",
+          address: newVolunteer.address || "",
+          experience: newVolunteer.experience || "",
+          motivation: newVolunteer.motivation || "",
+          selected_skills: newVolunteer.skills || [],
+          password: "defaultPassword123", // Temporary password, should be changed
+        }),
+      });
+
+      if (response.ok) {
+        const created = await response.json();
+        setVolunteers([...volunteers, created]);
+        setIsCreateOpen(false);
+        setNewVolunteer({
+          first_name: "",
+          last_name: "",
+          email: "",
+          phone: "",
+          age: "",
+          availability: "Available",
+          address: "",
+          experience: "",
+          motivation: "",
+          skills: [],
+        });
+        toast({
+          title: "Volunteer Created",
+          description: "New volunteer has been created successfully",
+        });
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Create Failed",
+          description: error.message || "Failed to create volunteer",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating volunteer:", error);
+      toast({
+        title: "Create Failed",
+        description: "An error occurred while creating the volunteer",
         variant: "destructive",
       });
     }
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Manage Volunteers</h1>
-        <p className="text-gray-500 mt-1">
-          View and manage registered volunteers
-        </p>
+    <div 
+      className="p-6 space-y-6 relative overflow-hidden min-h-screen"
+      style={{
+        background: 'radial-gradient(circle at 20% 50%, rgba(106, 168, 79, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(22, 83, 126, 0.15) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)'
+      }}
+    >
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 
+            className="text-5xl md:text-6xl font-black mb-3"
+            style={{
+              background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 50%, #38761d 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: '0 4px 20px rgba(22, 83, 126, 0.2)',
+              lineHeight: '1.2',
+              paddingBottom: '0.5rem'
+            }}
+          >
+            Manage Volunteers
+          </h1>
+          <p className="text-xl md:text-2xl font-bold mt-3" style={{ color: '#16537e' }}>
+            View and manage registered volunteers
+          </p>
+        </div>
+        <Button
+          onClick={() => setIsCreateOpen(true)}
+          className="flex items-center gap-2"
+        >
+          <Plus className="h-4 w-4" />
+          Create Volunteer
+        </Button>
       </div>
 
       {/* Summary Cards */}
@@ -632,7 +911,9 @@ const ManageVolunteers = () => {
             <Heart className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{0}</div>
+            <div className="text-2xl font-bold">
+              {volunteers.filter((v) => v.assigned).length}
+            </div>
             <p className="text-xs text-gray-500">Total active</p>
           </CardContent>
         </Card>
@@ -714,15 +995,25 @@ const ManageVolunteers = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary">{volunteer.assigned}</Badge>
+                      {volunteer.assigned && volunteer.assignedToIncidentTitle ? (
+                        <Badge variant="default" className="text-xs">
+                          {volunteer.assignedToIncidentTitle}
+                        </Badge>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => handleAssign(volunteer)}
+                          onClick={() => {
+                            console.log("Assign clicked for volunteer:", volunteer);
+                            handleAssign(volunteer);
+                          }}
                           disabled={volunteer.assigned}
+                          title={volunteer.assigned ? "Already assigned" : "Assign to incident"}
                         >
                           <UserCheck className="h-4 w-4" />
                         </Button>
@@ -831,12 +1122,11 @@ const ManageVolunteers = () => {
                 <div>
                   <label className="text-sm font-medium">Age</label>
                   <Input
-                    type="number"
-                    value={editingVolunteer.age}
+                    value={editingVolunteer.age || ""}
                     onChange={(e) =>
                       setEditingVolunteer({
                         ...editingVolunteer,
-                        age: parseInt(e.target.value) || 0,
+                        age: e.target.value, // Keep as string
                       })
                     }
                   />
@@ -991,6 +1281,185 @@ const ManageVolunteers = () => {
                   onClick={() => {
                     setIsAssignOpen(false);
                     setAssigningVolunteer(null);
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Volunteer Dialog */}
+      {isCreateOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div
+            className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] flex flex-col overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b border-gray-100 flex-shrink-0">
+              <h2 className="text-xl font-semibold">Create New Volunteer</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Add a new volunteer to the system
+              </p>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">First Name *</label>
+                  <Input
+                    value={newVolunteer.first_name}
+                    onChange={(e) =>
+                      setNewVolunteer({
+                        ...newVolunteer,
+                        first_name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Last Name *</label>
+                  <Input
+                    value={newVolunteer.last_name}
+                    onChange={(e) =>
+                      setNewVolunteer({
+                        ...newVolunteer,
+                        last_name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Email *</label>
+                <Input
+                  type="email"
+                  value={newVolunteer.email}
+                  onChange={(e) =>
+                    setNewVolunteer({ ...newVolunteer, email: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Phone</label>
+                <Input
+                  value={newVolunteer.phone}
+                  onChange={(e) =>
+                    setNewVolunteer({ ...newVolunteer, phone: e.target.value })
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Age</label>
+                  <Input
+                    type="number"
+                    value={newVolunteer.age}
+                    onChange={(e) =>
+                      setNewVolunteer({
+                        ...newVolunteer,
+                        age: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Availability</label>
+                  <Select
+                    onValueChange={(value) =>
+                      setNewVolunteer({ ...newVolunteer, availability: value })
+                    }
+                    defaultValue={newVolunteer.availability}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                      <SelectItem value="Available">Available</SelectItem>
+                      <SelectItem value="Unavailable">Unavailable</SelectItem>
+                      <SelectItem value="Part-time">Part-time</SelectItem>
+                    </SelectTrigger>
+                  </Select>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Address</label>
+                <Input
+                  value={newVolunteer.address}
+                  onChange={(e) =>
+                    setNewVolunteer({ ...newVolunteer, address: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Experience</label>
+                <Input
+                  value={newVolunteer.experience}
+                  onChange={(e) =>
+                    setNewVolunteer({
+                      ...newVolunteer,
+                      experience: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Motivation</label>
+                <Input
+                  value={newVolunteer.motivation}
+                  onChange={(e) =>
+                    setNewVolunteer({
+                      ...newVolunteer,
+                      motivation: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">
+                  Skills (comma-separated)
+                </label>
+                <Input
+                  value={newVolunteer.skills.join(", ")}
+                  onChange={(e) =>
+                    setNewVolunteer({
+                      ...newVolunteer,
+                      skills: e.target.value
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter((s) => s),
+                    })
+                  }
+                />
+              </div>
+              <div className="flex gap-2 pt-4">
+                <Button
+                  onClick={handleCreate}
+                  className="flex-1"
+                  disabled={
+                    !newVolunteer.first_name ||
+                    !newVolunteer.last_name ||
+                    !newVolunteer.email
+                  }
+                >
+                  Create Volunteer
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsCreateOpen(false);
+                    setNewVolunteer({
+                      first_name: "",
+                      last_name: "",
+                      email: "",
+                      phone: "",
+                      age: "",
+                      availability: "Available",
+                      address: "",
+                      experience: "",
+                      motivation: "",
+                      skills: [],
+                    });
                   }}
                   className="flex-1"
                 >

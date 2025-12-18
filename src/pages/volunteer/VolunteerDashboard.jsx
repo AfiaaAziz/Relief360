@@ -4,19 +4,18 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../components/ui/Card";
 import {
   AlertCircle,
   CheckCircle,
   Clock,
-  DollarSign,
   TrendingUp,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { mockStats, mockIncidents } from "../../utils/mockData";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
-import { Progress } from "../../components/ui/progress";
+import { Badge } from "../../components/ui/Badge";
+import { Button } from "../../components/ui/Button";
+import { Progress } from "../../components/ui/Progress";
 
 const VolunteerDashboard = () => {
   const stats = mockStats.volunteer;
@@ -62,17 +61,6 @@ const VolunteerDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.hoursVolunteered}h</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Donations Received
-            </CardTitle>
-            <DollarSign className="h-4 w-4 text-success" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.donationsReceived}</div>
           </CardContent>
         </Card>
       </div>

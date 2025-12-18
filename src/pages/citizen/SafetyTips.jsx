@@ -4,13 +4,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../components/ui/Card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../../components/ui/accordion";
+} from "../../components/ui/Accordion";
 import { safetyTips } from "../../utils/mockData";
 import {
   Shield,

@@ -4,8 +4,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
+} from "../../components/ui/Card";
+import { Button } from "../../components/ui/Button";
 import {
   AlertCircle,
   Hospital,
@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { mockStats, mockIncidents } from "../../utils/mockData";
-import { Badge } from "../../components/ui/badge";
+import { Badge } from "../../components/ui/Badge";
 
 const CitizenDashboard = () => {
   const stats = mockStats.citizen;
