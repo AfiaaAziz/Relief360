@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Volunteer } from '../volunteers/entities/volunteer.entity';
 import { Hospital } from '../hospitals/entities/hospital.entity';
+import { Citizen } from '../citizens/entities/citizen.entity';
 import { LoginDto } from './dto/login.dto';
 import { AdminLoginDto } from './dto/admin-login.dto';
 
@@ -16,6 +17,8 @@ export class AuthService {
         private volunteersRepository: Repository<Volunteer>,
         @InjectRepository(Hospital)
         private hospitalsRepository: Repository<Hospital>,
+        @InjectRepository(Citizen)
+        private citizensRepository: Repository<Citizen>,
         private jwtService: JwtService,
         private configService: ConfigService,
     ) { }
@@ -24,7 +27,7 @@ export class AuthService {
         const { email, password } = loginDto;
 
         // First check volunteers table
-        let account: Volunteer | Hospital | null = await this.volunteersRepository.findOne({
+        let account: Volunteer | Hospital | Citizen | null = await this.volunteersRepository.findOne({
             where: { email },
         });
 
@@ -38,7 +41,15 @@ export class AuthService {
             role = 'hospital';
         }
 
-        // If not found in either table
+        // If not found in hospitals, check citizens table
+        if (!account) {
+            account = await this.citizensRepository.findOne({
+                where: { email },
+            });
+            role = 'citizen';
+        }
+
+        // If not found in any table
         if (!account) {
             throw new UnauthorizedException('Invalid credentials');
         }
@@ -92,8 +103,7 @@ export class AuthService {
 
     async validateUser(userId: number) {
         // First check volunteers table
-        // table
-        let account: Volunteer | Hospital | null = await this.volunteersRepository.findOne({
+        let account: Volunteer | Hospital | Citizen | null = await this.volunteersRepository.findOne({
             where: { id: userId },
         });
 
@@ -107,7 +117,15 @@ export class AuthService {
             role = 'hospital';
         }
 
-        // If not found in either table
+        // If not found in hospitals, check citizens table
+        if (!account) {
+            account = await this.citizensRepository.findOne({
+                where: { id: userId },
+            });
+            role = 'citizen';
+        }
+
+        // If not found in any table
         if (!account) {
             throw new UnauthorizedException('User not found');
         }
@@ -119,7 +137,7 @@ export class AuthService {
         };
     }
 
-    private generateTokenForAccount(account: Volunteer | Hospital, role: string) {
+    private generateTokenForAccount(account: Volunteer | Hospital | Citizen, role: string) {
         const payload = {
             id: account.id,
             email: account.email,

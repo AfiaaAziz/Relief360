@@ -1,21 +1,39 @@
-import React, { useState } from "react";
-import { Eye, CheckCircle, MessageSquare } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Eye, CheckCircle, MessageSquare, Trash2 } from "lucide-react";
 
-// Create simple UI components
+// Create simple UI components with new color palette
 const Card = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>{children}</div>
+  <div 
+    className={`rounded-2xl border-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-sm ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.2)'
+    }}
+  >
+    {children}
+  </div>
 );
 
 const CardHeader = ({ children, className = "" }) => (
-  <div className={`p-6 border-b border-gray-100 ${className}`}>{children}</div>
+  <div 
+    className={`p-6 border-b-2 ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.3)',
+      paddingTop: '1.75rem',
+      paddingBottom: '1.75rem'
+    }}
+  >
+    {children}
+  </div>
 );
 
 const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>{children}</h3>
+  <h3 className={`text-xl font-black text-white ${className}`} style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', lineHeight: '1.3', paddingBottom: '0.25rem' }}>{children}</h3>
 );
 
 const CardDescription = ({ children, className = "" }) => (
-  <p className={`text-sm text-gray-500 mt-1 ${className}`}>{children}</p>
+  <p className={`text-sm text-white/90 mt-2 font-semibold ${className}`} style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.2)' }}>{children}</p>
 );
 
 const CardContent = ({ children, className = "" }) => (
@@ -24,30 +42,57 @@ const CardContent = ({ children, className = "" }) => (
 
 const Badge = ({ children, variant = "default" }) => {
   const styles = {
-    default: "bg-green-100 text-green-800",
-    secondary: "bg-gray-100 text-gray-800",
-    destructive: "bg-red-100 text-red-800",
+    default: {
+      background: 'linear-gradient(135deg, #6aa84f 0%, #38761d 100%)',
+      color: '#ffffff',
+      borderColor: '#38761d'
+    },
+    secondary: {
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      borderColor: '#16537e'
+    },
+    destructive: {
+      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+      color: '#ffffff',
+      borderColor: '#990000'
+    },
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]}`}>
+    <span className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-bold shadow-lg border-2" style={styles[variant]}>
       {children}
     </span>
   );
 };
 
 const Button = ({ children, variant = "default", size = "default", className = "", ...props }) => {
-  const base = "inline-flex items-center justify-center rounded-md font-medium transition-colors";
+  const base = "inline-flex items-center justify-center font-bold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl";
   const sizes = {
-    default: "h-10 px-4 py-2",
-    sm: "h-9 rounded-md px-3 text-sm",
+    default: "h-12 px-6 py-3 rounded-xl text-base",
+    sm: "h-10 rounded-lg px-4 text-sm",
   };
   const variants = {
-    default: "bg-blue-600 text-white hover:bg-blue-700",
-    destructive: "bg-red-600 text-white hover:bg-red-700",
-    outline: "border border-gray-300 bg-transparent hover:bg-gray-50",
-    ghost: "hover:bg-gray-100",
+    default: {
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      boxShadow: '0 4px 15px rgba(22, 83, 126, 0.4)'
+    },
+    destructive: {
+      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+      color: '#ffffff',
+      boxShadow: '0 4px 15px rgba(255, 53, 53, 0.4)'
+    },
+    outline: {
+      border: '2px solid #16537e',
+      background: 'transparent',
+      color: '#16537e',
+    },
+    ghost: {
+      background: 'transparent',
+      color: '#16537e',
+    },
   };
-  return <button className={`${base} ${sizes[size]} ${variants[variant]} ${className}`} {...props}>{children}</button>;
+  return <button className={`${base} ${sizes[size]} ${className}`} style={variants[variant]} {...props}>{children}</button>;
 };
 
 const Table = ({ children }) => (
@@ -60,120 +105,22 @@ const TableHeader = ({ children }) => <thead>{children}</thead>;
 const TableBody = ({ children }) => <tbody>{children}</tbody>;
 const TableRow = ({ children }) => <tr className="border-b">{children}</tr>;
 const TableHead = ({ children }) => (
-  <th className="h-12 px-4 text-left align-middle font-medium text-gray-500">{children}</th>
+  <th 
+    className="h-14 px-4 text-left align-middle font-bold text-base"
+    style={{
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      textShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+    }}
+  >
+    {children}
+  </th>
 );
 const TableCell = ({ children, className = "" }) => (
-  <td className={`p-4 align-middle ${className}`}>{children}</td>
+  <td className={`p-4 align-middle text-gray-800 font-medium ${className}`}>{children}</td>
 );
 
-// Dialog Component
-const Dialog = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  const childrenArray = React.Children.toArray(children);
-  const trigger = childrenArray.find(child => child.type.displayName === "DialogTrigger");
-  const content = childrenArray.find(child => child.type.displayName === "DialogContent");
-  
-  return (
-    <>
-      {trigger && React.cloneElement(trigger, { onClick: () => setIsOpen(true) })}
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          {content && React.cloneElement(content, { onClose: () => setIsOpen(false) })}
-        </div>
-      )}
-    </>
-  );
-};
-
-const DialogTrigger = ({ children, onClick, ...props }) => (
-  <div onClick={onClick} {...props}>
-    {children}
-  </div>
-);
-DialogTrigger.displayName = "DialogTrigger";
-
-const DialogContent = ({ children, onClose, className = "" }) => {
-  const childrenArray = React.Children.toArray(children);
-  const header = childrenArray.find(child => child.type.displayName === "DialogHeader");
-  const otherChildren = childrenArray.filter(child => child.type.displayName !== "DialogHeader");
-  
-  return (
-    <div className={`bg-white rounded-lg shadow-lg w-full max-w-md ${className}`} onClick={(e) => e.stopPropagation()}>
-      <button 
-        onClick={onClose}
-        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-      >
-        ✕
-      </button>
-      {header}
-      <div className="p-6">
-        {otherChildren}
-      </div>
-    </div>
-  );
-};
-DialogContent.displayName = "DialogContent";
-
-const DialogHeader = ({ children, className = "" }) => {
-  const childrenArray = React.Children.toArray(children);
-  const title = childrenArray.find(child => child.type.displayName === "DialogTitle");
-  const description = childrenArray.find(child => child.type.displayName === "DialogDescription");
-  
-  return (
-    <div className={`p-6 border-b border-gray-100 ${className}`}>
-      {title}
-      {description}
-    </div>
-  );
-};
-DialogHeader.displayName = "DialogHeader";
-
-const DialogTitle = ({ children, className = "" }) => (
-  <h2 className={`text-xl font-semibold ${className}`}>{children}</h2>
-);
-DialogTitle.displayName = "DialogTitle";
-
-const DialogDescription = ({ children, className = "" }) => (
-  <p className={`text-sm text-gray-500 mt-1 ${className}`}>{children}</p>
-);
-DialogDescription.displayName = "DialogDescription";
-
-// Mock data
-const mockFeedback = [
-  { 
-    id: 1, 
-    name: "Ali Raza", 
-    email: "ali@example.com", 
-    message: "Great service! The response time was amazing during the recent flood incident.", 
-    date: "2024-01-15",
-    resolved: true 
-  },
-  { 
-    id: 2, 
-    name: "Sara Khan", 
-    email: "sara@example.com", 
-    message: "The volunteer registration process could be simplified. Had some issues uploading documents.", 
-    date: "2024-01-18",
-    resolved: false 
-  },
-  { 
-    id: 3, 
-    name: "Ahmed Malik", 
-    email: "ahmed@example.com", 
-    message: "The hospital information was very helpful during the emergency. Saved us a lot of time.", 
-    date: "2024-01-20",
-    resolved: true 
-  },
-  { 
-    id: 4, 
-    name: "Fatima Noor", 
-    email: "fatima@example.com", 
-    message: "There should be more frequent updates on incident resolutions. Sometimes we don't know if help has arrived.", 
-    date: "2024-01-25",
-    resolved: false 
-  },
-];
+// (Previously had a reusable Dialog implementation; replaced by FeedbackDetailsDialog)
 
 // Simple toast function
 const useToast = () => {
@@ -186,19 +133,284 @@ const useToast = () => {
 
 const ManageFeedback = () => {
   const { toast } = useToast();
+  const [feedback, setFeedback] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleResolve = (feedbackId) => {
-    toast({
-      title: "Feedback Resolved",
-      description: "The feedback has been marked as resolved",
-    });
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      try {
+        const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+        const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+        if (!token) {
+          toast({
+            title: "Authentication Required",
+            description: "Please login as admin to view feedback.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        const response = await fetch(`${apiBase}/api/contact`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Filter to show only feedback (messages without department/subject)
+          // These are from the citizen feedback form
+          const feedbackMessages = data.filter((msg) => 
+            !msg.department && !msg.subject
+          );
+          
+          // Transform feedback messages to feedback format
+          const feedbackData = feedbackMessages.map((msg) => ({
+            id: msg.id,
+            name: msg.name || "Anonymous",
+            email: msg.email || "N/A",
+            message: msg.message || msg.content || "",
+            date: msg.created_at
+              ? new Date(msg.created_at).toISOString().split("T")[0]
+              : new Date().toISOString().split("T")[0],
+            resolved: msg.status === "resolved" || msg.status === "approved" || false,
+            status: msg.status || "pending",
+            originalData: msg,
+          }));
+          setFeedback(feedbackData);
+        } else {
+          console.error("Failed to fetch feedback");
+          toast({
+            title: "Error",
+            description: "Failed to fetch feedback. Please try again.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching feedback:", error);
+        toast({
+          title: "Error",
+          description: "An error occurred while fetching feedback.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeedback();
+  }, [toast]);
+
+  // Small component to render details modal with reply functionality
+  const FeedbackDetailsDialog = ({ item, onReplySuccess }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [replyBody, setReplyBody] = useState("");
+    const [sending, setSending] = useState(false);
+
+    const open = () => setIsOpen(true);
+    const close = () => setIsOpen(false);
+
+    const sendReply = async () => {
+      if (!replyBody.trim()) {
+        toast({ title: "Reply Empty", description: "Please enter a reply message." });
+        return;
+      }
+      setSending(true);
+      try {
+        const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+        const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+        const res = await fetch(`${apiBase}/api/contact/${item.id}/reply`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ subject: `Re: ${item.name}`, message: replyBody }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          const msg = err?.message || "Failed to send reply";
+          // Special-case SMTP not configured: treat as success in dev
+          if (msg.includes('SMTP is not configured')) {
+            toast({ title: "Reply Skipped", description: "SMTP not configured; reply was not sent but recorded." });
+            setReplyBody("");
+            close();
+            if (onReplySuccess) onReplySuccess(item.id);
+            return;
+          }
+          throw new Error(msg);
+        }
+
+        toast({ title: "Reply Sent", description: "Your reply was sent successfully." });
+        setReplyBody("");
+        close();
+        if (onReplySuccess) onReplySuccess(item.id);
+      } catch (err) {
+        console.error('Reply error:', err);
+        toast({ title: "Send Failed", description: err?.message || "Failed to send reply", variant: "destructive" });
+      } finally {
+        setSending(false);
+      }
+    };
+
+    return (
+      <>
+        <div onClick={open}>
+          <Button variant="ghost" size="sm">
+            <Eye className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {isOpen && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={close}>
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+              <div className="p-6 border-b border-gray-100 flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold">Feedback Details</h2>
+                  <p className="text-sm text-gray-500 mt-1">From {item.name} • {item.date}</p>
+                </div>
+                <button onClick={close} className="text-gray-400 hover:text-gray-600">✕</button>
+              </div>
+
+              <div className="p-6 space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Email</p>
+                  <p>{item.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Message</p>
+                  <p className="text-sm mt-2 p-4 bg-gray-100 rounded-lg">{item.message}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Send Reply</p>
+                  <textarea
+                    value={replyBody}
+                    onChange={(e) => setReplyBody(e.target.value)}
+                    rows={4}
+                    className="w-full mt-2 px-3 py-2 border rounded-md"
+                    placeholder={`Reply to ${item.email}`}
+                  />
+                  <div className="flex justify-end mt-3 gap-2">
+                    <Button variant="outline" size="sm" onClick={close}>Cancel</Button>
+                    <Button size="sm" onClick={sendReply} disabled={sending}>{sending ? 'Sending...' : 'Send Reply'}</Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const handleResolve = async (feedbackId) => {
+    try {
+      const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+      const feedbackItem = feedback.find((f) => f.id === feedbackId);
+      if (!feedbackItem) return;
+
+      const response = await fetch(
+        `${apiBase}/api/contact/${feedbackId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            status: "resolved",
+          }),
+        }
+      );
+
+      if (response.ok) {
+        await response.json().catch(() => ({}));
+        setFeedback(
+          feedback.map((f) =>
+            f.id === feedbackId ? { ...f, resolved: true, status: "resolved" } : f
+          )
+        );
+        toast({
+          title: "Feedback Resolved",
+          description: "The feedback has been marked as resolved",
+        });
+      } else {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || "Failed to resolve feedback");
+      }
+    } catch (error) {
+      console.error("Error resolving feedback:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to mark feedback as resolved",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = async (feedbackId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this feedback? This action cannot be undone.");
+    if (!confirmed) return;
+
+    try {
+      const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+      
+      const response = await fetch(`${apiBase}/api/contact/${feedbackId}`, {
+        method: "DELETE",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      if (response.ok) {
+        setFeedback(feedback.filter((f) => f.id !== feedbackId));
+        toast({
+          title: "Feedback Deleted",
+          description: "The feedback has been deleted successfully",
+        });
+      } else {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || "Failed to delete feedback");
+      }
+    } catch (error) {
+      console.error("Error deleting feedback:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete feedback",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div 
+      className="p-6 space-y-6 relative overflow-hidden min-h-screen"
+      style={{
+        background: 'radial-gradient(circle at 20% 50%, rgba(106, 168, 79, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(22, 83, 126, 0.15) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)'
+      }}
+    >
       <div>
-        <h1 className="text-3xl font-bold">Manage Feedback</h1>
-        <p className="text-gray-500 mt-1">Review and respond to user feedback</p>
+        <h1 
+          className="text-5xl md:text-6xl font-black mb-3"
+          style={{
+            background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 50%, #38761d 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            textShadow: '0 4px 20px rgba(22, 83, 126, 0.2)',
+            lineHeight: '1.2',
+            paddingBottom: '0.5rem'
+          }}
+        >
+          Manage Feedback
+        </h1>
+        <p className="text-xl md:text-2xl font-bold mt-3" style={{ color: '#16537e' }}>
+          Review and respond to user feedback
+        </p>
       </div>
 
       {/* Summary Cards */}
@@ -209,7 +421,9 @@ const ManageFeedback = () => {
             <MessageSquare className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockFeedback.length}</div>
+            <div className="text-2xl font-bold">
+              {loading ? "..." : feedback.length}
+            </div>
             <p className="text-xs text-gray-500">All time</p>
           </CardContent>
         </Card>
@@ -220,7 +434,9 @@ const ManageFeedback = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockFeedback.filter(f => !f.resolved).length}
+              {loading
+                ? "..."
+                : feedback.filter((f) => !f.resolved).length}
             </div>
             <p className="text-xs text-gray-500">Needs attention</p>
           </CardContent>
@@ -232,9 +448,11 @@ const ManageFeedback = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockFeedback.filter(f => f.resolved).length}
+              {loading
+                ? "..."
+                : feedback.filter((f) => f.resolved).length}
             </div>
-            <p className="text-xs text-gray-500">This month</p>
+            <p className="text-xs text-gray-500">Resolved</p>
           </CardContent>
         </Card>
       </div>
@@ -259,66 +477,66 @@ const ManageFeedback = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockFeedback.map((feedback) => (
-                <TableRow key={feedback.id}>
-                  <TableCell className="font-medium">#{feedback.id}</TableCell>
-                  <TableCell>{feedback.name}</TableCell>
-                  <TableCell>{feedback.email}</TableCell>
-                  <TableCell className="max-w-xs truncate">{feedback.message}</TableCell>
-                  <TableCell>{feedback.date}</TableCell>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8">
+                    Loading feedback...
+                  </TableCell>
+                </TableRow>
+              ) : feedback.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8">
+                    No feedback found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                feedback.map((feedbackItem) => (
+                <TableRow key={feedbackItem.id}>
+                  <TableCell className="font-medium">#{feedbackItem.id}</TableCell>
+                  <TableCell>{feedbackItem.name}</TableCell>
+                  <TableCell>{feedbackItem.email}</TableCell>
+                  <TableCell className="max-w-xs truncate">
+                    {feedbackItem.message}
+                  </TableCell>
+                  <TableCell>{feedbackItem.date}</TableCell>
                   <TableCell>
-                    <Badge variant={feedback.resolved ? "default" : "secondary"}>
-                      {feedback.resolved ? "Resolved" : "Pending"}
+                    <Badge
+                      variant={feedbackItem.resolved ? "default" : "secondary"}
+                    >
+                      {feedbackItem.resolved ? "Resolved" : "Pending"}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Dialog>
-                        <DialogTrigger>
-                          <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Feedback Details</DialogTitle>
-                            <DialogDescription>
-                              From {feedback.name} • {feedback.date}
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4 py-4">
-                            <div>
-                              <p className="text-sm font-medium text-gray-500">Email</p>
-                              <p>{feedback.email}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-500">Message</p>
-                              <p className="text-sm mt-2 p-4 bg-gray-100 rounded-lg">
-                                {feedback.message}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-500">Status</p>
-                              <Badge variant={feedback.resolved ? "default" : "secondary"} className="mt-2">
-                                {feedback.resolved ? "Resolved" : "Pending"}
-                              </Badge>
-                            </div>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                      {!feedback.resolved && (
+                      <FeedbackDetailsDialog item={feedbackItem} onReplySuccess={(id) => {
+                        // mark as resolved after reply
+                        setFeedback(fb => fb.map(f => f.id === id ? { ...f, resolved: true } : f));
+                      }} />
+                      {!feedbackItem.resolved && (
                         <Button
                           size="sm"
-                          onClick={() => handleResolve(feedback.id)}
+                          onClick={() => {
+                            handleResolve(feedbackItem.id);
+                            // The button will disappear after status update
+                          }}
                         >
                           <CheckCircle className="h-4 w-4 mr-1" />
                           Resolve
                         </Button>
                       )}
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(feedbackItem.id)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>

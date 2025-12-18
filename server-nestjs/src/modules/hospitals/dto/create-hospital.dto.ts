@@ -1,84 +1,94 @@
-import { IsString, IsEmail, IsOptional, IsNumber, IsNotEmpty } from 'class-validator';
-
-export class CreateHospitalDto {
+import {
+    IsString,
+    IsEmail,
+    IsOptional,
+    IsNumber,
+    IsNotEmpty,
+    IsBoolean,
+    IsArray,
+    ArrayNotEmpty,
+  } from 'class-validator';
+  import { Type } from 'class-transformer';
+  
+  export class CreateHospitalDto {
     @IsString()
     @IsNotEmpty()
     hospitalName: string;
-
-    @IsOptional()
+  
     @IsString()
-    hospitalType?: string;
-
-    @IsOptional()
+    @IsNotEmpty()
+    hospitalType: string;
+  
     @IsString()
-    address?: string;
-
-    @IsOptional()
+    @IsNotEmpty()
+    address: string;
+  
     @IsString()
-    phone?: string;
-
-    @IsOptional()
+    @IsNotEmpty()
+    phone: string;
+  
     @IsString()
-    emergencyPhone?: string;
-
-    @IsOptional()
+    @IsNotEmpty()
+    emergencyPhone: string;
+  
     @IsEmail()
-    email?: string;
-
-    @IsOptional()
+    email: string;
+  
+    @Type(() => Number)
     @IsNumber()
-    totalBeds?: number;
-
-    @IsOptional()
+    totalBeds: number;
+  
+    @Type(() => Number)
     @IsNumber()
-    icuBeds?: number;
-
-    @IsOptional()
+    icuBeds: number;
+  
+    @Type(() => Number)
     @IsNumber()
-    emergencyBeds?: number;
-
+    emergencyBeds: number;
+  
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     ambulances?: number;
-
-    @IsOptional()
+  
+    @Type(() => Number)
     @IsNumber()
-    staffCount?: number;
-
-    @IsOptional()
+    staffCount: number;
+  
     @IsString()
-    contactName?: string;
-
-    @IsOptional()
+    contactName: string;
+  
     @IsString()
-    contactPosition?: string;
-
-    @IsOptional()
+    contactPosition: string;
+  
     @IsString()
-    contactPhone?: string;
-
-    @IsOptional()
+    contactPhone: string;
+  
     @IsEmail()
-    contactEmail?: string;
-
+    contactEmail: string;
+  
     @IsOptional()
     @IsString()
     additionalInfo?: string;
-
+  
     @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
     services?: string[];
-
+  
+    @IsBoolean()
+    terms: boolean;
+  
     @IsOptional()
-    terms?: boolean;
-
-    @IsOptional()
+    @IsBoolean()
     dataSharing?: boolean;
-
-    @IsOptional()
+  
     @IsString()
-    password?: string;
-
+    @IsNotEmpty()
+    password: string;
+  
     @IsOptional()
     @IsString()
     confirmPassword?: string;
-}
+  }
+  

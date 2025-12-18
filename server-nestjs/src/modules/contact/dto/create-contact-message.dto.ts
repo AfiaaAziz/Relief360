@@ -11,11 +11,13 @@ export class CreateContactMessageDto {
     @IsString()
     phone?: string;
 
+    @IsOptional()
     @IsString()
-    department: string;
+    department?: string;
 
+    @IsOptional()
     @IsString()
-    subject: string;
+    subject?: string;
 
     @IsString()
     message: string;

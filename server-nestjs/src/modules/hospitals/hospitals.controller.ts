@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, UseGuards, Request, Body, Query, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, UseGuards, Request, Body, Query, Param, HttpException, HttpStatus } from '@nestjs/common';
 import { HospitalsService } from './hospitals.service';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CreateHospitalDto } from './dto/create-hospital.dto';
@@ -15,7 +15,19 @@ export class HospitalsController {
 
     @Post('register')
     async register(@Body() createHospitalDto: CreateHospitalDto) {
-        return this.hospitalsService.create(createHospitalDto);
+        try {
+            return await this.hospitalsService.create(createHospitalDto);
+        } catch (error) {
+            // Re-throw HTTP exceptions as-is
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            // Wrap other errors
+            throw new HttpException(
+                error?.message || 'Failed to register hospital',
+                error?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
     }
 
     @Put('me')

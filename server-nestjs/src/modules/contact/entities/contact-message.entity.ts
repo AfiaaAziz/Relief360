@@ -19,10 +19,10 @@ export class ContactMessage {
     @Column({ nullable: true })
     phone: string;
 
-    @Column()
+    @Column({ nullable: true })
     department: string;
 
-    @Column()
+    @Column({ nullable: true })
     subject: string;
 
     @Column('text')
@@ -30,6 +30,9 @@ export class ContactMessage {
 
     @Column({ default: 'medium' })
     priority: string;
+
+    @Column({ default: 'pending' })
+    status: string;
 
     @CreateDateColumn()
     created_at: Date;

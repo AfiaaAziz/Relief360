@@ -9,8 +9,9 @@ import ContactUs from "./pages/ContactUs";
 import HowItWorks from "./pages/HowItWorks";
 import VolunteerInfo from "./pages/VolunteerInfo";
 import HospitalInfo from "./pages/HospitalInfo";
-import ReportIncident from "./pages/ReportIncident";
 import SignIn from "./pages/SignIn";
+import CitizenSignUp from "./pages/CitizenSignUp";
+import DonationsPage from "./pages/Donations";
 
 // Components
 import Navbar from "./components/Navbar";
@@ -23,6 +24,7 @@ import Analytics from "./pages/admin/Analytics";
 import ManageCitizens from "./pages/admin/ManageCitizens";
 import ManageDonations from "./pages/admin/ManageDonations";
 import ManageFeedback from "./pages/admin/ManageFeedback";
+import ManageMessages from "./pages/admin/ManageMessages";
 import ManageHospitals from "./pages/admin/ManageHospitals";
 import ManageIncidents from "./pages/admin/ManageIncidents";
 import ManageVolunteers from "./pages/admin/ManageVolunteers";
@@ -30,7 +32,6 @@ import ManageVolunteers from "./pages/admin/ManageVolunteers";
 // Volunteer Dashboard Pages
 import VolunteerDashboard from "./pages/volunteer/VolunteerDashboard";
 import Assignments from "./pages/volunteer/Assignments";
-import Donations from "./pages/volunteer/Donations";
 import EmergencyPlans from "./pages/volunteer/EmergencyPlans";
 import Profile from "./pages/volunteer/Profile";
 import VolunteerHospitals from "./pages/volunteer/VolunteerHospitals";
@@ -39,7 +40,6 @@ import VolunteerHospitals from "./pages/volunteer/VolunteerHospitals";
 import CitizenDashboard from "./pages/citizen/CitizenDashboard";
 import CitizenReportIncident from "./pages/citizen/ReportIncident";
 import EmergencyContacts from "./pages/citizen/EmergencyContacts";
-import CitizenSafetyTips from "./pages/citizen/SafetyTips";
 import Hospitals from "./pages/citizen/Hospitals";
 import MyIncidents from "./pages/citizen/MyIncidents";
 import Feedback from "./pages/citizen/Feedback";
@@ -75,8 +75,10 @@ function App() {
                   path="/hospital-registration"
                   element={<HospitalRegistration />}
                 />
-                <Route path="/report-incident" element={<ReportIncident />} />
                 <Route path="/sign-in" element={<SignIn />} />
+                <Route path="/signup" element={<CitizenSignUp />} />
+                <Route path="/citizen-signup" element={<CitizenSignUp />} />
+                <Route path="/donations" element={<DonationsPage />} />
 
                 {/* Catch all - redirect to home */}
                 <Route path="*" element={<Navigate to="/" />} />
@@ -96,6 +98,7 @@ function App() {
                 <Route path="citizens" element={<ManageCitizens />} />
                 <Route path="donations" element={<ManageDonations />} />
                 <Route path="feedback" element={<ManageFeedback />} />
+                <Route path="messages" element={<ManageMessages />} />
                 <Route path="hospitals" element={<ManageHospitals />} />
                 <Route path="incidents" element={<ManageIncidents />} />
                 <Route path="volunteers" element={<ManageVolunteers />} />
@@ -115,7 +118,6 @@ function App() {
               <Routes>
                 <Route index element={<VolunteerDashboard />} />
                 <Route path="assignments" element={<Assignments />} />
-                <Route path="donations" element={<Donations />} />
                 <Route path="emergency-plans" element={<EmergencyPlans />} />
                 <Route path="hospitals" element={<VolunteerHospitals />} />
                 <Route path="profile" element={<Profile />} />
@@ -139,8 +141,6 @@ function App() {
                 <Route index element={<CitizenDashboard />} />
                 <Route path="report" element={<CitizenReportIncident />} />
                 <Route path="contacts" element={<EmergencyContacts />} />
-
-                <Route path="safety" element={<CitizenSafetyTips />} />
                 <Route path="hospitals" element={<Hospitals />} />
                 <Route path="incidents" element={<MyIncidents />} />
                 <Route path="feedback" element={<Feedback />} />

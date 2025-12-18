@@ -4,8 +4,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
+} from "../../components/ui/Card";
+import { Button } from "../../components/ui/Button";
 import { mockEmergencyContacts } from "../../utils/mockData";
 import { Phone, Ambulance, Shield, Flame, Heart } from "lucide-react";
 

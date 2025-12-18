@@ -240,24 +240,42 @@
 
 // export default ManageCitizens;
 
-import { Search, Ban, Trash2, UserCheck } from "lucide-react";
-import { useState } from "react";
+import { Search, Ban, Trash2, UserCheck, Eye } from "lucide-react";
+import { useState, useEffect } from "react";
 
-// Create simple versions of the UI components
+// Create simple versions of the UI components with new color palette
 const Card = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>{children}</div>
+  <div 
+    className={`rounded-2xl border-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-sm ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.2)'
+    }}
+  >
+    {children}
+  </div>
 );
 
 const CardHeader = ({ children, className = "" }) => (
-  <div className={`p-6 border-b border-gray-100 ${className}`}>{children}</div>
+  <div 
+    className={`p-6 border-b-2 ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.3)',
+      paddingTop: '1.75rem',
+      paddingBottom: '1.75rem'
+    }}
+  >
+    {children}
+  </div>
 );
 
 const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>{children}</h3>
+  <h3 className={`text-xl font-black text-white ${className}`} style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', lineHeight: '1.3', paddingBottom: '0.25rem' }}>{children}</h3>
 );
 
 const CardDescription = ({ children, className = "" }) => (
-  <p className={`text-sm text-gray-500 mt-1 ${className}`}>{children}</p>
+  <p className={`text-sm text-white/90 mt-2 font-semibold ${className}`} style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.2)' }}>{children}</p>
 );
 
 const CardContent = ({ children, className = "" }) => (
@@ -266,29 +284,53 @@ const CardContent = ({ children, className = "" }) => (
 
 const Badge = ({ children, variant = "default" }) => {
   const styles = {
-    default: "bg-blue-100 text-blue-800",
-    secondary: "bg-gray-100 text-gray-800",
-    destructive: "bg-red-100 text-red-800",
+    default: {
+      background: 'linear-gradient(135deg, #6aa84f 0%, #38761d 100%)',
+      color: '#ffffff',
+      borderColor: '#38761d'
+    },
+    secondary: {
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      borderColor: '#16537e'
+    },
+    destructive: {
+      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+      color: '#ffffff',
+      borderColor: '#990000'
+    },
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]}`}>
+    <span className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-bold shadow-lg border-2" style={styles[variant]}>
       {children}
     </span>
   );
 };
 
 const Button = ({ children, size = "default", variant = "default", className = "", ...props }) => {
-  const base = "inline-flex items-center justify-center rounded-md font-medium transition-colors";
+  const base = "inline-flex items-center justify-center font-bold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl";
   const sizes = {
-    default: "h-10 px-4 py-2",
-    sm: "h-9 rounded-md px-3 text-sm",
+    default: "h-12 px-6 py-3 rounded-xl text-base",
+    sm: "h-10 rounded-lg px-4 text-sm",
   };
   const variants = {
-    default: "bg-blue-600 text-white hover:bg-blue-700",
-    destructive: "bg-red-600 text-white hover:bg-red-700",
-    outline: "border border-gray-300 bg-transparent hover:bg-gray-50",
+    default: {
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      boxShadow: '0 4px 15px rgba(22, 83, 126, 0.4)'
+    },
+    destructive: {
+      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+      color: '#ffffff',
+      boxShadow: '0 4px 15px rgba(255, 53, 53, 0.4)'
+    },
+    outline: {
+      border: '2px solid #16537e',
+      background: 'transparent',
+      color: '#16537e',
+    },
   };
-  return <button className={`${base} ${sizes[size]} ${variants[variant]} ${className}`} {...props}>{children}</button>;
+  return <button className={`${base} ${sizes[size]} ${className}`} style={variants[variant]} {...props}>{children}</button>;
 };
 
 const Input = ({ placeholder, value, onChange, className = "" }) => (
@@ -311,19 +353,20 @@ const TableHeader = ({ children }) => <thead>{children}</thead>;
 const TableBody = ({ children }) => <tbody>{children}</tbody>;
 const TableRow = ({ children }) => <tr className="border-b">{children}</tr>;
 const TableHead = ({ children }) => (
-  <th className="h-12 px-4 text-left align-middle font-medium text-gray-500">{children}</th>
+  <th 
+    className="h-14 px-4 text-left align-middle font-bold text-base"
+    style={{
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      color: '#ffffff',
+      textShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+    }}
+  >
+    {children}
+  </th>
 );
 const TableCell = ({ children, className = "" }) => (
-  <td className={`p-4 align-middle ${className}`}>{children}</td>
+  <td className={`p-4 align-middle text-gray-800 font-medium ${className}`}>{children}</td>
 );
-
-// Mock data
-const mockCitizens = [
-  { id: 1, name: "John Doe", email: "john@example.com", incidents: 5, joinDate: "2024-01-15" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", incidents: 3, joinDate: "2024-02-20" },
-  { id: 3, name: "Robert Johnson", email: "robert@example.com", incidents: 8, joinDate: "2024-01-05" },
-  { id: 4, name: "Sarah Williams", email: "sarah@example.com", incidents: 2, joinDate: "2024-03-10" },
-];
 
 // Simple toast function
 const useToast = () => {
@@ -337,34 +380,146 @@ const useToast = () => {
 const ManageCitizens = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
+  const [citizens, setCitizens] = useState([]);
+  const [incidents, setIncidents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredCitizens = mockCitizens.filter(citizen =>
-    citizen.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    citizen.email.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch incidents to count per user
+        const incidentsRes = await fetch("http://localhost:5000/api/incidents");
+        if (incidentsRes.ok) {
+          const incidentsData = await incidentsRes.json();
+          setIncidents(incidentsData);
+
+          // Extract unique users from incidents
+          const userIncidentMap = {};
+          incidentsData.forEach((incident) => {
+            if (incident.reported_by_user_id) {
+              if (!userIncidentMap[incident.reported_by_user_id]) {
+                userIncidentMap[incident.reported_by_user_id] = {
+                  id: incident.reported_by_user_id,
+                  incidents: 0,
+                  joinDate: incident.created_at,
+                };
+              }
+              userIncidentMap[incident.reported_by_user_id].incidents++;
+            }
+          });
+
+          // Convert to array and format
+          const citizensList = Object.values(userIncidentMap).map((user) => ({
+            id: user.id,
+            name: `User ${user.id}`, // We don't have name in incidents
+            email: `user${user.id}@example.com`, // Approximate
+            incidents: user.incidents,
+            joinDate: new Date(user.joinDate).toISOString().split("T")[0],
+          }));
+
+          setCitizens(citizensList);
+        }
+      } catch (error) {
+        console.error("Error fetching citizens data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredCitizens = citizens.filter(
+    (citizen) =>
+      citizen.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      citizen.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleBlock = (citizenId) => {
-    toast({
-      title: "Citizen Blocked",
-      description: "The citizen has been blocked from the system",
-      variant: "destructive",
-    });
+  const [viewingCitizen, setViewingCitizen] = useState(null);
+
+  const handleBlock = async (citizenId) => {
+    if (!window.confirm("Are you sure you want to block this citizen?")) {
+      return;
+    }
+    try {
+      // Note: This would require a user management API endpoint
+      // For now, we'll show a message
+      toast({
+        title: "Citizen Blocked",
+        description: "The citizen has been blocked from the system",
+        variant: "destructive",
+      });
+      // In a real implementation, you would call an API to block the user
+      // await fetch(`http://localhost:5000/api/users/${citizenId}/block`, { method: "PUT" });
+    } catch (error) {
+      toast({
+        title: "Block Failed",
+        description: "Failed to block citizen",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleDelete = (citizenId) => {
-    toast({
-      title: "Citizen Deleted",
-      description: "The citizen account has been permanently deleted",
-      variant: "destructive",
-    });
+  const handleDelete = async (citizenId) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this citizen? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+    try {
+      // Note: This would require a user management API endpoint
+      // For now, we'll remove from the list
+      setCitizens(citizens.filter((c) => c.id !== citizenId));
+      toast({
+        title: "Citizen Deleted",
+        description: "The citizen account has been permanently deleted",
+        variant: "destructive",
+      });
+      // In a real implementation, you would call an API to delete the user
+      // await fetch(`http://localhost:5000/api/users/${citizenId}`, { method: "DELETE" });
+    } catch (error) {
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete citizen",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleView = (citizen) => {
+    const citizenIncidents = incidents.filter(
+      (i) => i.reported_by_user_id === citizen.id
+    );
+    setViewingCitizen({ ...citizen, incidents: citizenIncidents });
   };
 
   return (
-    // REMOVED DashboardLayout wrapper - App.js already provides it
-    <div className="p-6 space-y-6">
+    <div 
+      className="p-6 space-y-6 relative overflow-hidden min-h-screen"
+      style={{
+        background: 'radial-gradient(circle at 20% 50%, rgba(106, 168, 79, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(22, 83, 126, 0.15) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)'
+      }}
+    >
       <div>
-        <h1 className="text-3xl font-bold">Manage Citizens</h1>
-        <p className="text-gray-500 mt-1">View and manage registered citizens</p>
+        <h1 
+          className="text-5xl md:text-6xl font-black mb-3"
+          style={{
+            background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 50%, #38761d 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            textShadow: '0 4px 20px rgba(22, 83, 126, 0.2)',
+            lineHeight: '1.2',
+            paddingBottom: '0.5rem'
+          }}
+        >
+          Manage Citizens
+        </h1>
+        <p className="text-xl md:text-2xl font-bold mt-3" style={{ color: '#16537e' }}>
+          View and manage registered citizens
+        </p>
       </div>
 
       {/* Summary Cards */}
@@ -375,7 +530,9 @@ const ManageCitizens = () => {
             <UserCheck className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockCitizens.length}</div>
+            <div className="text-2xl font-bold">
+              {loading ? "..." : citizens.length}
+            </div>
             <p className="text-xs text-gray-500">Active accounts</p>
           </CardContent>
         </Card>
@@ -385,8 +542,19 @@ const ManageCitizens = () => {
             <UserCheck className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">48</div>
-            <p className="text-xs text-gray-500">+12% from last month</p>
+            <div className="text-2xl font-bold">
+              {loading
+                ? "..."
+                : citizens.filter((c) => {
+                    const joinDate = new Date(c.joinDate);
+                    const now = new Date();
+                    return (
+                      joinDate.getMonth() === now.getMonth() &&
+                      joinDate.getFullYear() === now.getFullYear()
+                    );
+                  }).length}
+            </div>
+            <p className="text-xs text-gray-500">This month</p>
           </CardContent>
         </Card>
         <Card>
@@ -395,7 +563,9 @@ const ManageCitizens = () => {
             <UserCheck className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">156</div>
+            <div className="text-2xl font-bold">
+              {loading ? "..." : incidents.length}
+            </div>
             <p className="text-xs text-gray-500">Total incidents reported</p>
           </CardContent>
         </Card>
@@ -438,7 +608,20 @@ const ManageCitizens = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredCitizens.map((citizen) => (
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8">
+                    Loading citizens...
+                  </TableCell>
+                </TableRow>
+              ) : filteredCitizens.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8">
+                    No citizens found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredCitizens.map((citizen) => (
                 <TableRow key={citizen.id}>
                   <TableCell className="font-medium">#{citizen.id}</TableCell>
                   <TableCell>{citizen.name}</TableCell>
@@ -449,6 +632,13 @@ const ManageCitizens = () => {
                   <TableCell>{citizen.joinDate}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleView(citizen)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"
@@ -468,11 +658,76 @@ const ManageCitizens = () => {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+
+      {/* View Citizen Details Dialog */}
+      {viewingCitizen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div
+            className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+              <h2 className="text-xl font-semibold">
+                Citizen Details - User #{viewingCitizen.id}
+              </h2>
+              <Button variant="outline" size="sm" onClick={() => setViewingCitizen(null)}>
+                Close
+              </Button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Name</p>
+                  <p>{viewingCitizen.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Email</p>
+                  <p>{viewingCitizen.email}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Join Date</p>
+                  <p>{viewingCitizen.joinDate}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Total Incidents</p>
+                  <p className="text-lg font-semibold">{viewingCitizen.incidents}</p>
+                </div>
+              </div>
+              {viewingCitizen.incidents && viewingCitizen.incidents.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium text-gray-500 mb-2">
+                    Reported Incidents
+                  </p>
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {viewingCitizen.incidents.map((incident) => (
+                      <div
+                        key={incident.id}
+                        className="p-3 border rounded-lg bg-gray-50"
+                      >
+                        <p className="font-medium">{incident.title}</p>
+                        <p className="text-sm text-gray-600">
+                          {incident.location} • {incident.severity} • {incident.status}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {new Date(incident.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -4,11 +4,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import Input from "../../components/ui/input";
-import Label from "../../components/ui/label";
-import Textarea from "../../components/ui/textarea";
+} from "../../components/ui/Card";
+import { Button } from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+import Label from "../../components/ui/Label";
+import Textarea from "../../components/ui/Textarea";
 import { useState } from "react";
 import { useToast } from "../../hooks/use-toast";
 import { MessageSquare, Send } from "lucide-react";
@@ -21,15 +21,40 @@ const Feedback = () => {
     message: "",
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    toast({
-      title: "Feedback Submitted",
-      description: "Thank you for your feedback. We'll review it shortly.",
-    });
+    const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-    setFormData({ name: "", email: "", message: "" });
+    try {
+      const res = await fetch(`${apiBase}/api/contact/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.message || "Failed to send message");
+      }
+
+      toast({
+        title: "Message Sent",
+        description: "Your message has been sent successfully.",
+      });
+
+      setFormData({ name: "", email: "", message: "" });
+    } catch (err) {
+      toast({
+        title: "Send Failed",
+        description: err?.message || "Failed to send message",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

@@ -4,9 +4,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { input } from "../../components/ui/input";
+} from "../../components/ui/Card";
+import { Button } from "../../components/ui/Button";
+import { input } from "../../components/ui/Input";
 import {
   dialog,
   dialogContent,
@@ -14,7 +14,7 @@ import {
   dialogHeader,
   dialogTitle,
   dialogTrigger,
-} from "../../components/ui/dialog";
+} from "../../components/ui/Dialog";
 import { useState } from "react";
 import { useToast } from "../../hooks/use-toast";
 import { Plus, FileText, Trash, CheckSquare } from "lucide-react";

@@ -49,6 +49,14 @@ JWT_EXPIRATION=7d
 # Admin Credentials (static)
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=admin123
+
+# Email (SMTP) - used for Admin Replies to Contact messages
+SMTP_HOST=smtp.your-provider.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your_smtp_username
+SMTP_PASS=your_smtp_password
+SMTP_FROM="Relief360 Support <no-reply@relief360.local>"
 ```
 
 ## Running the Application
