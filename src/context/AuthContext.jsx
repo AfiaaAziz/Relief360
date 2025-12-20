@@ -33,14 +33,15 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, role = null) => {
     try {
       setError(null);
       const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.post(`${apiBase}/api/auth/login`, {
-        email,
-        password,
-      });
+      const requestBody = { email, password };
+      if (role) {
+        requestBody.role = role;
+      }
+      const response = await axios.post(`${apiBase}/api/auth/login`, requestBody);
       const { token, user: userData } = response.data;
       localStorage.setItem("authToken", token);
       setUser(userData);

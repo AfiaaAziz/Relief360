@@ -9,8 +9,7 @@ import {
   Users,
   UserCheck,
 } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
@@ -23,13 +22,13 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
   const [searchParams] = useSearchParams();
 
   // Auto-select role if coming from navbar buttons
   useEffect(() => {
     const roleParam = searchParams.get("role");
-    if (roleParam === "admin" || roleParam === "citizen") {
+    if (roleParam === "admin" || roleParam === "citizen" || roleParam === "volunteer") {
       setUserRole(roleParam);
     }
   }, [searchParams]);
@@ -86,17 +85,10 @@ const Login = () => {
       }
 
       // Regular user login for citizen, volunteer, hospital
-      const user = await login(formData.email, formData.password);
+      // Pass the selected role to backend for validation
+      const user = await login(formData.email, formData.password, userRole || undefined);
       setIsSubmitting(false);
       const roleToUse = user?.role || userRole;
-      
-      // Check if user role matches selected role
-      if (userRole && userRole !== roleToUse) {
-        alert(
-          `Login Failed!\nThe email you entered is registered as ${roleToUse}, not ${userRole}. Please select the correct account type or use the correct email.`
-        );
-        return;
-      }
       
       alert(
         `Login Successful!\nWelcome back! Redirecting to your ${roleToUse} dashboard...`
@@ -116,15 +108,20 @@ const Login = () => {
       else navigate("/");
     } catch (err) {
       setIsSubmitting(false);
+      
+      // Clear any stored auth data on error to prevent partial login
+      logout();
+      
       let message = "Login failed. Please check your credentials.";
       
       // Better error messages based on error type
       if (err.response?.status === 401) {
         message = "Invalid email or password. Please enter correct credentials.";
+      } else if (err.response?.status === 400) {
+        // Role mismatch or validation error
+        message = err.response?.data?.message || "Invalid information entered. Please check your email and password format.";
       } else if (err.response?.status === 404) {
         message = "Account not found. Please check your email or sign up first.";
-      } else if (err.response?.status === 400) {
-        message = "Invalid information entered. Please check your email and password format.";
       } else if (err.message) {
         message = err.message;
       } else if (err.response?.data?.message) {
@@ -353,23 +350,31 @@ const Login = () => {
                   )}
                 </button>
 
-                <div className="text-center space-y-2">
-                  <p className="text-sm text-gray-700 font-medium">
-                    Don't have an account?{" "}
-                    <Link
-                      to="/citizen-signup"
-                      className="font-black hover:underline"
-                      style={{ color: '#16537e' }}
-                    >
-                      Sign up here
-                    </Link>
-                  </p>
-                  {userRole === "citizen" && (
-                    <p className="text-xs text-gray-600">
-                      New to Relief-360? Create your citizen account to report incidents and stay informed.
+                {/* Show signup link only for citizen and volunteer, not for admin */}
+                {userRole !== "admin" && (
+                  <div className="text-center space-y-2">
+                    <p className="text-sm text-gray-700 font-medium">
+                      Don't have an account?{" "}
+                      <Link
+                        to={userRole === "volunteer" ? "/volunteer-register" : "/citizen-signup"}
+                        className="font-black hover:underline"
+                        style={{ color: '#16537e' }}
+                      >
+                        {userRole === "volunteer" ? "Register as Volunteer" : "Sign up here"}
+                      </Link>
                     </p>
-                  )}
-                </div>
+                    {userRole === "citizen" && (
+                      <p className="text-xs text-gray-600">
+                        New to Relief-360? Create your citizen account to report incidents and stay informed.
+                      </p>
+                    )}
+                    {userRole === "volunteer" && (
+                      <p className="text-xs text-gray-600">
+                        Join our volunteer network to help communities during emergencies and make a difference.
+                      </p>
+                    )}
+                  </div>
+                )}
               </form>
             </div>
           </div>
@@ -381,18 +386,10 @@ const Login = () => {
           }}>
             <div className="flex items-center justify-center mb-2">
               <AlertTriangle className="h-6 w-6 mr-2" style={{ color: '#ff3535' }} />
-              <span className="font-black" style={{ color: '#ff3535' }}>Emergency Access</span>
+              <span className="font-black" style={{ color: '#ff3535' }}>Emergency Reporting</span>
             </div>
             <p className="text-sm text-gray-700 font-medium">
-              In case of immediate emergency, you can report incidents without
-              logging in.
-              <Link
-                to="/report-incident"
-                className="font-black hover:underline ml-1"
-                style={{ color: '#ff3535' }}
-              >
-                Report Emergency Now →
-              </Link>
+              For reporting emergency, please sign in first to citizen portal.
             </p>
           </div>
         </div>

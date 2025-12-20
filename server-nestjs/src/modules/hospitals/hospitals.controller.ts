@@ -51,7 +51,20 @@ export class HospitalsController {
     @Put(':id')
     @UseGuards(JwtGuard)
     async updateHospital(@Param('id') id: string, @Body() updateHospitalDto: UpdateHospitalDto) {
-        return this.hospitalsService.update(+id, updateHospitalDto);
+        try {
+            return await this.hospitalsService.update(+id, updateHospitalDto);
+        } catch (error) {
+            console.error('Error updating hospital:', error);
+            // Re-throw HTTP exceptions as-is
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            // Wrap other errors
+            throw new HttpException(
+                error?.message || 'Failed to update hospital',
+                error?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
     }
 
     @Delete(':id')

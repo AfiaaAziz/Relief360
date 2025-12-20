@@ -175,6 +175,17 @@ const Label = ({ children, htmlFor, className = "" }) => (
 const Dialog = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   const childrenArray = React.Children.toArray(children);
   const trigger = childrenArray.find(
     (child) => child.type.displayName === "DialogTrigger"
@@ -189,7 +200,7 @@ const Dialog = ({ children }) => {
         React.cloneElement(trigger, { onClick: () => setIsOpen(true) })}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto"
           onClick={() => setIsOpen(false)}
         >
           {content &&
@@ -218,17 +229,19 @@ const DialogContent = ({ children, onClose, className = "" }) => {
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-lg w-full max-w-md ${className}`}
+      className={`bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] flex flex-col relative my-auto ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
       >
         ✕
       </button>
-      {header}
-      <div className="p-6">{otherChildren}</div>
+      <div className="flex-shrink-0">
+        {header}
+      </div>
+      <div className="p-6 overflow-y-auto flex-1 min-h-0">{otherChildren}</div>
     </div>
   );
 };

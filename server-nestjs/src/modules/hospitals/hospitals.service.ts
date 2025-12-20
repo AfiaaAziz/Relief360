@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Hospital } from './entities/hospital.entity';
 import { CreateHospitalDto } from './dto/create-hospital.dto';
+import { UpdateHospitalDto } from './dto/update-hospital.dto';
 
 @Injectable()
 export class HospitalsService {
@@ -95,11 +96,82 @@ export class HospitalsService {
         return this.hospitalsRepository.save(hospital);
     }
 
-    async update(id: number, hospitalData: Partial<Hospital>) {
-        await this.hospitalsRepository.update(id, hospitalData);
-        return this.hospitalsRepository.findOne({
-            where: { id },
-        });
+    async update(id: number, hospitalData: UpdateHospitalDto | Partial<Hospital>) {
+        try {
+            // Check if hospital exists
+            const hospital = await this.hospitalsRepository.findOne({
+                where: { id },
+            });
+            
+            if (!hospital) {
+                throw new BadRequestException(`Hospital with ID ${id} not found`);
+            }
+            
+            // Transform camelCase DTO fields to snake_case entity fields
+            const updateData: Partial<Hospital> = {};
+            const data = hospitalData as any;
+            
+            // Map camelCase to snake_case for entity fields
+            if (data.totalBeds !== undefined) updateData.total_beds = data.totalBeds;
+            else if (data.total_beds !== undefined) updateData.total_beds = data.total_beds;
+            
+            if (data.icuBeds !== undefined) updateData.icu_beds = data.icuBeds;
+            else if (data.icu_beds !== undefined) updateData.icu_beds = data.icu_beds;
+            
+            if (data.emergencyBeds !== undefined) updateData.emergency_beds = data.emergencyBeds;
+            else if (data.emergency_beds !== undefined) updateData.emergency_beds = data.emergency_beds;
+            
+            if (data.staffCount !== undefined) updateData.staff_count = data.staffCount;
+            else if (data.staff_count !== undefined) updateData.staff_count = data.staff_count;
+            
+            if (data.ambulances !== undefined) updateData.ambulances = data.ambulances;
+            
+            if (data.hospitalName !== undefined) updateData.hospital_name = data.hospitalName;
+            else if (data.hospital_name !== undefined) updateData.hospital_name = data.hospital_name;
+            
+            if (data.hospitalType !== undefined) updateData.hospital_type = data.hospitalType;
+            else if (data.hospital_type !== undefined) updateData.hospital_type = data.hospital_type;
+            
+            if (data.address !== undefined) updateData.address = data.address;
+            if (data.phone !== undefined) updateData.phone = data.phone;
+            
+            if (data.emergencyPhone !== undefined) updateData.emergency_phone = data.emergencyPhone;
+            else if (data.emergency_phone !== undefined) updateData.emergency_phone = data.emergency_phone;
+            
+            if (data.email !== undefined) updateData.email = data.email;
+            
+            if (data.contactName !== undefined) updateData.contact_name = data.contactName;
+            else if (data.contact_name !== undefined) updateData.contact_name = data.contact_name;
+            
+            if (data.contactPosition !== undefined) updateData.contact_position = data.contactPosition;
+            else if (data.contact_position !== undefined) updateData.contact_position = data.contact_position;
+            
+            if (data.contactPhone !== undefined) updateData.contact_phone = data.contactPhone;
+            else if (data.contact_phone !== undefined) updateData.contact_phone = data.contact_phone;
+            
+            if (data.contactEmail !== undefined) updateData.contact_email = data.contactEmail;
+            else if (data.contact_email !== undefined) updateData.contact_email = data.contact_email;
+            
+            if (data.additionalInfo !== undefined) updateData.additional_info = data.additionalInfo;
+            else if (data.additional_info !== undefined) updateData.additional_info = data.additional_info;
+            
+            if (data.services !== undefined) updateData.services = data.services;
+            
+            // Only update if there's data to update
+            if (Object.keys(updateData).length === 0) {
+                return hospital;
+            }
+            
+            console.log('Updating hospital with data:', updateData);
+            
+            await this.hospitalsRepository.update(id, updateData);
+            return this.hospitalsRepository.findOne({
+                where: { id },
+            });
+        } catch (error) {
+            console.error('Error in update method:', error);
+            throw error;
+        }
     }
 
     async updateStatus(id: number, status: string) {

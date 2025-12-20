@@ -66,14 +66,35 @@ const Select = ({ value, onValueChange, children, ...props }) => {
       const dropdownHeight = 200; // maxHeight
       const minRequiredSpace = 250; // dropdown height + margin + buffer
       
-      // Get the next element to check if dropdown would overlap
-      const nextElement = buttonRef.current.closest('.select-container')?.nextElementSibling;
+      // Check if dropdown would overlap with elements below
       let wouldOverlap = false;
-      
-      if (nextElement) {
-        const nextElementRect = nextElement.getBoundingClientRect();
-        const dropdownBottom = buttonRect.bottom + dropdownHeight + 8; // mt-2 = 8px
-        wouldOverlap = dropdownBottom > nextElementRect.top;
+      const container = buttonRef.current.closest('.select-container');
+      if (container) {
+        // Get all siblings and next elements
+        let currentElement = container.parentElement;
+        if (currentElement) {
+          // Check next sibling cards or sections
+          let nextSibling = container.nextElementSibling;
+          while (nextSibling) {
+            const nextRect = nextSibling.getBoundingClientRect();
+            const dropdownBottom = buttonRect.bottom + dropdownHeight + 8;
+            if (nextRect.top < dropdownBottom && nextRect.top > buttonRect.bottom) {
+              wouldOverlap = true;
+              break;
+            }
+            nextSibling = nextSibling.nextElementSibling;
+          }
+          
+          // Also check the next card/section in the parent
+          const parentNext = currentElement.nextElementSibling;
+          if (parentNext) {
+            const parentNextRect = parentNext.getBoundingClientRect();
+            const dropdownBottom = buttonRect.bottom + dropdownHeight + 8;
+            if (parentNextRect.top < dropdownBottom && parentNextRect.top > buttonRect.bottom) {
+              wouldOverlap = true;
+            }
+          }
+        }
       }
       
       // Check if there's enough space below and no overlap
@@ -101,7 +122,7 @@ const Select = ({ value, onValueChange, children, ...props }) => {
 
   return (
     <SelectContext.Provider value={{ value, onSelect: handleSelect, isOpen, setIsOpen }}>
-      <div className="relative select-container" style={{ zIndex: isOpen ? 10 : 1 }}>
+      <div className="relative select-container" style={{ zIndex: isOpen ? 50 : 1 }}>
         <button
           ref={buttonRef}
           type="button"
@@ -153,7 +174,8 @@ const Select = ({ value, onValueChange, children, ...props }) => {
               borderColor: '#16537e',
               scrollbarWidth: 'thin',
               scrollbarColor: '#16537e rgba(22, 83, 126, 0.1)',
-              position: 'absolute'
+              position: 'absolute',
+              isolation: 'isolate'
             }}
           >
             <style>{`

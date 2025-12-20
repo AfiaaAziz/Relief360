@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/Card";
+import React from "react";
 import {
   AlertCircle,
   CheckCircle,
@@ -15,58 +9,131 @@ import { Link } from "react-router-dom";
 import { mockStats, mockIncidents } from "../../utils/mockData";
 import { Badge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
-import { Progress } from "../../components/ui/Progress";
+
+// Reusable styled components matching admin portal
+const Card = ({ children, className = "" }) => (
+  <div
+    className={`rounded-2xl border-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-sm ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.2)'
+    }}
+  >
+    {children}
+  </div>
+);
+
+const CardHeader = ({ children, className = "" }) => (
+  <div 
+    className={`p-6 border-b-2 ${className}`}
+    style={{
+      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+      borderColor: 'rgba(22, 83, 126, 0.3)',
+      paddingTop: '1.75rem',
+      paddingBottom: '1.75rem'
+    }}
+  >
+    {children}
+  </div>
+);
+
+const CardTitle = ({ children, className = "" }) => (
+  <h3 className={`text-xl font-black text-white ${className}`} style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', lineHeight: '1.3', paddingBottom: '0.25rem' }}>
+    {children}
+  </h3>
+);
+
+const CardDescription = ({ children, className = "" }) => (
+  <p className={`text-sm text-white/90 mt-2 font-semibold ${className}`} style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.2)' }}>{children}</p>
+);
+
+const CardContent = ({ children, className = "" }) => (
+  <div className={`p-6 ${className}`}>{children}</div>
+);
 
 const VolunteerDashboard = () => {
   const stats = mockStats.volunteer;
 
   return (
-    <div className="space-y-6">
+    <div 
+      className="p-6 space-y-6 relative overflow-hidden min-h-screen"
+      style={{
+        background: 'radial-gradient(circle at 20% 50%, rgba(106, 168, 79, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(22, 83, 126, 0.15) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)'
+      }}
+    >
       {/* Welcome Section */}
-      <div>
-        <h1 className="text-3xl font-bold">Welcome, Ali Hassan</h1>
-        <p className="text-muted-foreground mt-1">
+      <div className="animate-fade-in">
+        <h1 
+          className="text-5xl md:text-6xl font-black mb-3"
+          style={{
+            background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 50%, #38761d 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            textShadow: '0 4px 20px rgba(22, 83, 126, 0.2)',
+            lineHeight: '1.2',
+            paddingBottom: '0.5rem'
+          }}
+        >
+          Welcome, Ali Hassan
+        </h1>
+        <p className="text-xl md:text-2xl font-bold mt-3" style={{ color: '#16537e' }}>
           Thank you for your service to the community
         </p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">
               Active Assignments
             </CardTitle>
-            <AlertCircle className="h-4 w-4 text-warning" />
+            <AlertCircle className="h-5 w-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.assignedIncidents}</div>
+            <div className="text-3xl font-black" style={{ color: '#16537e' }}>{stats.assignedIncidents}</div>
+            <p className="text-xs text-gray-500 mt-1 font-semibold">Currently active</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <CheckCircle className="h-4 w-4 text-success" />
+            <CheckCircle className="h-5 w-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.completedIncidents}</div>
+            <div className="text-3xl font-black" style={{ color: '#6aa84f' }}>{stats.completedIncidents}</div>
+            <p className="text-xs text-gray-500 mt-1 font-semibold">Successfully resolved</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">
               Hours Volunteered
             </CardTitle>
-            <Clock className="h-4 w-4 text-info" />
+            <Clock className="h-5 w-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.hoursVolunteered}h</div>
+            <div className="text-3xl font-black" style={{ color: '#16537e' }}>{stats.hoursVolunteered}h</div>
+            <p className="text-xs text-gray-500 mt-1 font-semibold">Total contribution</p>
+          </CardContent>
+        </Card>
+        <Card className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">
+              Success Rate
+            </CardTitle>
+            <TrendingUp className="h-5 w-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-black" style={{ color: '#6aa84f' }}>95%</div>
+            <p className="text-xs text-gray-500 mt-1 font-semibold">Excellent performance</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Emergency Alerts */}
-      <Card>
+      <Card className="animate-fade-in" style={{ animationDelay: '0.5s' }}>
         <CardHeader>
           <CardTitle>Recent Emergency Alerts</CardTitle>
           <CardDescription>
@@ -74,28 +141,57 @@ const VolunteerDashboard = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="p-4 border-l-4 border-emergency bg-emergency/5 rounded">
+          <div 
+            className="p-4 border-l-4 rounded-lg transition-all duration-300 hover:shadow-lg transform hover:-translate-x-1"
+            style={{
+              borderLeftColor: '#ff3535',
+              background: 'linear-gradient(135deg, rgba(255, 53, 53, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%)'
+            }}
+          >
             <div className="flex items-start justify-between">
               <div>
-                <p className="font-semibold">Critical: Flood Relief - Lahore</p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="font-black text-lg" style={{ color: '#16537e' }}>Critical: Flood Relief - Lahore</p>
+                <p className="text-sm font-semibold mt-1" style={{ color: '#666' }}>
                   Urgent need for rescue volunteers
                 </p>
               </div>
-              <Button size="sm">Respond</Button>
+              <Button 
+                size="sm"
+                style={{
+                  background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+                  color: '#ffffff',
+                  boxShadow: '0 4px 15px rgba(255, 53, 53, 0.4)'
+                }}
+              >
+                Respond
+              </Button>
             </div>
           </div>
-          <div className="p-4 border-l-4 border-warning bg-warning/5 rounded">
+          <div 
+            className="p-4 border-l-4 rounded-lg transition-all duration-300 hover:shadow-lg transform hover:-translate-x-1"
+            style={{
+              borderLeftColor: '#f48836',
+              background: 'linear-gradient(135deg, rgba(244, 136, 54, 0.1) 0%, rgba(244, 136, 54, 0.05) 100%)'
+            }}
+          >
             <div className="flex items-start justify-between">
               <div>
-                <p className="font-semibold">
+                <p className="font-black text-lg" style={{ color: '#16537e' }}>
                   High: Medical Supplies - Karachi
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm font-semibold mt-1" style={{ color: '#666' }}>
                   Distribution assistance needed
                 </p>
               </div>
-              <Button size="sm" variant="outline">
+              <Button 
+                size="sm"
+                variant="outline"
+                style={{
+                  border: '2px solid #16537e',
+                  background: 'transparent',
+                  color: '#16537e',
+                }}
+              >
                 View Details
               </Button>
             </div>
@@ -103,9 +199,9 @@ const VolunteerDashboard = () => {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 grid-cols-1">
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
         {/* Current Assignments */}
-        <Card>
+        <Card className="animate-slide-up" style={{ animationDelay: '0.6s' }}>
           <CardHeader>
             <CardTitle>Current Assignments</CardTitle>
             <CardDescription>Active incidents assigned to you</CardDescription>
@@ -113,32 +209,71 @@ const VolunteerDashboard = () => {
           <CardContent className="space-y-4">
             {mockIncidents
               .filter((i) => i.status === "In Progress")
-              .map((incident) => (
+              .map((incident, idx) => (
                 <div
                   key={incident.id}
-                  className="p-4 border rounded-lg space-y-2"
+                  className="p-4 border-2 rounded-xl space-y-2 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
+                  style={{
+                    borderColor: 'rgba(22, 83, 126, 0.2)',
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%)'
+                  }}
                 >
                   <div className="flex items-center justify-between">
-                    <p className="font-semibold">{incident.type}</p>
-                    <Badge variant="secondary">{incident.severity}</Badge>
+                    <p className="font-black text-lg" style={{ color: '#16537e' }}>{incident.type}</p>
+                    <Badge 
+                      variant="secondary"
+                      style={{
+                        background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
+                        color: '#ffffff',
+                        borderColor: '#16537e'
+                      }}
+                    >
+                      {incident.severity}
+                    </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm font-semibold" style={{ color: '#666' }}>
                     {incident.location}
                   </p>
                   <div className="space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span>Progress</span>
-                      <span>65%</span>
+                    <div className="flex justify-between text-xs font-bold">
+                      <span style={{ color: '#16537e' }}>Progress</span>
+                      <span style={{ color: '#6aa84f' }}>65%</span>
                     </div>
-                    <Progress value={65} />
+                    <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full transition-all duration-500 rounded-full"
+                        style={{
+                          width: '65%',
+                          background: 'linear-gradient(90deg, #6aa84f 0%, #38761d 100%)',
+                          boxShadow: '0 2px 8px rgba(106, 168, 79, 0.4)'
+                        }}
+                      />
+                    </div>
                   </div>
-                  <Button size="sm" variant="outline" className="w-full">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full mt-2"
+                    style={{
+                      border: '2px solid #16537e',
+                      background: 'transparent',
+                      color: '#16537e',
+                    }}
+                  >
                     Mark as Completed
                   </Button>
                 </div>
               ))}
             <Link to="/volunteer-dashboard/assignments">
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                style={{
+                  border: '2px solid #16537e',
+                  background: 'transparent',
+                  color: '#16537e',
+                }}
+              >
                 View All Assignments
               </Button>
             </Link>
@@ -146,44 +281,99 @@ const VolunteerDashboard = () => {
         </Card>
 
         {/* Performance Overview */}
-        <Card>
+        <Card className="animate-slide-up" style={{ animationDelay: '0.7s' }}>
           <CardHeader>
             <CardTitle>This Month's Impact</CardTitle>
             <CardDescription>Your contribution summary</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+            <div 
+              className="flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
+              style={{
+                background: 'linear-gradient(135deg, rgba(106, 168, 79, 0.1) 0%, rgba(56, 118, 29, 0.05) 100%)',
+                border: '2px solid rgba(106, 168, 79, 0.2)'
+              }}
+            >
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-success" />
-                <span className="text-sm">Incidents Resolved</span>
+                <TrendingUp className="h-5 w-5" style={{ color: '#6aa84f' }} />
+                <span className="text-sm font-bold" style={{ color: '#16537e' }}>Incidents Resolved</span>
               </div>
-              <span className="font-bold">8</span>
+              <span className="font-black text-xl" style={{ color: '#6aa84f' }}>8</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+            <div 
+              className="flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
+              style={{
+                background: 'linear-gradient(135deg, rgba(22, 83, 126, 0.1) 0%, rgba(22, 83, 126, 0.05) 100%)',
+                border: '2px solid rgba(22, 83, 126, 0.2)'
+              }}
+            >
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-info" />
-                <span className="text-sm">Hours This Month</span>
+                <Clock className="h-5 w-5" style={{ color: '#16537e' }} />
+                <span className="text-sm font-bold" style={{ color: '#16537e' }}>Hours This Month</span>
               </div>
-              <span className="font-bold">24h</span>
+              <span className="font-black text-xl" style={{ color: '#16537e' }}>24h</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+            <div 
+              className="flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
+              style={{
+                background: 'linear-gradient(135deg, rgba(106, 168, 79, 0.1) 0%, rgba(56, 118, 29, 0.05) 100%)',
+                border: '2px solid rgba(106, 168, 79, 0.2)'
+              }}
+            >
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-success" />
-                <span className="text-sm">Success Rate</span>
+                <CheckCircle className="h-5 w-5" style={{ color: '#6aa84f' }} />
+                <span className="text-sm font-bold" style={{ color: '#16537e' }}>Success Rate</span>
               </div>
-              <span className="font-bold">95%</span>
+              <span className="font-black text-xl" style={{ color: '#6aa84f' }}>95%</span>
             </div>
-            <div className="p-4 bg-success/10 border border-success rounded-lg text-center">
-              <p className="text-sm text-success font-semibold">
+            <div 
+              className="p-4 rounded-xl text-center transition-all duration-300 hover:shadow-xl transform hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #6aa84f 0%, #38761d 100%)',
+                border: '2px solid #38761d',
+                boxShadow: '0 4px 15px rgba(106, 168, 79, 0.4)'
+              }}
+            >
+              <p className="text-sm font-black text-white">
                 Excellent Performance!
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-white/90 mt-1 font-semibold">
                 Keep up the great work
               </p>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      <style>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out forwards;
+        }
+        .animate-slide-up {
+          animation: slide-up 0.6s ease-out forwards;
+          opacity: 0;
+        }
+      `}</style>
     </div>
   );
 };

@@ -24,7 +24,7 @@ export class AuthService {
     ) { }
 
     async login(loginDto: LoginDto) {
-        const { email, password } = loginDto;
+        const { email, password, role: requestedRole } = loginDto;
 
         // First check volunteers table
         let account: Volunteer | Hospital | Citizen | null = await this.volunteersRepository.findOne({
@@ -54,9 +54,17 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
+        // Validate password
         const isPasswordValid = await bcrypt.compare(password, account.password_hash);
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid credentials');
+        }
+
+        // Validate role if provided - user must match the selected role
+        if (requestedRole && requestedRole !== role) {
+            throw new BadRequestException(
+                `The email you entered is registered as ${role}, not ${requestedRole}. Please select the correct account type or use the correct email.`
+            );
         }
 
         const token = this.generateTokenForAccount(account, role);
