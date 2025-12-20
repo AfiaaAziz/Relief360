@@ -756,7 +756,7 @@ const ManageCitizens = () => {
                     Total Incidents
                   </p>
                   <p className="text-lg font-semibold">
-                    {viewingCitizen.incidents}
+                    {viewingCitizen.incidents.length}
                   </p>
                 </div>
               </div>
