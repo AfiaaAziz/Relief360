@@ -9,8 +9,11 @@ import { ContactModule } from './modules/contact/contact.module';
 import { DonationsModule } from './modules/donations/donations.module';
 import { CitizensModule } from './modules/citizens/citizens.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
+import { EmergencyPlansModule } from './modules/emergency-plans/emergency-plans.module';
 import { User } from './modules/auth/entities/user.entity';
 import { Volunteer } from './modules/volunteers/entities/volunteer.entity';
+import { EmergencyPlan } from './modules/emergency-plans/entities/emergency-plan.entity';
+import { EmergencyPlanTask } from './modules/emergency-plans/entities/emergency-plan-task.entity';
 import { Hospital } from './modules/hospitals/entities/hospital.entity';
 import { Incident } from './modules/incidents/entities/incident.entity';
 import { VolunteerAssignment } from './modules/incidents/entities/volunteer-assignment.entity';
@@ -31,7 +34,7 @@ import { Feedback } from './modules/feedback/entities/feedback.entity';
             database: process.env.PG_DATABASE || 'relief360',
             username: process.env.PG_USER,
             password: process.env.PG_PASSWORD,
-            entities: [User, Volunteer, Hospital, Incident, VolunteerAssignment, ContactMessage, require('./modules/donations/entities/donation.entity').Donation, Citizen, Feedback],
+            entities: [User, Volunteer, EmergencyPlan, EmergencyPlanTask, Hospital, Incident, VolunteerAssignment, ContactMessage, require('./modules/donations/entities/donation.entity').Donation, Citizen, Feedback],
             synchronize: false, // Disabled - use migrations instead to avoid NULL value conflicts
             logging: process.env.NODE_ENV === 'development',
         }),
@@ -43,6 +46,7 @@ import { Feedback } from './modules/feedback/entities/feedback.entity';
         DonationsModule,
         CitizensModule,
         FeedbackModule,
+        EmergencyPlansModule,
     ],
     controllers: [],
     providers: [],

@@ -56,4 +56,10 @@ export class Volunteer {
 
     @CreateDateColumn()
     created_at: Date;
+
+    // One-to-many relation to emergency plans
+    // Note: import is dynamic to avoid circular dependency issues at file load time in some environments
+    // We'll add the relation at runtime via a function to keep entities clean
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    plans?: any[];
 }
