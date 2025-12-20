@@ -474,10 +474,15 @@ const ManageCitizens = () => {
       return;
     }
     try {
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
         `http://localhost:5000/api/citizens/${citizenId}/block`,
         {
           method: "PUT",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
         }
       );
 
@@ -490,12 +495,14 @@ const ManageCitizens = () => {
           variant: "destructive",
         });
       } else {
-        throw new Error("Failed to block citizen");
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || "Failed to block citizen");
       }
     } catch (error) {
+      console.error("Error blocking citizen:", error);
       toast({
         title: "Block Failed",
-        description: "Failed to block citizen",
+        description: error.message || "Failed to block citizen",
         variant: "destructive",
       });
     }
@@ -510,10 +517,15 @@ const ManageCitizens = () => {
       return;
     }
     try {
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
         `http://localhost:5000/api/citizens/${citizenId}`,
         {
           method: "DELETE",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
         }
       );
 
@@ -526,12 +538,14 @@ const ManageCitizens = () => {
           variant: "destructive",
         });
       } else {
-        throw new Error("Failed to delete citizen");
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || "Failed to delete citizen");
       }
     } catch (error) {
+      console.error("Error deleting citizen:", error);
       toast({
         title: "Delete Failed",
-        description: "Failed to delete citizen",
+        description: error.message || "Failed to delete citizen",
         variant: "destructive",
       });
     }
