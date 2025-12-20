@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AlertCircle,
   Hospital,
@@ -6,9 +6,10 @@ import {
   Phone,
   FileText,
   TrendingUp,
+  Loader2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { mockStats, mockIncidents } from "../../utils/mockData";
+import { mockStats, mockIncidents } from "../../utils/mockData"; // kept for fallback
 import { useAuth } from "../../context/AuthContext";
 import { Badge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
@@ -68,8 +69,12 @@ const CardContent = ({ children, className = "" }) => (
 );
 
 const CitizenDashboard = () => {
-  const stats = mockStats.citizen;
   const { user } = useAuth();
+
+  // Incidents state (dynamic)
+  const [incidents, setIncidents] = useState([]);
+  const [loadingIncidents, setLoadingIncidents] = useState(true);
+  const [incidentsError, setIncidentsError] = useState(null);
 
   // Construct a human-friendly display name using any available fields
   const nameParts = [];
@@ -83,6 +88,80 @@ const CitizenDashboard = () => {
   const displayName = nameParts.length
     ? nameParts.join(" ")
     : user?.email || "Citizen";
+
+  // Derived stats from incidents
+  const totalIncidents = incidents.length;
+  const resolvedIncidents = incidents.filter(
+    (i) => String(i.status || "").toLowerCase() === "resolved"
+  ).length;
+  const pendingIncidents = incidents.filter(
+    (i) => String(i.status || "").toLowerCase() !== "resolved"
+  ).length;
+  // Active alerts: incidents with high/critical severity
+  const activeAlerts = incidents.filter((i) =>
+    ["high", "critical"].includes(String(i.severity || "").toLowerCase())
+  ).length;
+
+  // Fetch user's incidents from backend
+  useEffect(() => {
+    const fetchMyIncidents = async () => {
+      setLoadingIncidents(true);
+      setIncidentsError(null);
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          setIncidentsError("Authentication required");
+          setIncidents([]);
+          return;
+        }
+        const apiBase =
+          process.env.REACT_APP_API_URL || "http://localhost:5000";
+        const res = await fetch(`${apiBase}/api/incidents/my-incidents`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          throw new Error(text || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        const arr = Array.isArray(data) ? data : data?.incidents || [];
+        arr.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        setIncidents(arr);
+      } catch (err) {
+        console.error("Failed to fetch user incidents:", err);
+        setIncidents([]);
+        setIncidentsError(err.message || "Failed to fetch incidents");
+      } finally {
+        setLoadingIncidents(false);
+      }
+    };
+
+    if (user) fetchMyIncidents();
+  }, [user]);
+
+  const formatStatus = (st) => {
+    if (!st) return "";
+    return String(st)
+      .replace(/_/g, " ")
+      .split(" ")
+      .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+      .join(" ");
+  };
+
+  const stats = {
+    totalIncidents: loadingIncidents
+      ? mockStats.citizen?.totalIncidents ?? 0
+      : totalIncidents,
+    pendingIncidents: loadingIncidents
+      ? mockStats.citizen?.pendingIncidents ?? 0
+      : pendingIncidents,
+    resolvedIncidents: loadingIncidents
+      ? mockStats.citizen?.resolvedIncidents ?? 0
+      : resolvedIncidents,
+    activeAlerts: loadingIncidents
+      ? mockStats.citizen?.activeAlerts ?? 0
+      : activeAlerts,
+  };
 
   return (
     <div
@@ -345,54 +424,56 @@ const CitizenDashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {mockIncidents.slice(0, 3).map((incident, idx) => (
-              <div
-                key={incident.id}
-                className="flex items-center justify-between p-4 border-2 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
-                style={{
-                  borderColor: "rgba(22, 83, 126, 0.2)",
-                  background:
-                    "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%)",
-                }}
-              >
-                <div>
-                  <p
-                    className="font-black text-lg"
-                    style={{ color: "#16537e" }}
-                  >
-                    {incident.type}
-                  </p>
-                  <p
-                    className="text-sm font-semibold mt-1"
-                    style={{ color: "#666" }}
-                  >
-                    ID: {incident.id} • {incident.date}
-                  </p>
-                </div>
-                <Badge
-                  variant={
-                    incident.status === "Resolved" ? "default" : "secondary"
-                  }
-                  style={
-                    incident.status === "Resolved"
-                      ? {
-                          background:
-                            "linear-gradient(135deg, #6aa84f 0%, #38761d 100%)",
-                          color: "#ffffff",
-                          borderColor: "#38761d",
-                        }
-                      : {
-                          background:
-                            "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
-                          color: "#ffffff",
-                          borderColor: "#16537e",
-                        }
-                  }
+            {(incidents.length ? incidents : mockIncidents)
+              .slice(0, 3)
+              .map((incident, idx) => (
+                <div
+                  key={incident.id}
+                  className="flex items-center justify-between p-4 border-2 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
+                  style={{
+                    borderColor: "rgba(22, 83, 126, 0.2)",
+                    background:
+                      "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%)",
+                  }}
                 >
-                  {incident.status}
-                </Badge>
-              </div>
-            ))}
+                  <div>
+                    <p
+                      className="font-black text-lg"
+                      style={{ color: "#16537e" }}
+                    >
+                      {incident.type}
+                    </p>
+                    <p
+                      className="text-sm font-semibold mt-1"
+                      style={{ color: "#666" }}
+                    >
+                      ID: {incident.id} • {incident.date}
+                    </p>
+                  </div>
+                  <Badge
+                    variant={
+                      incident.status === "Resolved" ? "default" : "secondary"
+                    }
+                    style={
+                      incident.status === "Resolved"
+                        ? {
+                            background:
+                              "linear-gradient(135deg, #6aa84f 0%, #38761d 100%)",
+                            color: "#ffffff",
+                            borderColor: "#38761d",
+                          }
+                        : {
+                            background:
+                              "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+                            color: "#ffffff",
+                            borderColor: "#16537e",
+                          }
+                    }
+                  >
+                    {incident.status}
+                  </Badge>
+                </div>
+              ))}
           </div>
           <Link to="/citizen-dashboard/incidents">
             <Button
