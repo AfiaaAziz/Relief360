@@ -65,9 +65,20 @@ export class IncidentsService {
     async update(id: number, updateData: Partial<Incident>) {
         try {
             await this.incidentsRepository.update(id, updateData);
-            return await this.incidentsRepository.findOne({
+            const updatedIncident = await this.incidentsRepository.findOne({
                 where: { id },
             });
+
+            // If incident is being marked as resolved, sync assignment status
+            if (updatedIncident && updateData.status === 'Resolved') {
+                await this.syncAssignmentStatusWithIncident(id, 'completed');
+            }
+            // If incident is being marked as in progress, sync assignment status  
+            else if (updatedIncident && updateData.status === 'In Progress') {
+                await this.syncAssignmentStatusWithIncident(id, 'in_progress');
+            }
+
+            return updatedIncident;
         } catch (err: any) {
             if (err?.code === '42P01') {
                 throw new ServiceUnavailableException(
@@ -75,6 +86,23 @@ export class IncidentsService {
                 );
             }
             throw err;
+        }
+    }
+
+    // Helper method to sync assignment status with incident status
+    private async syncAssignmentStatusWithIncident(incidentId: number, assignmentStatus: string) {
+        try {
+            const assignment = await this.assignmentsRepository.findOne({
+                where: { incident_id: incidentId },
+            });
+
+            if (assignment && assignment.status !== assignmentStatus) {
+                assignment.status = assignmentStatus;
+                await this.assignmentsRepository.save(assignment);
+                console.log(`Synced assignment ${assignment.id} status to ${assignmentStatus}`);
+            }
+        } catch (err) {
+            console.error('Failed to sync assignment status:', err);
         }
     }
 
@@ -203,25 +231,45 @@ export class IncidentsService {
                 order: { assigned_at: 'DESC' },
             });
 
-            // Transform the data to match frontend expectations
-            return assignments.map(assignment => ({
-                id: assignment.id,
-                assigned_at: assignment.assigned_at,
-                status: assignment.status,
-                notes: assignment.notes,
-                incident: assignment.incident ? {
-                    id: assignment.incident.id,
-                    title: assignment.incident.title,
-                    description: assignment.incident.description,
-                    location: assignment.incident.location,
-                    severity: assignment.incident.severity,
-                    status: assignment.incident.status,
-                    created_at: assignment.incident.created_at,
-                    // Map status for frontend compatibility
-                    type: assignment.incident.title || 'Emergency', // Using title as type fallback
-                    date: assignment.incident.created_at
-                } : null
-            }));
+            // Transform the data to match frontend expectations with enhanced status mapping
+            return assignments.map(assignment => {
+                const incident = assignment.incident;
+
+                // Enhanced status mapping logic
+                let mappedStatus = assignment.status;
+
+                // If incident is resolved, override assignment status to completed
+                if (incident && incident.status === 'Resolved') {
+                    mappedStatus = 'completed';
+                }
+                // If incident is in progress, mark assignment as in progress
+                else if (incident && incident.status === 'In Progress') {
+                    mappedStatus = 'in_progress';
+                }
+                // Default assignment status logic
+                else if (assignment.status === 'assigned') {
+                    mappedStatus = 'assigned';
+                }
+
+                return {
+                    id: assignment.id,
+                    assigned_at: assignment.assigned_at,
+                    status: mappedStatus,
+                    notes: assignment.notes,
+                    incident: incident ? {
+                        id: incident.id,
+                        title: incident.title,
+                        description: incident.description,
+                        location: incident.location,
+                        severity: incident.severity,
+                        status: incident.status,
+                        created_at: incident.created_at,
+                        // Map status for frontend compatibility
+                        type: incident.title || 'Emergency', // Using title as type fallback
+                        date: incident.created_at
+                    } : null
+                };
+            });
         } catch (err: any) {
             console.error('Error fetching assignments for volunteer:', err);
             if (err?.code === '42P01') return [];
