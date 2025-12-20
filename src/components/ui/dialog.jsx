@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 const Dialog = ({ open: controlledOpen, onOpenChange, children }) => {
   const [internalOpen, setInternalOpen] = useState(false);
@@ -26,10 +27,12 @@ const Dialog = ({ open: controlledOpen, onOpenChange, children }) => {
   // Check if DialogTrigger pattern is being used
   const childrenArray = React.Children.toArray(children);
   const trigger = childrenArray.find(
-    (child) => React.isValidElement(child) && child.type?.displayName === "DialogTrigger"
+    (child) =>
+      React.isValidElement(child) && child.type?.displayName === "DialogTrigger"
   );
   const content = childrenArray.find(
-    (child) => React.isValidElement(child) && child.type?.displayName === "DialogContent"
+    (child) =>
+      React.isValidElement(child) && child.type?.displayName === "DialogContent"
   );
 
   // If DialogTrigger pattern is used
@@ -37,31 +40,33 @@ const Dialog = ({ open: controlledOpen, onOpenChange, children }) => {
     return (
       <>
         {trigger &&
-          React.cloneElement(trigger, { 
+          React.cloneElement(trigger, {
             onClick: () => setIsOpen(true),
-            ...trigger.props 
+            ...trigger.props,
           })}
-        {isOpen && (
-          <div 
-            className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto"
-            style={{ 
-              background: 'rgba(0, 0, 0, 0.5)',
-              zIndex: 9999,
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0
-            }}
-            onClick={() => setIsOpen(false)}
-          >
-            {content &&
-              React.cloneElement(content, { 
-                onClose: () => setIsOpen(false),
-                ...content.props 
-              })}
-          </div>
-        )}
+        {isOpen &&
+          createPortal(
+            <div
+              className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto"
+              style={{
+                background: "rgba(0, 0, 0, 0.5)",
+                zIndex: 99999,
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+              onClick={() => setIsOpen(false)}
+            >
+              {content &&
+                React.cloneElement(content, {
+                  onClose: () => setIsOpen(false),
+                  ...content.props,
+                })}
+            </div>,
+            document.body
+          )}
       </>
     );
   }
@@ -69,51 +74,58 @@ const Dialog = ({ open: controlledOpen, onOpenChange, children }) => {
   // Controlled pattern (open/onOpenChange)
   if (!isOpen) return null;
 
-  return (
-    <div 
-      className="fixed inset-0 flex items-center justify-center"
-      style={{ 
-        zIndex: 9999,
-        position: 'fixed',
+  return createPortal(
+    <div
+      className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto"
+      style={{
+        zIndex: 99999,
+        position: "fixed",
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0
+        bottom: 0,
       }}
+      onClick={() => setIsOpen(false)}
     >
       <div
         className="fixed inset-0 bg-black/50"
-        style={{ zIndex: 9999 }}
+        style={{ zIndex: 99999 }}
         onClick={() => setIsOpen(false)}
       />
-      <div 
+      <div
         className="relative bg-white rounded-lg shadow-lg max-w-lg w-full mx-4"
-        style={{ zIndex: 10000 }}
+        style={{ zIndex: 100000 }}
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
 const DialogContent = ({ children, className = "", onClose, ...props }) => {
   const childrenArray = React.Children.toArray(children);
   const header = childrenArray.find(
-    (child) => React.isValidElement(child) && child.type?.displayName === "DialogHeader"
+    (child) =>
+      React.isValidElement(child) && child.type?.displayName === "DialogHeader"
   );
   const otherChildren = childrenArray.filter(
-    (child) => !(React.isValidElement(child) && child.type?.displayName === "DialogHeader")
+    (child) =>
+      !(
+        React.isValidElement(child) &&
+        child.type?.displayName === "DialogHeader"
+      )
   );
 
   return (
     <div
       className={`bg-white rounded-lg shadow-lg max-w-lg w-full mx-4 flex flex-col relative my-auto ${className}`}
-      style={{ 
+      style={{
         zIndex: 10000,
-        position: 'relative',
-        margin: 'auto',
-        maxHeight: 'calc(100vh - 4rem)',
-        maxWidth: '32rem'
+        position: "relative",
+        margin: "auto",
+        maxHeight: "calc(100vh - 4rem)",
+        maxWidth: "32rem",
       }}
       onClick={(e) => e.stopPropagation()}
       {...props}
@@ -127,17 +139,24 @@ const DialogContent = ({ children, className = "", onClose, ...props }) => {
           ✕
         </button>
       )}
-      <div className="flex-shrink-0">
-        {header}
+      <div className="flex-shrink-0">{header}</div>
+      <div
+        className="p-6 overflow-y-auto flex-1 min-h-0"
+        style={{ maxHeight: "calc(100vh - 12rem)" }}
+      >
+        {otherChildren}
       </div>
-      <div className="p-6 overflow-y-auto flex-1 min-h-0" style={{ maxHeight: 'calc(100vh - 12rem)' }}>{otherChildren}</div>
     </div>
   );
 };
 DialogContent.displayName = "DialogContent";
 
 const DialogHeader = ({ children, className = "" }) => {
-  return <div className={`p-6 border-b border-gray-100 ${className}`}>{children}</div>;
+  return (
+    <div className={`p-6 border-b border-gray-100 ${className}`}>
+      {children}
+    </div>
+  );
 };
 DialogHeader.displayName = "DialogHeader";
 

@@ -73,10 +73,22 @@ export class AuthService {
             email: account.email,
             role: role,
         };
-        // If the account is a citizen, include first and last name for frontend convenience
-        if (role === 'citizen') {
-            userPayload.firstName = (account as Citizen).first_name;
-            userPayload.lastName = (account as Citizen).last_name;
+        // If the account is a citizen or volunteer, include name fields
+        if (role === 'citizen' || role === 'volunteer') {
+            userPayload.firstName = (account as any).first_name;
+            userPayload.lastName = (account as any).last_name;
+        }
+
+        // If the account is a volunteer, include additional volunteer profile fields
+        if (role === 'volunteer') {
+            userPayload.phone = (account as any).phone;
+            userPayload.skills = (account as any).skills || [];
+            userPayload.experience = (account as any).experience;
+            userPayload.address = (account as any).address;
+            userPayload.availability = (account as any).availability;
+            // boolean convenience property for frontend toggles
+            const avail = (account as any).availability;
+            userPayload.available = typeof avail === 'string' ? avail.toLowerCase().includes('avail') : !!avail;
         }
 
         return {
@@ -167,9 +179,19 @@ export class AuthService {
             role: role,
         };
 
-        if (role === 'citizen') {
-            resultPayload.firstName = (account as Citizen).first_name;
-            resultPayload.lastName = (account as Citizen).last_name;
+        if (role === 'citizen' || role === 'volunteer') {
+            resultPayload.firstName = (account as any).first_name;
+            resultPayload.lastName = (account as any).last_name;
+        }
+
+        if (role === 'volunteer') {
+            resultPayload.phone = (account as any).phone;
+            resultPayload.skills = (account as any).skills || [];
+            resultPayload.experience = (account as any).experience;
+            resultPayload.address = (account as any).address;
+            resultPayload.availability = (account as any).availability;
+            const avail = (account as any).availability;
+            resultPayload.available = typeof avail === 'string' ? avail.toLowerCase().includes('avail') : !!avail;
         }
 
         return resultPayload;
