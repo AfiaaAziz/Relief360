@@ -44,7 +44,19 @@ export class IncidentsController {
     }
 
     @Post()
-    create(@Body() createIncidentDto: CreateIncidentDto) {
+    async create(@Body() createIncidentDto: CreateIncidentDto) {
+        // Handle media_files JSON string if provided
+        if (createIncidentDto.media_files && typeof createIncidentDto.media_files === 'string') {
+            try {
+                const mediaFiles = JSON.parse(createIncidentDto.media_files);
+                console.log('Received media files:', mediaFiles);
+                // You could process the file information here
+                // For now, we'll store the JSON string directly
+            } catch (error) {
+                console.warn('Invalid media_files JSON:', createIncidentDto.media_files);
+            }
+        }
+
         return this.incidentsService.create(createIncidentDto);
     }
 

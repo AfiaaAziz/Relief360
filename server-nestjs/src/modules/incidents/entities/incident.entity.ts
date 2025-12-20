@@ -50,6 +50,12 @@ export class Incident {
     reported_by_user_id: number;
 
     @Column({ nullable: true })
+    reported_by_email: string;
+
+    @Column('text', { nullable: true })
+    media_files: string; // JSON string of uploaded file information
+
+    @Column({ nullable: true })
     assigned_volunteer_id: number;
 
     @Column({ nullable: true })

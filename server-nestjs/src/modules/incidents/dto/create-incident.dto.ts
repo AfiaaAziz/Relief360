@@ -20,4 +20,12 @@ export class CreateIncidentDto {
     @IsOptional()
     @IsString()
     contact_phone?: string;
+
+    @IsOptional()
+    @IsString()
+    reported_by_email?: string;
+
+    @IsOptional()
+    @IsString()
+    media_files?: string; // JSON string of file information
 }
