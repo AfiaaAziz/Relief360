@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { AlertCircle, CheckCircle, Clock, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { mockStats, mockIncidents } from "../../utils/mockData";
 import { Badge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../hooks/use-toast";
 
 // Reusable styled components matching admin portal
 const Card = ({ children, className = "" }) => (
@@ -61,11 +61,104 @@ const CardContent = ({ children, className = "" }) => (
 );
 
 const VolunteerDashboard = () => {
-  const stats = mockStats.volunteer;
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [incidents, setIncidents] = useState([]); // incidents assigned to the volunteer
+  const [allIncidents, setAllIncidents] = useState([]); // global incidents for alerts
+  const [loading, setLoading] = useState(false);
+
   const first = user?.firstName || user?.first_name || "";
   const last = user?.lastName || user?.last_name || "";
   const displayName = first || last ? `${first} ${last}`.trim() : "Volunteer";
+
+  const extractError = (err, fallback) => {
+    try {
+      return (
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        fallback
+      );
+    } catch (e) {
+      return fallback;
+    }
+  };
+
+  const fetchMyIncidents = async () => {
+    setLoading(true);
+    const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    const token = localStorage.getItem("authToken");
+    try {
+      const axios = (await import("axios")).default;
+      const resp = await axios.get(`${apiBase}/api/incidents/my-incidents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setIncidents(resp.data || []);
+    } catch (err) {
+      console.error(
+        "Failed to load assigned incidents",
+        err?.response?.data || err
+      );
+      toast({
+        title: "Error",
+        description: extractError(err, "Could not load assigned incidents."),
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchGlobalIncidents = async () => {
+    const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    try {
+      const axios = (await import("axios")).default;
+      const resp = await axios.get(`${apiBase}/api/incidents`);
+      setAllIncidents(resp.data || []);
+    } catch (err) {
+      console.error("Failed to load global incidents", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchMyIncidents();
+    fetchGlobalIncidents();
+  }, []);
+
+  const stats = {
+    assignedIncidents: incidents.filter(
+      (i) => i.status === "In Progress" || i.status === "Assigned"
+    ).length,
+    completedIncidents: incidents.filter(
+      (i) => i.status === "Resolved" || i.status === "Completed"
+    ).length,
+    hoursVolunteered: user?.hours_volunteered || 0,
+  };
+
+  const alerts = allIncidents.filter(
+    (i) => i.severity === "Critical" || i.severity === "High"
+  );
+
+  const markComplete = async (incidentId) => {
+    const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    const token = localStorage.getItem("authToken");
+    try {
+      const axios = (await import("axios")).default;
+      await axios.put(
+        `${apiBase}/api/incidents/${incidentId}`,
+        { status: "Resolved" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast({ title: "Success", description: "Marked as completed." });
+      await fetchMyIncidents();
+      await fetchGlobalIncidents();
+    } catch (err) {
+      console.error("Failed to mark as complete", err?.response?.data || err);
+      toast({
+        title: "Error",
+        description: extractError(err, "Could not mark as completed."),
+      });
+    }
+  };
 
   return (
     <div
@@ -185,72 +278,57 @@ const VolunteerDashboard = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div
-            className="p-4 border-l-4 rounded-lg transition-all duration-300 hover:shadow-lg transform hover:-translate-x-1"
-            style={{
-              borderLeftColor: "#ff3535",
-              background:
-                "linear-gradient(135deg, rgba(255, 53, 53, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%)",
-            }}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="font-black text-lg" style={{ color: "#16537e" }}>
-                  Critical: Flood Relief - Lahore
-                </p>
-                <p
-                  className="text-sm font-semibold mt-1"
-                  style={{ color: "#666" }}
+          {alerts.slice(0, 2).map((alert, idx) => (
+            <div
+              key={alert.id || idx}
+              className="p-4 border-l-4 rounded-lg transition-all duration-300 hover:shadow-lg transform hover:-translate-x-1"
+              style={{
+                borderLeftColor:
+                  alert.severity === "Critical" ? "#ff3535" : "#f48836",
+                background:
+                  alert.severity === "Critical"
+                    ? "linear-gradient(135deg, rgba(255, 53, 53, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%)"
+                    : "linear-gradient(135deg, rgba(244, 136, 54, 0.1) 0%, rgba(244, 136, 54, 0.05) 100%)",
+              }}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <p
+                    className="font-black text-lg"
+                    style={{ color: "#16537e" }}
+                  >
+                    {alert.severity}: {alert.type} - {alert.location}
+                  </p>
+                  <p
+                    className="text-sm font-semibold mt-1"
+                    style={{ color: "#666" }}
+                  >
+                    {alert.description || alert.notes || "No description"}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant={alert.severity === "Critical" ? "" : "outline"}
+                  style={
+                    alert.severity === "Critical"
+                      ? {
+                          background:
+                            "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
+                          color: "#ffffff",
+                          boxShadow: "0 4px 15px rgba(255, 53, 53, 0.4)",
+                        }
+                      : {
+                          border: "2px solid #16537e",
+                          background: "transparent",
+                          color: "#16537e",
+                        }
+                  }
                 >
-                  Urgent need for rescue volunteers
-                </p>
+                  {alert.severity === "Critical" ? "Respond" : "View Details"}
+                </Button>
               </div>
-              <Button
-                size="sm"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
-                  color: "#ffffff",
-                  boxShadow: "0 4px 15px rgba(255, 53, 53, 0.4)",
-                }}
-              >
-                Respond
-              </Button>
             </div>
-          </div>
-          <div
-            className="p-4 border-l-4 rounded-lg transition-all duration-300 hover:shadow-lg transform hover:-translate-x-1"
-            style={{
-              borderLeftColor: "#f48836",
-              background:
-                "linear-gradient(135deg, rgba(244, 136, 54, 0.1) 0%, rgba(244, 136, 54, 0.05) 100%)",
-            }}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="font-black text-lg" style={{ color: "#16537e" }}>
-                  High: Medical Supplies - Karachi
-                </p>
-                <p
-                  className="text-sm font-semibold mt-1"
-                  style={{ color: "#666" }}
-                >
-                  Distribution assistance needed
-                </p>
-              </div>
-              <Button
-                size="sm"
-                variant="outline"
-                style={{
-                  border: "2px solid #16537e",
-                  background: "transparent",
-                  color: "#16537e",
-                }}
-              >
-                View Details
-              </Button>
-            </div>
-          </div>
+          ))}
         </CardContent>
       </Card>
 
@@ -262,7 +340,7 @@ const VolunteerDashboard = () => {
             <CardDescription>Active incidents assigned to you</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {mockIncidents
+            {incidents
               .filter((i) => i.status === "In Progress")
               .map((incident, idx) => (
                 <div
@@ -320,6 +398,7 @@ const VolunteerDashboard = () => {
                     size="sm"
                     variant="outline"
                     className="w-full mt-2"
+                    onClick={() => markComplete(incident.id)}
                     style={{
                       border: "2px solid #16537e",
                       background: "transparent",

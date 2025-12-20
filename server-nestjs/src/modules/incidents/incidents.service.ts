@@ -194,8 +194,73 @@ export class IncidentsService {
         }
     }
 
+    // Get assignments for a specific volunteer
+    async getAssignmentsForVolunteer(volunteerId: number) {
+        try {
+            const assignments = await this.assignmentsRepository.find({
+                where: { volunteer_id: volunteerId },
+                relations: ['incident'],
+                order: { assigned_at: 'DESC' },
+            });
+
+            // Transform the data to match frontend expectations
+            return assignments.map(assignment => ({
+                id: assignment.id,
+                assigned_at: assignment.assigned_at,
+                status: assignment.status,
+                notes: assignment.notes,
+                incident: assignment.incident ? {
+                    id: assignment.incident.id,
+                    title: assignment.incident.title,
+                    description: assignment.incident.description,
+                    location: assignment.incident.location,
+                    severity: assignment.incident.severity,
+                    status: assignment.incident.status,
+                    created_at: assignment.incident.created_at,
+                    // Map status for frontend compatibility
+                    type: assignment.incident.title || 'Emergency', // Using title as type fallback
+                    date: assignment.incident.created_at
+                } : null
+            }));
+        } catch (err: any) {
+            console.error('Error fetching assignments for volunteer:', err);
+            if (err?.code === '42P01') return [];
+            return [];
+        }
+    }
+
     // Debug helpers removed: getAssignmentsRaw was removed
 
+    // Get available incidents that volunteers can browse and accept
+    async getAvailableIncidentsForVolunteer(volunteerId: number) {
+        try {
+            // Get incidents that are not assigned to any volunteer
+            const availableIncidents = await this.incidentsRepository
+                .createQueryBuilder('incident')
+                .where('incident.assigned_volunteer_id IS NULL')
+                .andWhere("incident.status != 'Resolved'")
+                .orderBy('incident.created_at', 'DESC')
+                .getMany();
+
+            // Transform to match frontend expectations
+            return availableIncidents.map(incident => ({
+                id: incident.id,
+                title: incident.title,
+                description: incident.description,
+                location: incident.location,
+                severity: incident.severity,
+                status: incident.status,
+                created_at: incident.created_at,
+                // Map fields for frontend compatibility
+                type: incident.title || 'Emergency', // Using title as type fallback
+                date: incident.created_at
+            }));
+        } catch (err: any) {
+            console.error('Error fetching available incidents for volunteer:', err);
+            if (err?.code === '42P01') return [];
+            return [];
+        }
+    }
 
     async remove(id: number) {
         try {

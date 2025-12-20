@@ -121,6 +121,49 @@ export class IncidentsController {
         }
     }
 
+    // Get assignments for the currently authenticated volunteer
+    @Get('my-assignments')
+    @UseGuards(JwtGuard)
+    async myAssignments(@Request() req) {
+        const volunteerId = req.user?.id;
+        if (!volunteerId) return [];
+        try {
+            return await this.incidentsService.getAssignmentsForVolunteer(volunteerId);
+        } catch (err) {
+            console.error('Controller: error in myAssignments:', err);
+            return [];
+        }
+    }
+
+    // Get available incidents that volunteers can browse and accept
+    @Get('available-incidents')
+    @UseGuards(JwtGuard)
+    async getAvailableIncidents(@Request() req) {
+        const volunteerId = req.user?.id;
+        if (!volunteerId) return [];
+        try {
+            return await this.incidentsService.getAvailableIncidentsForVolunteer(volunteerId);
+        } catch (err) {
+            console.error('Controller: error in getAvailableIncidents:', err);
+            return [];
+        }
+    }
+
+    // Allow a volunteer to accept an available incident assignment for themselves
+    @Post(':id/accept')
+    @UseGuards(JwtGuard)
+    async accept(@Request() req, @Param('id') id: string, @Body() body: { notes?: string }) {
+        const volunteerId = req.user?.id;
+        if (!volunteerId) throw new BadRequestException('Volunteer identity missing');
+        try {
+            return await this.incidentsService.assignVolunteer(+id, volunteerId, body?.notes);
+        } catch (err: any) {
+            // rethrow known HttpExceptions
+            if (err?.status) throw err;
+            throw new BadRequestException(err?.message || 'Failed to accept assignment');
+        }
+    }
+
     @Get('my-incidents')
     @UseGuards(JwtGuard)
     async getMyIncidents(@Request() req) {
