@@ -469,6 +469,12 @@ const ManageCitizens = () => {
 
   const [viewingCitizen, setViewingCitizen] = useState(null);
 
+  // Filter incidents reported by citizens only (those with reported_by_user_id set)
+  const citizenReportedIncidents = incidents.filter(
+    (incident) =>
+      incident.reported_by_user_id && incident.reported_by_user_id > 0
+  );
+
   const handleBlock = async (citizenId) => {
     if (!window.confirm("Are you sure you want to block this citizen?")) {
       return;
@@ -629,9 +635,9 @@ const ManageCitizens = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {loading ? "..." : incidents.length}
+              {loading ? "..." : citizenReportedIncidents.length}
             </div>
-            <p className="text-xs text-gray-500">Total incidents reported</p>
+            <p className="text-xs text-gray-500">Citizen-reported incidents</p>
           </CardContent>
         </Card>
       </div>
