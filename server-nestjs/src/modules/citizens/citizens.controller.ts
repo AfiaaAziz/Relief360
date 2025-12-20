@@ -9,7 +9,12 @@ export class CitizensController {
 
     @Get()
     findAll() {
-        return this.citizensService.findAll();
+        return this.citizensService.findAllWithIncidentCounts();
+    }
+
+    @Get('stats')
+    getStats() {
+        return this.citizensService.getCitizensStats();
     }
 
     @Get('me')
@@ -22,7 +27,7 @@ export class CitizensController {
     async register(@Body() createCitizenDto: CreateCitizenDto) {
         return this.citizensService.create(createCitizenDto);
     }
-    
+
     @Post('register')
     async registerWithPath(@Body() createCitizenDto: CreateCitizenDto) {
         return this.citizensService.create(createCitizenDto);
@@ -38,6 +43,12 @@ export class CitizensController {
     @UseGuards(JwtGuard)
     async updateCitizen(@Param('id') id: string, @Body() updateData: Partial<CreateCitizenDto>) {
         return this.citizensService.update(+id, updateData);
+    }
+
+    @Put(':id/block')
+    @UseGuards(JwtGuard)
+    async blockCitizen(@Param('id') id: string) {
+        return this.citizensService.blockCitizen(+id);
     }
 
     @Delete(':id')

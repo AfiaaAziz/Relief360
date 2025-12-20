@@ -410,17 +410,20 @@ export default function AdminDashboard() {
     const fetchData = async () => {
       try {
         // Fetch all data in parallel (assignments debug removed)
-        const [incidentsRes, volunteersRes, hospitalsRes] = await Promise.all([
-          fetch("http://localhost:5000/api/incidents"),
-          fetch("http://localhost:5000/api/volunteers"),
-          fetch("http://localhost:5000/api/hospitals"),
-        ]);
+        const [incidentsRes, volunteersRes, hospitalsRes, citizensRes] =
+          await Promise.all([
+            fetch("http://localhost:5000/api/incidents"),
+            fetch("http://localhost:5000/api/volunteers"),
+            fetch("http://localhost:5000/api/hospitals"),
+            fetch("http://localhost:5000/api/citizens"),
+          ]);
 
         const incidents = incidentsRes.ok ? await incidentsRes.json() : [];
         const volunteersData = volunteersRes.ok
           ? await volunteersRes.json()
           : [];
         const hospitals = hospitalsRes.ok ? await hospitalsRes.json() : [];
+        const citizens = citizensRes.ok ? await citizensRes.json() : [];
 
         // Store all incidents for charts
         setAllIncidents(incidents);
@@ -444,13 +447,8 @@ export default function AdminDashboard() {
 
         setRecentIncidents(critical);
 
-        // Count citizens (users with role 'citizen') - we'll approximate from incidents
-        // Since there's no direct API, we'll count unique reporters
-        const uniqueCitizens = new Set(
-          incidents
-            .map((i) => i.reported_by_user_id)
-            .filter((id) => id !== null)
-        ).size;
+        // Count citizens from real API data
+        const totalCitizens = citizens.length;
 
         // Try to fetch donations from backend API (fallback to localStorage)
         let totalDonations = 0;
@@ -500,8 +498,8 @@ export default function AdminDashboard() {
         }
 
         setStats({
-          totalCitizens: uniqueCitizens || incidents.length * 2, // Approximate
-          totalVolunteers: volunteers.length,
+          totalCitizens: totalCitizens,
+          totalVolunteers: volunteersData.length,
           totalHospitals: hospitals.length,
           activeIncidents: activeIncidents,
           totalDonations: `PKR ${totalDonations.toLocaleString()}`,

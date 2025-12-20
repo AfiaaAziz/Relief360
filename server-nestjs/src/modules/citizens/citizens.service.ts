@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Citizen } from './entities/citizen.entity';
 import { CreateCitizenDto } from './dto/create-citizen.dto';
+import { Incident } from '../incidents/entities/incident.entity';
 
 @Injectable()
 export class CitizensService {
     constructor(
         @InjectRepository(Citizen)
         private citizensRepository: Repository<Citizen>,
+        @InjectRepository(Incident)
+        private incidentsRepository: Repository<Incident>,
     ) { }
 
     async findAll() {
@@ -70,7 +73,7 @@ export class CitizensService {
             });
 
             const savedCitizen = await this.citizensRepository.save(citizen);
-            
+
             // Return citizen without password_hash
             const { password_hash: _, ...result } = savedCitizen;
             return result as any;
@@ -102,6 +105,70 @@ export class CitizensService {
     async remove(id: number): Promise<void> {
         const citizen = await this.findOne(id);
         await this.citizensRepository.remove(citizen);
+    }
+
+    // Get citizens with incident counts for admin management
+    async findAllWithIncidentCounts() {
+        const citizens = await this.citizensRepository
+            .createQueryBuilder('citizen')
+            .leftJoin('incidents', 'incident', 'incident.reported_by_user_id = citizen.id')
+            .select([
+                'citizen.id',
+                'citizen.first_name',
+                'citizen.last_name',
+                'citizen.email',
+                'citizen.phone',
+                'citizen.created_at',
+                'COUNT(incident.id) as incident_count'
+            ])
+            .groupBy('citizen.id')
+            .orderBy('citizen.created_at', 'DESC')
+            .getRawMany();
+
+        return citizens.map(citizen => ({
+            id: citizen.citizen_id,
+            first_name: citizen.citizen_first_name,
+            last_name: citizen.citizen_last_name,
+            name: [citizen.citizen_first_name, citizen.citizen_last_name].filter(n => n).join(' ') || 'N/A',
+            email: citizen.citizen_email,
+            phone: citizen.citizen_phone,
+            created_at: citizen.citizen_created_at,
+            incidents: parseInt(citizen.incident_count) || 0,
+            joinDate: citizen.citizen_created_at ? new Date(citizen.citizen_created_at).toISOString().split('T')[0] : 'N/A'
+        }));
+    }
+
+    // Block citizen (soft delete by updating email to indicate blocked status)
+    async blockCitizen(id: number) {
+        const citizen = await this.findOne(id);
+        // For now, we'll implement as soft delete to indicate blocked
+        const blockedEmail = `BLOCKED_${citizen.email}`;
+        citizen.email = blockedEmail;
+        await this.citizensRepository.save(citizen);
+        return { message: 'Citizen blocked successfully' };
+    }
+
+    // Get citizens statistics for dashboard
+    async getCitizensStats() {
+        const totalCitizens = await this.citizensRepository.count();
+
+        const currentMonth = new Date();
+        currentMonth.setDate(1);
+        currentMonth.setHours(0, 0, 0, 0);
+
+        const newThisMonth = await this.citizensRepository
+            .createQueryBuilder('citizen')
+            .where('citizen.created_at >= :date', { date: currentMonth })
+            .getCount();
+
+        // Get total incidents count for active reports
+        const activeReports = await this.incidentsRepository.count();
+
+        return {
+            total_citizens: totalCitizens,
+            new_this_month: newThisMonth,
+            active_reports: activeReports
+        };
     }
 }
 
