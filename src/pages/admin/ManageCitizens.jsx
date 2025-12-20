@@ -297,34 +297,6 @@ const CardContent = ({ children, className = "" }) => (
   <div className={`p-6 ${className}`}>{children}</div>
 );
 
-const Badge = ({ children, variant = "default" }) => {
-  const styles = {
-    default: {
-      background: "linear-gradient(135deg, #6aa84f 0%, #38761d 100%)",
-      color: "#ffffff",
-      borderColor: "#38761d",
-    },
-    secondary: {
-      background: "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
-      color: "#ffffff",
-      borderColor: "#16537e",
-    },
-    destructive: {
-      background: "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
-      color: "#ffffff",
-      borderColor: "#990000",
-    },
-  };
-  return (
-    <span
-      className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-bold shadow-lg border-2"
-      style={styles[variant]}
-    >
-      {children}
-    </span>
-  );
-};
-
 const Button = ({
   children,
   size = "default",
@@ -468,12 +440,6 @@ const ManageCitizens = () => {
   );
 
   const [viewingCitizen, setViewingCitizen] = useState(null);
-
-  // Filter incidents reported by citizens only (those with reported_by_user_id set)
-  const citizenReportedIncidents = incidents.filter(
-    (incident) =>
-      incident.reported_by_user_id && incident.reported_by_user_id > 0
-  );
 
   const handleBlock = async (citizenId) => {
     if (!window.confirm("Are you sure you want to block this citizen?")) {
@@ -635,7 +601,13 @@ const ManageCitizens = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {loading ? "..." : citizenReportedIncidents.length}
+              {loading
+                ? "..."
+                : incidents.filter(
+                    (incident) =>
+                      incident.reported_by_user_id &&
+                      incident.reported_by_user_id > 0
+                  ).length}
             </div>
             <p className="text-xs text-gray-500">Citizen-reported incidents</p>
           </CardContent>
