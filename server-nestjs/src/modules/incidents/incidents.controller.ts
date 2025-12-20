@@ -14,12 +14,17 @@ import { IncidentsService } from './incidents.service';
 import { CreateIncidentDto } from './dto/create-incident.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { VolunteersService } from '../volunteers/volunteers.service';
+import { JwtService } from '@nestjs/jwt';
+
+
+
 
 @Controller('api/incidents')
 export class IncidentsController {
     constructor(
         private incidentsService: IncidentsService,
         private volunteersService: VolunteersService,
+        private jwtService: JwtService,
     ) { }
 
     @Get()
@@ -27,7 +32,8 @@ export class IncidentsController {
         return this.incidentsService.findAll();
     }
 
-    @Get(':id')
+    // Only match numeric IDs to avoid catching other named routes like 'my-incidents'
+    @Get(':id(\\d+)')
     findOne(@Param('id') id: string) {
         const nid = Number(id);
         if (Number.isNaN(nid)) {
@@ -44,7 +50,16 @@ export class IncidentsController {
     }
 
     @Post()
-    async create(@Body() createIncidentDto: CreateIncidentDto) {
+    @UseGuards(JwtGuard)
+    async create(@Request() req, @Body() createIncidentDto: CreateIncidentDto) {
+        // If a user is authenticated, prefer server-side identity instead of trusting client-provided values
+        const user = req.user;
+        if (user) {
+            // overwrite or set reported_by fields from the authenticated user
+            createIncidentDto.reported_by_user_id = user.id || createIncidentDto.reported_by_user_id;
+            createIncidentDto.reported_by_email = user.email || createIncidentDto.reported_by_email;
+        }
+
         // Handle media_files JSON string if provided
         if (createIncidentDto.media_files && typeof createIncidentDto.media_files === 'string') {
             try {
@@ -57,7 +72,8 @@ export class IncidentsController {
             }
         }
 
-        return this.incidentsService.create(createIncidentDto);
+        const created = await this.incidentsService.create(createIncidentDto);
+        return created;
     }
 
     @Get('severity/:severity')
@@ -105,15 +121,72 @@ export class IncidentsController {
         }
     }
 
-    // Raw debug endpoint: returns rows from volunteer_assignments or an error object
-    @Get('assignments/debug')
-    async getAssignmentsDebug() {
-        return this.incidentsService.getAssignmentsRaw();
+    @Get('my-incidents')
+    @UseGuards(JwtGuard)
+    async getMyIncidents(@Request() req) {
+        try {
+            let user = req.user;
+            console.log('getMyIncidents called with user:', user);
+
+            // Fallback: if JwtGuard didn't set req.user for some reason, try to verify Authorization header manually
+            if (!user) {
+                const auth = req.headers?.authorization;
+                if (auth && typeof auth === 'string') {
+                    const parts = auth.split(' ');
+                    const token = parts.length === 2 ? parts[1] : null;
+                    if (token) {
+                        try {
+                            const payload: any = this.jwtService.verify(token);
+                            console.log('Fallback token verify succeeded:', payload);
+                            user = payload;
+                        } catch (err) {
+                            console.warn('Fallback token verify failed:', err?.message || err);
+                            return [];
+                        }
+                    } else {
+                        console.log('No token found in Authorization header');
+                        return [];
+                    }
+                } else {
+                    console.log('No Authorization header present');
+                    return [];
+                }
+            }
+
+            // Use user ID if available, otherwise fall back to email
+            const userId = user.id || user.user_id;
+            const userEmail = user.email;
+
+            console.log('Extracted user identification:', { userId, userEmail });
+
+            // If user has email but no id, we can optionally attempt a repair to link incidents
+            const results = await this.incidentsService.findByUser(userId, userEmail);
+            console.log('Final results returned to client:', results.length, 'incidents');
+
+            return results;
+        } catch (err: any) {
+            console.error('Error fetching user incidents:', err);
+            return [];
+        }
     }
 
-    @Get('debug')
-    async debug() {
-        return this.incidentsService.debug();
+    @Post('repair-my-reports')
+    @UseGuards(JwtGuard)
+    async repairMyReports(@Request() req) {
+        try {
+            const user = req.user;
+            if (!user) {
+                return { error: 'Not authenticated' };
+            }
+            const userId = user.id || user.user_id;
+            const userEmail = user.email;
+            console.log(`Repairing reports for userId=${userId}, email=${userEmail}`);
+            const result = await this.incidentsService.repairReportsForUser(userId, userEmail);
+            return { repaired: result.affected || 0 };
+        } catch (err: any) {
+            console.error('Error repairing reports:', err);
+            return { error: err.message || 'Unknown error' };
+        }
     }
 
     @Get('volunteers')

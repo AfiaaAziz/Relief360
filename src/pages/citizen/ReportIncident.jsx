@@ -271,6 +271,7 @@ const ReportIncident = () => {
         severity: formData.severity,
         contact_person: formData.contact_person || "",
         contact_phone: formData.contact_phone || "",
+        reported_by_user_id: user?.id || null, // Set user ID for better tracking
         reported_by_email: user?.email || "",
         media_files:
           mediaFilesData.length > 0 ? JSON.stringify(mediaFilesData) : null,
@@ -279,10 +280,12 @@ const ReportIncident = () => {
       console.log("Submitting incident data:", incidentData);
 
       // Make API call to create incident
+      const token = localStorage.getItem("authToken");
       const response = await fetch(`${API_BASE}/api/incidents`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(incidentData),
       });

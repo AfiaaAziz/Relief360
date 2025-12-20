@@ -4,7 +4,14 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const raw = localStorage.getItem("user");
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,7 +27,20 @@ export const AuthProvider = ({ children }) => {
           const response = await axios.get(`${apiBase}/api/auth/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setUser(response.data);
+
+          // Merge server response with any existing stored user to preserve name fields when backend returns minimal data
+          const existingRaw = localStorage.getItem("user");
+          let existing = null;
+          try {
+            existing = existingRaw ? JSON.parse(existingRaw) : null;
+          } catch (e) {
+            existing = null;
+          }
+
+          const merged = { ...(existing || {}), ...(response.data || {}) };
+
+          setUser(merged);
+          localStorage.setItem("user", JSON.stringify(merged));
         }
       } catch (err) {
         console.error("Auth check failed:", err);
@@ -41,9 +61,13 @@ export const AuthProvider = ({ children }) => {
       if (role) {
         requestBody.role = role;
       }
-      const response = await axios.post(`${apiBase}/api/auth/login`, requestBody);
+      const response = await axios.post(
+        `${apiBase}/api/auth/login`,
+        requestBody
+      );
       const { token, user: userData } = response.data;
       localStorage.setItem("authToken", token);
+      localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
       return userData;
     } catch (err) {
@@ -55,6 +79,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
     setUser(null);
     setError(null);
   };
@@ -66,6 +91,7 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post(`${apiBase}/api/auth/signup`, userData);
       const { token, user: newUser } = response.data;
       localStorage.setItem("authToken", token);
+      localStorage.setItem("user", JSON.stringify(newUser));
       setUser(newUser);
       return newUser;
     } catch (err) {
@@ -82,6 +108,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     signup,
+    setUser,
     isAuthenticated: !!user,
   };
 

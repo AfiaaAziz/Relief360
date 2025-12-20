@@ -68,13 +68,20 @@ export class AuthService {
         }
 
         const token = this.generateTokenForAccount(account, role);
+        const userPayload: any = {
+            id: account.id,
+            email: account.email,
+            role: role,
+        };
+        // If the account is a citizen, include first and last name for frontend convenience
+        if (role === 'citizen') {
+            userPayload.firstName = (account as Citizen).first_name;
+            userPayload.lastName = (account as Citizen).last_name;
+        }
+
         return {
             token,
-            user: {
-                id: account.id,
-                email: account.email,
-                role: role,
-            },
+            user: userPayload,
         };
     }
 
@@ -109,10 +116,26 @@ export class AuthService {
         };
     }
 
-    async validateUser(userId: number) {
+    async validateUser(userId: string | number) {
+        // Handle admin user
+        if (userId === 'admin' || userId === 'admin@gmail.com') {
+            return {
+                id: 'admin',
+                email: 'admin@relief360.local',
+                role: 'admin',
+            };
+        }
+
+        // Convert to number for database lookup
+        const numericId = typeof userId === 'string' ? parseInt(userId, 10) : userId;
+
+        if (isNaN(numericId)) {
+            throw new UnauthorizedException('Invalid user ID');
+        }
+
         // First check volunteers table
         let account: Volunteer | Hospital | Citizen | null = await this.volunteersRepository.findOne({
-            where: { id: userId },
+            where: { id: numericId },
         });
 
         let role = 'volunteer';
@@ -120,7 +143,7 @@ export class AuthService {
         // If not found in volunteers, check hospitals table
         if (!account) {
             account = await this.hospitalsRepository.findOne({
-                where: { id: userId },
+                where: { id: numericId },
             });
             role = 'hospital';
         }
@@ -128,7 +151,7 @@ export class AuthService {
         // If not found in hospitals, check citizens table
         if (!account) {
             account = await this.citizensRepository.findOne({
-                where: { id: userId },
+                where: { id: numericId },
             });
             role = 'citizen';
         }
@@ -138,11 +161,18 @@ export class AuthService {
             throw new UnauthorizedException('User not found');
         }
 
-        return {
+        const resultPayload: any = {
             id: account.id,
             email: account.email,
             role: role,
         };
+
+        if (role === 'citizen') {
+            resultPayload.firstName = (account as Citizen).first_name;
+            resultPayload.lastName = (account as Citizen).last_name;
+        }
+
+        return resultPayload;
     }
 
     private generateTokenForAccount(account: Volunteer | Hospital | Citizen, role: string) {

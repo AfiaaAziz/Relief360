@@ -1,23 +1,16 @@
 // ManageVolunteers.jsx
 
 import React, { useState, useEffect } from "react";
-import {
-  Search,
-  Edit,
-  Trash2,
-  Heart,
-  UserCheck,
-  X,
-  Plus,
-} from "lucide-react";
+import { Search, Edit, Trash2, Heart, UserCheck, X, Plus } from "lucide-react";
 
 // Create simple UI components with new color palette
 const Card = ({ children, className = "" }) => (
   <div
     className={`rounded-2xl border-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-sm ${className}`}
     style={{
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-      borderColor: 'rgba(22, 83, 126, 0.2)'
+      background:
+        "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)",
+      borderColor: "rgba(22, 83, 126, 0.2)",
     }}
   >
     {children}
@@ -25,13 +18,13 @@ const Card = ({ children, className = "" }) => (
 );
 
 const CardHeader = ({ children, className = "" }) => (
-  <div 
+  <div
     className={`p-6 border-b-2 ${className}`}
     style={{
-      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
-      borderColor: 'rgba(22, 83, 126, 0.3)',
-      paddingTop: '1.75rem',
-      paddingBottom: '1.75rem'
+      background: "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+      borderColor: "rgba(22, 83, 126, 0.3)",
+      paddingTop: "1.75rem",
+      paddingBottom: "1.75rem",
     }}
   >
     {children}
@@ -39,13 +32,25 @@ const CardHeader = ({ children, className = "" }) => (
 );
 
 const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-xl font-black text-white ${className}`} style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', lineHeight: '1.3', paddingBottom: '0.25rem' }}>
+  <h3
+    className={`text-xl font-black text-white ${className}`}
+    style={{
+      textShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+      lineHeight: "1.3",
+      paddingBottom: "0.25rem",
+    }}
+  >
     {children}
   </h3>
 );
 
 const CardDescription = ({ children, className = "" }) => (
-  <p className={`text-sm text-white/90 mt-2 font-semibold ${className}`} style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.2)' }}>{children}</p>
+  <p
+    className={`text-sm text-white/90 mt-2 font-semibold ${className}`}
+    style={{ textShadow: "0 1px 4px rgba(0, 0, 0, 0.2)" }}
+  >
+    {children}
+  </p>
 );
 
 const CardContent = ({ children, className = "" }) => (
@@ -55,24 +60,24 @@ const CardContent = ({ children, className = "" }) => (
 const Badge = ({ children, variant = "default" }) => {
   const styles = {
     default: {
-      background: 'linear-gradient(135deg, #6aa84f 0%, #38761d 100%)',
-      color: '#ffffff',
-      borderColor: '#38761d'
+      background: "linear-gradient(135deg, #6aa84f 0%, #38761d 100%)",
+      color: "#ffffff",
+      borderColor: "#38761d",
     },
     secondary: {
-      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
-      color: '#ffffff',
-      borderColor: '#16537e'
+      background: "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+      color: "#ffffff",
+      borderColor: "#16537e",
     },
     destructive: {
-      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
-      color: '#ffffff',
-      borderColor: '#990000'
+      background: "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
+      color: "#ffffff",
+      borderColor: "#990000",
     },
     outline: {
-      border: '2px solid #16537e',
-      background: 'transparent',
-      color: '#16537e',
+      border: "2px solid #16537e",
+      background: "transparent",
+      color: "#16537e",
     },
   };
   return (
@@ -100,23 +105,23 @@ const Button = ({
   };
   const variants = {
     default: {
-      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
-      color: '#ffffff',
-      boxShadow: '0 4px 15px rgba(22, 83, 126, 0.4)'
+      background: "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+      color: "#ffffff",
+      boxShadow: "0 4px 15px rgba(22, 83, 126, 0.4)",
     },
     destructive: {
-      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
-      color: '#ffffff',
-      boxShadow: '0 4px 15px rgba(255, 53, 53, 0.4)'
+      background: "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
+      color: "#ffffff",
+      boxShadow: "0 4px 15px rgba(255, 53, 53, 0.4)",
     },
     outline: {
-      border: '2px solid #16537e',
-      background: 'transparent',
-      color: '#16537e',
+      border: "2px solid #16537e",
+      background: "transparent",
+      color: "#16537e",
     },
     ghost: {
-      background: 'transparent',
-      color: '#16537e',
+      background: "transparent",
+      color: "#16537e",
     },
   };
   return (
@@ -150,19 +155,21 @@ const TableHeader = ({ children }) => <thead>{children}</thead>;
 const TableBody = ({ children }) => <tbody>{children}</tbody>;
 const TableRow = ({ children }) => <tr className="border-b">{children}</tr>;
 const TableHead = ({ children }) => (
-  <th 
+  <th
     className="h-14 px-4 text-left align-middle font-bold text-base"
     style={{
-      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
-      color: '#ffffff',
-      textShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+      background: "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+      color: "#ffffff",
+      textShadow: "0 1px 3px rgba(0, 0, 0, 0.3)",
     }}
   >
     {children}
   </th>
 );
 const TableCell = ({ children, className = "" }) => (
-  <td className={`p-4 align-middle text-gray-800 font-medium ${className}`}>{children}</td>
+  <td className={`p-4 align-middle text-gray-800 font-medium ${className}`}>
+    {children}
+  </td>
 );
 
 // Simple Select Component
@@ -336,36 +343,37 @@ const ManageVolunteers = () => {
           console.error("Failed to fetch incidents");
         }
 
-        // Fetch assignments to map volunteers to incidents
-        const assignmentsResponse = await fetch(
-          "http://localhost:5000/api/incidents/assignments/debug"
-        );
-        let assignmentsData = [];
-        if (assignmentsResponse.ok) {
-          try {
-            assignmentsData = await assignmentsResponse.json();
-          } catch (e) {
-            console.warn('Invalid or empty JSON from /api/incidents/assignments, treating as empty', e);
-            assignmentsData = [];
-          }
-        }
+        // Assignments debug removed — derive assignment info from incidents data if possible
+        const assignmentsData = [];
 
-        // Map assignments to volunteers
         const volunteersWithAssignments = volunteersData.map((volunteer) => {
-          const assignment = assignmentsData.find(
-            (a) => Number(a.volunteer_id) === Number(volunteer.id)
-          );
-          if (assignment) {
-            const incident = incidentsData.find(
-              (i) => Number(i.id) === Number(assignment.incident_id)
-            );
+          // Prefer explicit fields on the volunteer first
+          if (volunteer.assigned && volunteer.assignedToIncidentId) {
             return {
               ...volunteer,
+              skills: volunteer.skills || [],
               assigned: true,
-              assignedToIncidentId: assignment.incident_id,
-              assignedToIncidentTitle: incident ? incident.title : `Incident #${assignment.incident_id}`,
+              assignedToIncidentId: volunteer.assignedToIncidentId,
+              assignedToIncidentTitle:
+                volunteer.assignedToIncidentTitle || null,
             };
           }
+
+          // Otherwise try to find an incident that references this volunteer
+          const assignedIncident = incidentsData.find(
+            (i) => Number(i.assigned_volunteer_id) === Number(volunteer.id)
+          );
+
+          if (assignedIncident) {
+            return {
+              ...volunteer,
+              skills: volunteer.skills || [],
+              assigned: true,
+              assignedToIncidentId: assignedIncident.id,
+              assignedToIncidentTitle: assignedIncident.title,
+            };
+          }
+
           return {
             ...volunteer,
             skills: volunteer.skills || [],
@@ -391,7 +399,8 @@ const ManageVolunteers = () => {
   }, []);
 
   const filteredVolunteers = volunteers.filter((volunteer) => {
-    const fullName = `${volunteer.first_name} ${volunteer.last_name}`.toLowerCase();
+    const fullName =
+      `${volunteer.first_name} ${volunteer.last_name}`.toLowerCase();
     const email = (volunteer.email || "").toLowerCase();
     const skills = (volunteer.skills || []).map((s) => (s || "").toLowerCase());
     const term = searchTerm.toLowerCase();
@@ -415,7 +424,7 @@ const ManageVolunteers = () => {
     // Validate IDs are numbers
     const incidentId = Number(selectedIncident);
     const volunteerId = Number(assigningVolunteer.id);
-    
+
     if (isNaN(incidentId) || isNaN(volunteerId)) {
       toast({
         title: "Assignment Failed",
@@ -426,7 +435,8 @@ const ManageVolunteers = () => {
     }
 
     try {
-      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
         `http://localhost:5000/api/incidents/${incidentId}/assign`,
         {
@@ -445,51 +455,50 @@ const ManageVolunteers = () => {
       if (response.ok) {
         // Refresh data to get updated assignments
         const fetchData = async () => {
-          const volunteersRes = await fetch("http://localhost:5000/api/volunteers");
-          const incidentsRes = await fetch("http://localhost:5000/api/incidents");
-          const assignmentsRes = await fetch("http://localhost:5000/api/incidents/assignments/debug");
-          
-          if (volunteersRes.ok && incidentsRes.ok && assignmentsRes.ok) {
+          const volunteersRes = await fetch(
+            "http://localhost:5000/api/volunteers"
+          );
+          const incidentsRes = await fetch(
+            "http://localhost:5000/api/incidents"
+          );
+
+          if (volunteersRes.ok && incidentsRes.ok) {
             const volunteersData = await volunteersRes.json();
             const incidentsData = await incidentsRes.json();
-            let assignmentsData = [];
-            try {
-              assignmentsData = await assignmentsRes.json();
-            } catch (e) {
-              console.warn('Invalid JSON from assignments refresh, using empty array', e);
-              assignmentsData = [];
-            }
-            
-            const volunteersWithAssignments = volunteersData.map((volunteer) => {
-              const assignment = assignmentsData.find(
-                (a) => Number(a.volunteer_id) === Number(volunteer.id)
-              );
-              if (assignment) {
-                const incident = incidentsData.find(
-                  (i) => Number(i.id) === Number(assignment.incident_id)
+
+            // Derive assignments from incidents' assigned_volunteer_id field
+            const volunteersWithAssignments = volunteersData.map(
+              (volunteer) => {
+                const assignedIncident = incidentsData.find(
+                  (i) =>
+                    Number(i.assigned_volunteer_id) === Number(volunteer.id)
                 );
+
+                if (assignedIncident) {
+                  return {
+                    ...volunteer,
+                    skills: volunteer.skills || [],
+                    assigned: true,
+                    assignedToIncidentId: assignedIncident.id,
+                    assignedToIncidentTitle: assignedIncident.title,
+                  };
+                }
+
                 return {
-                  ...volunteer,
-                  skills: volunteer.skills || [],
-                  assigned: true,
-                  assignedToIncidentId: assignment.incident_id,
-                  assignedToIncidentTitle: incident ? incident.title : `Incident #${assignment.incident_id}`,
-                };
-              }
-              return {
                   ...volunteer,
                   skills: volunteer.skills || [],
                   assigned: volunteer.assigned || false,
                   assignedToIncidentId: null,
                   assignedToIncidentTitle: null,
                 };
-            });
-            
+              }
+            );
+
             setVolunteers(volunteersWithAssignments);
             setIncidents(incidentsData);
           }
         };
-        
+
         await fetchData();
         setIsAssignOpen(false);
         setAssigningVolunteer(null);
@@ -498,7 +507,9 @@ const ManageVolunteers = () => {
           description: `Volunteer has been successfully assigned to the incident`,
         });
       } else {
-        const errorData = await response.json().catch(() => ({ message: "Unauthorized" }));
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Unauthorized" }));
         toast({
           title: "Assignment Failed",
           description: errorData.message || "Failed to assign volunteer",
@@ -532,17 +543,17 @@ const ManageVolunteers = () => {
     }
 
     try {
-      // First, get the assignment to find the incident ID
-      const assignmentsResponse = await fetch(
-        `http://localhost:5000/api/incidents/assignments/debug`
+      // Determine incident ID by searching incidents for an assigned_volunteer_id matching this volunteer
+      const incidentsResponse = await fetch(
+        `http://localhost:5000/api/incidents`
       );
-      if (!assignmentsResponse.ok) {
-        throw new Error("Failed to fetch assignments");
+      if (!incidentsResponse.ok) {
+        throw new Error("Failed to fetch incidents");
       }
 
-      const assignments = await assignmentsResponse.json();
-      const assignment = assignments.find(
-        (a) => Number(a.volunteer_id) === validVolunteerId
+      const incidentsData = await incidentsResponse.json();
+      const assignment = incidentsData.find(
+        (i) => Number(i.assigned_volunteer_id) === validVolunteerId
       );
 
       if (!assignment) {
@@ -554,7 +565,7 @@ const ManageVolunteers = () => {
         return;
       }
 
-      const incidentId = Number(assignment.incident_id);
+      const incidentId = Number(assignment.id);
       if (isNaN(incidentId)) {
         toast({
           title: "Unassignment Failed",
@@ -564,7 +575,8 @@ const ManageVolunteers = () => {
         return;
       }
 
-      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
         `http://localhost:5000/api/incidents/${incidentId}/assign/${validVolunteerId}`,
         {
@@ -578,10 +590,16 @@ const ManageVolunteers = () => {
       if (response.ok) {
         // Refresh data to get updated assignments
         const fetchData = async () => {
-          const volunteersRes = await fetch("http://localhost:5000/api/volunteers");
-          const incidentsRes = await fetch("http://localhost:5000/api/incidents");
-          const assignmentsRes = await fetch("http://localhost:5000/api/incidents/assignments");
-          
+          const volunteersRes = await fetch(
+            "http://localhost:5000/api/volunteers"
+          );
+          const incidentsRes = await fetch(
+            "http://localhost:5000/api/incidents"
+          );
+          const assignmentsRes = await fetch(
+            "http://localhost:5000/api/incidents/assignments"
+          );
+
           if (volunteersRes.ok && incidentsRes.ok && assignmentsRes.ok) {
             const volunteersData = await volunteersRes.json();
             const incidentsData = await incidentsRes.json();
@@ -589,40 +607,47 @@ const ManageVolunteers = () => {
             try {
               assignmentsData = await assignmentsRes.json();
             } catch (e) {
-              console.warn('Invalid JSON from assignments refresh, using empty array', e);
+              console.warn(
+                "Invalid JSON from assignments refresh, using empty array",
+                e
+              );
               assignmentsData = [];
             }
-            
-            const volunteersWithAssignments = volunteersData.map((volunteer) => {
-              const assignment = assignmentsData.find(
-                (a) => Number(a.volunteer_id) === Number(volunteer.id)
-              );
-              if (assignment) {
-                const incident = incidentsData.find(
-                  (i) => Number(i.id) === Number(assignment.incident_id)
+
+            const volunteersWithAssignments = volunteersData.map(
+              (volunteer) => {
+                const assignment = assignmentsData.find(
+                  (a) => Number(a.volunteer_id) === Number(volunteer.id)
                 );
+                if (assignment) {
+                  const incident = incidentsData.find(
+                    (i) => Number(i.id) === Number(assignment.incident_id)
+                  );
+                  return {
+                    ...volunteer,
+                    skills: volunteer.skills || [],
+                    assigned: true,
+                    assignedToIncidentId: assignment.incident_id,
+                    assignedToIncidentTitle: incident
+                      ? incident.title
+                      : `Incident #${assignment.incident_id}`,
+                  };
+                }
                 return {
-                  ...volunteer,
-                  skills: volunteer.skills || [],
-                  assigned: true,
-                  assignedToIncidentId: assignment.incident_id,
-                  assignedToIncidentTitle: incident ? incident.title : `Incident #${assignment.incident_id}`,
-                };
-              }
-              return {
                   ...volunteer,
                   skills: volunteer.skills || [],
                   assigned: false,
                   assignedToIncidentId: null,
                   assignedToIncidentTitle: null,
                 };
-            });
-            
+              }
+            );
+
             setVolunteers(volunteersWithAssignments);
             setIncidents(incidentsData);
           }
         };
-        
+
         await fetchData();
         toast({
           title: "Volunteer Unassigned",
@@ -664,7 +689,8 @@ const ManageVolunteers = () => {
     }
 
     try {
-      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("authToken");
       const response = await fetch(
         `http://localhost:5000/api/volunteers/${validVolunteerId}`,
         {
@@ -676,7 +702,9 @@ const ManageVolunteers = () => {
       );
 
       if (response.ok) {
-        setVolunteers(volunteers.filter((v) => Number(v.id) !== validVolunteerId));
+        setVolunteers(
+          volunteers.filter((v) => Number(v.id) !== validVolunteerId)
+        );
         toast({
           title: "Volunteer Deleted",
           description:
@@ -721,8 +749,9 @@ const ManageVolunteers = () => {
     }
 
     try {
-      const token = localStorage.getItem("token") || localStorage.getItem("authToken");
-      
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("authToken");
+
       // Only send allowed fields for update (exclude id, password_hash, assigned, created_at)
       const updateData = {
         first_name: editingVolunteer.first_name,
@@ -766,7 +795,9 @@ const ManageVolunteers = () => {
             "The volunteer information has been successfully updated",
         });
       } else {
-        const errorData = await response.json().catch(() => ({ message: "Internal server error" }));
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Internal server error" }));
         toast({
           title: "Update Failed",
           description: errorData.message || "Failed to update volunteer",
@@ -777,7 +808,8 @@ const ManageVolunteers = () => {
       console.error("Error updating volunteer:", error);
       toast({
         title: "Update Failed",
-        description: error.message || "An error occurred while updating the volunteer",
+        description:
+          error.message || "An error occurred while updating the volunteer",
         variant: "destructive",
       });
     }
@@ -844,29 +876,34 @@ const ManageVolunteers = () => {
   };
 
   return (
-    <div 
+    <div
       className="p-6 space-y-6 relative overflow-hidden min-h-screen"
       style={{
-        background: 'radial-gradient(circle at 20% 50%, rgba(106, 168, 79, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(22, 83, 126, 0.15) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)'
+        background:
+          "radial-gradient(circle at 20% 50%, rgba(106, 168, 79, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(22, 83, 126, 0.15) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)",
       }}
     >
       <div className="flex justify-between items-center">
         <div>
-          <h1 
+          <h1
             className="text-5xl md:text-6xl font-black mb-3"
             style={{
-              background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 50%, #38761d 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              textShadow: '0 4px 20px rgba(22, 83, 126, 0.2)',
-              lineHeight: '1.2',
-              paddingBottom: '0.5rem'
+              background:
+                "linear-gradient(135deg, #16537e 0%, #6aa84f 50%, #38761d 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              textShadow: "0 4px 20px rgba(22, 83, 126, 0.2)",
+              lineHeight: "1.2",
+              paddingBottom: "0.5rem",
             }}
           >
             Manage Volunteers
           </h1>
-          <p className="text-xl md:text-2xl font-bold mt-3" style={{ color: '#16537e' }}>
+          <p
+            className="text-xl md:text-2xl font-bold mt-3"
+            style={{ color: "#16537e" }}
+          >
             View and manage registered volunteers
           </p>
         </div>
@@ -995,7 +1032,8 @@ const ManageVolunteers = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {volunteer.assigned && volunteer.assignedToIncidentTitle ? (
+                      {volunteer.assigned &&
+                      volunteer.assignedToIncidentTitle ? (
                         <Badge variant="default" className="text-xs">
                           {volunteer.assignedToIncidentTitle}
                         </Badge>
@@ -1009,11 +1047,18 @@ const ManageVolunteers = () => {
                           size="sm"
                           variant="ghost"
                           onClick={() => {
-                            console.log("Assign clicked for volunteer:", volunteer);
+                            console.log(
+                              "Assign clicked for volunteer:",
+                              volunteer
+                            );
                             handleAssign(volunteer);
                           }}
                           disabled={volunteer.assigned}
-                          title={volunteer.assigned ? "Already assigned" : "Assign to incident"}
+                          title={
+                            volunteer.assigned
+                              ? "Already assigned"
+                              : "Assign to incident"
+                          }
                         >
                           <UserCheck className="h-4 w-4" />
                         </Button>
@@ -1387,7 +1432,10 @@ const ManageVolunteers = () => {
                 <Input
                   value={newVolunteer.address}
                   onChange={(e) =>
-                    setNewVolunteer({ ...newVolunteer, address: e.target.value })
+                    setNewVolunteer({
+                      ...newVolunteer,
+                      address: e.target.value,
+                    })
                   }
                 />
               </div>

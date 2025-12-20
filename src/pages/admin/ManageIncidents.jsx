@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Eye, UserPlus, CheckCircle, Search, Edit, Trash2, Plus } from "lucide-react";
+import {
+  Eye,
+  UserPlus,
+  CheckCircle,
+  Search,
+  Edit,
+  Trash2,
+  Plus,
+} from "lucide-react";
 
 // Add CSS animations
-const style = document.createElement('style');
+const style = document.createElement("style");
 style.textContent = `
   @keyframes fade-in {
     from {
@@ -35,8 +43,8 @@ style.textContent = `
     opacity: 0;
   }
 `;
-if (!document.head.querySelector('style[data-dashboard-animations]')) {
-  style.setAttribute('data-dashboard-animations', 'true');
+if (!document.head.querySelector("style[data-dashboard-animations]")) {
+  style.setAttribute("data-dashboard-animations", "true");
   document.head.appendChild(style);
 }
 
@@ -48,26 +56,8 @@ const fetchIncidents = async () => {
       throw new Error("Failed to fetch incidents");
     }
     const data = await response.json();
-    // Try to fetch assignment rows and merge assigned_volunteer_id into incidents
-    try {
-      const aresp = await fetch("http://localhost:5000/api/incidents/assignments/debug");
-      if (aresp.ok) {
-        const assignments = await aresp.json();
-        if (Array.isArray(assignments) && assignments.length > 0) {
-          const byIncident = {};
-          for (const a of assignments) {
-            if (a.incident_id) byIncident[a.incident_id] = a.volunteer_id;
-          }
-          for (const inc of data) {
-            if (!inc.assigned_volunteer_id && byIncident[inc.id]) {
-              inc.assigned_volunteer_id = byIncident[inc.id];
-            }
-          }
-        }
-      }
-    } catch (err) {
-      console.warn('Failed to fetch/merge assignments for incidents:', err);
-    }
+    // Assignments debug call removed - rely on incident.assigned_volunteer_id if present
+    // (Previously attempted to fetch /api/incidents/assignments/debug to merge assignment rows.)
 
     return data;
   } catch (error) {
@@ -78,7 +68,8 @@ const fetchIncidents = async () => {
 
 const updateIncidentStatus = async (id, status) => {
   try {
-    const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+    const token =
+      localStorage.getItem("token") || localStorage.getItem("authToken");
     const response = await fetch(`http://localhost:5000/api/incidents/${id}`, {
       method: "PUT",
       headers: {
@@ -99,7 +90,8 @@ const updateIncidentStatus = async (id, status) => {
 
 const updateIncident = async (id, data) => {
   try {
-    const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+    const token =
+      localStorage.getItem("token") || localStorage.getItem("authToken");
     const response = await fetch(`http://localhost:5000/api/incidents/${id}`, {
       method: "PUT",
       headers: {
@@ -120,7 +112,8 @@ const updateIncident = async (id, data) => {
 
 const deleteIncident = async (id) => {
   try {
-    const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+    const token =
+      localStorage.getItem("token") || localStorage.getItem("authToken");
     const response = await fetch(`http://localhost:5000/api/incidents/${id}`, {
       method: "DELETE",
       headers: {
@@ -139,7 +132,8 @@ const deleteIncident = async (id) => {
 
 const createIncident = async (data) => {
   try {
-    const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+    const token =
+      localStorage.getItem("token") || localStorage.getItem("authToken");
     const response = await fetch(`http://localhost:5000/api/incidents`, {
       method: "POST",
       headers: {
@@ -164,7 +158,8 @@ const createIncident = async (data) => {
 
 const assignVolunteer = async (incidentId, volunteerId) => {
   try {
-    const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+    const token =
+      localStorage.getItem("token") || localStorage.getItem("authToken");
     const vid = Number(volunteerId);
     const response = await fetch(
       `http://localhost:5000/api/incidents/${incidentId}/assign`,
@@ -190,9 +185,7 @@ const assignVolunteer = async (incidentId, volunteerId) => {
 
 const fetchVolunteers = async () => {
   try {
-    const response = await fetch(
-      "http://localhost:5000/api/volunteers"
-    );
+    const response = await fetch("http://localhost:5000/api/volunteers");
     if (!response.ok) {
       throw new Error("Failed to fetch volunteers");
     }
@@ -209,8 +202,9 @@ const Card = ({ children, className = "" }) => (
   <div
     className={`bg-white/95 backdrop-blur-sm rounded-2xl border-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 ${className}`}
     style={{
-      borderColor: 'rgba(22, 83, 126, 0.2)',
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)'
+      borderColor: "rgba(22, 83, 126, 0.2)",
+      background:
+        "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)",
     }}
   >
     {children}
@@ -218,13 +212,13 @@ const Card = ({ children, className = "" }) => (
 );
 
 const CardHeader = ({ children, className = "" }) => (
-  <div 
+  <div
     className={`p-6 border-b-2 ${className}`}
     style={{
-      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
-      borderColor: 'rgba(22, 83, 126, 0.3)',
-      paddingTop: '1.75rem',
-      paddingBottom: '1.75rem'
+      background: "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+      borderColor: "rgba(22, 83, 126, 0.3)",
+      paddingTop: "1.75rem",
+      paddingBottom: "1.75rem",
     }}
   >
     {children}
@@ -232,13 +226,25 @@ const CardHeader = ({ children, className = "" }) => (
 );
 
 const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-2xl font-black text-white ${className}`} style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', lineHeight: '1.3', paddingBottom: '0.25rem' }}>
+  <h3
+    className={`text-2xl font-black text-white ${className}`}
+    style={{
+      textShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+      lineHeight: "1.3",
+      paddingBottom: "0.25rem",
+    }}
+  >
     {children}
   </h3>
 );
 
 const CardDescription = ({ children, className = "" }) => (
-  <p className={`text-sm text-white/90 mt-2 font-semibold ${className}`} style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.2)' }}>{children}</p>
+  <p
+    className={`text-sm text-white/90 mt-2 font-semibold ${className}`}
+    style={{ textShadow: "0 1px 4px rgba(0, 0, 0, 0.2)" }}
+  >
+    {children}
+  </p>
 );
 
 const CardContent = ({ children, className = "" }) => (
@@ -248,24 +254,24 @@ const CardContent = ({ children, className = "" }) => (
 const Badge = ({ children, variant = "default" }) => {
   const styles = {
     default: {
-      background: 'linear-gradient(135deg, #6aa84f 0%, #38761d 100%)',
-      color: '#ffffff',
-      borderColor: '#38761d'
+      background: "linear-gradient(135deg, #6aa84f 0%, #38761d 100%)",
+      color: "#ffffff",
+      borderColor: "#38761d",
     },
     secondary: {
-      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
-      color: '#ffffff',
-      borderColor: '#16537e'
+      background: "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+      color: "#ffffff",
+      borderColor: "#16537e",
     },
     destructive: {
-      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
-      color: '#ffffff',
-      borderColor: '#990000'
+      background: "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
+      color: "#ffffff",
+      borderColor: "#990000",
     },
     warning: {
-      background: 'linear-gradient(135deg, #f48836 0%, #ff3535 100%)',
-      color: '#ffffff',
-      borderColor: '#f48836'
+      background: "linear-gradient(135deg, #f48836 0%, #ff3535 100%)",
+      color: "#ffffff",
+      borderColor: "#f48836",
     },
   };
   return (
@@ -293,23 +299,23 @@ const Button = ({
   };
   const variants = {
     default: {
-      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
-      color: '#ffffff',
-      boxShadow: '0 4px 15px rgba(22, 83, 126, 0.4)'
+      background: "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+      color: "#ffffff",
+      boxShadow: "0 4px 15px rgba(22, 83, 126, 0.4)",
     },
     destructive: {
-      background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
-      color: '#ffffff',
-      boxShadow: '0 4px 15px rgba(255, 53, 53, 0.4)'
+      background: "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
+      color: "#ffffff",
+      boxShadow: "0 4px 15px rgba(255, 53, 53, 0.4)",
     },
     outline: {
-      border: '2px solid #16537e',
-      background: 'transparent',
-      color: '#16537e',
+      border: "2px solid #16537e",
+      background: "transparent",
+      color: "#16537e",
     },
     ghost: {
-      background: 'transparent',
-      color: '#16537e',
+      background: "transparent",
+      color: "#16537e",
     },
   };
   return (
@@ -343,19 +349,21 @@ const TableHeader = ({ children }) => <thead>{children}</thead>;
 const TableBody = ({ children }) => <tbody>{children}</tbody>;
 const TableRow = ({ children }) => <tr className="border-b">{children}</tr>;
 const TableHead = ({ children, className = "" }) => (
-  <th 
+  <th
     className={`h-14 px-4 text-left align-middle font-bold text-base ${className}`}
     style={{
-      background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)',
-      color: '#ffffff',
-      textShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+      background: "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+      color: "#ffffff",
+      textShadow: "0 1px 3px rgba(0, 0, 0, 0.3)",
     }}
   >
     {children}
   </th>
 );
 const TableCell = ({ children, className = "" }) => (
-  <td className={`p-4 align-middle text-gray-800 font-medium ${className}`}>{children}</td>
+  <td className={`p-4 align-middle text-gray-800 font-medium ${className}`}>
+    {children}
+  </td>
 );
 
 // Custom Select Component (better for dialogs)
@@ -415,7 +423,11 @@ const Select = ({ value, onValueChange, children, defaultValue }) => {
 
       {isOpen && (
         <div className="absolute z-[9999] mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg">
-          <div className={`max-h-60 overflow-y-auto py-1 ${content?.props.className || ""}`}>
+          <div
+            className={`max-h-60 overflow-y-auto py-1 ${
+              content?.props.className || ""
+            }`}
+          >
             {options.length > 0 ? (
               options.map((option) => (
                 <div
@@ -511,7 +523,7 @@ const Dialog = ({ children, open: controlledOpen, onOpenChange }) => {
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 overflow-y-auto"
-          style={{ paddingTop: '5vh' }}
+          style={{ paddingTop: "5vh" }}
           onClick={() => setIsOpen(false)}
         >
           {content &&
@@ -542,8 +554,9 @@ const DialogContent = ({ children, onClose, className = "" }) => {
     <div
       className={`rounded-2xl shadow-2xl w-full max-w-md overflow-visible relative backdrop-blur-sm ${className}`}
       style={{
-        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%)',
-        border: '2px solid rgba(22, 83, 126, 0.2)'
+        background:
+          "linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%)",
+        border: "2px solid rgba(22, 83, 126, 0.2)",
       }}
       onClick={(e) => e.stopPropagation()}
     >
@@ -551,8 +564,8 @@ const DialogContent = ({ children, onClose, className = "" }) => {
         onClick={onClose}
         className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
         style={{
-          background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
-          color: '#ffffff'
+          background: "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
+          color: "#ffffff",
         }}
         aria-label="Close dialog"
       >
@@ -584,7 +597,12 @@ const DialogHeader = ({ children, className = "" }) => {
 DialogHeader.displayName = "DialogHeader";
 
 const DialogTitle = ({ children, className = "" }) => (
-  <h2 className={`text-xl font-semibold ${className}`} style={{ lineHeight: '1.3', paddingBottom: '0.25rem' }}>{children}</h2>
+  <h2
+    className={`text-xl font-semibold ${className}`}
+    style={{ lineHeight: "1.3", paddingBottom: "0.25rem" }}
+  >
+    {children}
+  </h2>
 );
 DialogTitle.displayName = "DialogTitle";
 
@@ -737,7 +755,11 @@ const ManageIncidents = () => {
   };
 
   const handleDelete = async (incidentId) => {
-    if (!window.confirm("Are you sure you want to delete this incident? This action cannot be undone.")) {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this incident? This action cannot be undone."
+      )
+    ) {
       return;
     }
     try {
@@ -751,7 +773,8 @@ const ManageIncidents = () => {
     } catch (error) {
       toast({
         title: "Delete Failed",
-        description: "Failed to delete incident. Make sure you have proper permissions.",
+        description:
+          "Failed to delete incident. Make sure you have proper permissions.",
       });
     }
   };
@@ -783,29 +806,34 @@ const ManageIncidents = () => {
   };
 
   return (
-    <div 
+    <div
       className="min-h-screen p-6 space-y-6 relative overflow-hidden"
       style={{
-        background: 'radial-gradient(circle at 20% 50%, rgba(106, 168, 79, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(22, 83, 126, 0.15) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)'
+        background:
+          "radial-gradient(circle at 20% 50%, rgba(106, 168, 79, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(22, 83, 126, 0.15) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)",
       }}
     >
       <div className="flex justify-between items-center animate-fade-in">
         <div>
-          <h1 
+          <h1
             className="text-5xl md:text-6xl font-black mb-3"
             style={{
-              background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 50%, #38761d 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              textShadow: '0 4px 20px rgba(22, 83, 126, 0.2)',
-              lineHeight: '1.2',
-              paddingBottom: '0.5rem'
+              background:
+                "linear-gradient(135deg, #16537e 0%, #6aa84f 50%, #38761d 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              textShadow: "0 4px 20px rgba(22, 83, 126, 0.2)",
+              lineHeight: "1.2",
+              paddingBottom: "0.5rem",
             }}
           >
             Manage Incidents
           </h1>
-          <p className="text-xl md:text-2xl font-bold mt-3" style={{ color: '#16537e' }}>
+          <p
+            className="text-xl md:text-2xl font-bold mt-3"
+            style={{ color: "#16537e" }}
+          >
             View and manage all reported incidents
           </p>
         </div>
@@ -819,7 +847,7 @@ const ManageIncidents = () => {
       </div>
 
       {/* Filters */}
-      <Card className="animate-slide-up" style={{ animationDelay: '100ms' }}>
+      <Card className="animate-slide-up" style={{ animationDelay: "100ms" }}>
         <CardHeader>
           <CardTitle>Search & Filter</CardTitle>
         </CardHeader>
@@ -834,7 +862,7 @@ const ManageIncidents = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-48 h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg">
                 <SelectValue placeholder="Filter by status" />
                 <SelectItem value="all">All Status</SelectItem>
@@ -848,7 +876,7 @@ const ManageIncidents = () => {
       </Card>
 
       {/* Incidents Table */}
-      <Card className="animate-slide-up" style={{ animationDelay: '200ms' }}>
+      <Card className="animate-slide-up" style={{ animationDelay: "200ms" }}>
         <CardHeader>
           <CardTitle>All Incidents</CardTitle>
           <CardDescription>Complete list of reported incidents</CardDescription>
@@ -857,15 +885,26 @@ const ManageIncidents = () => {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow style={{ background: 'linear-gradient(135deg, #16537e 0%, #6aa84f 100%)' }}>
+                <TableRow
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #16537e 0%, #6aa84f 100%)",
+                  }}
+                >
                   <TableHead>ID</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Severity</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Date</TableHead>
-                  <TableHead className="font-bold text-gray-700">Status</TableHead>
-                  <TableHead className="font-bold text-gray-700">Assigned Volunteer</TableHead>
-                  <TableHead className="font-bold text-gray-700">Actions</TableHead>
+                  <TableHead className="font-bold text-gray-700">
+                    Status
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-700">
+                    Assigned Volunteer
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-700">
+                    Actions
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -874,35 +913,56 @@ const ManageIncidents = () => {
                     <TableCell colSpan={8} className="text-center py-12">
                       <div className="flex flex-col items-center gap-2">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                        <p className="text-gray-600 font-medium">Loading incidents...</p>
+                        <p className="text-gray-600 font-medium">
+                          Loading incidents...
+                        </p>
                       </div>
                     </TableCell>
                   </TableRow>
                 ) : filteredIncidents.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-12">
-                      <p className="text-gray-500 font-medium">No incidents found.</p>
+                      <p className="text-gray-500 font-medium">
+                        No incidents found.
+                      </p>
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredIncidents.map((incident, index) => (
-                    <TableRow 
+                    <TableRow
                       key={incident.id}
                       className="transition-all duration-300 border-b-2 hover:shadow-lg"
-                      style={{ 
+                      style={{
                         animationDelay: `${index * 50}ms`,
-                        borderColor: 'rgba(22, 83, 126, 0.1)',
-                        background: index % 2 === 0 ? 'rgba(255, 255, 255, 0.8)' : 'rgba(248, 250, 252, 0.8)'
+                        borderColor: "rgba(22, 83, 126, 0.1)",
+                        background:
+                          index % 2 === 0
+                            ? "rgba(255, 255, 255, 0.8)"
+                            : "rgba(248, 250, 252, 0.8)",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(22, 83, 126, 0.1) 0%, rgba(106, 168, 79, 0.1) 100%)';
+                        e.currentTarget.style.background =
+                          "linear-gradient(135deg, rgba(22, 83, 126, 0.1) 0%, rgba(106, 168, 79, 0.1) 100%)";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = index % 2 === 0 ? 'rgba(255, 255, 255, 0.8)' : 'rgba(248, 250, 252, 0.8)';
+                        e.currentTarget.style.background =
+                          index % 2 === 0
+                            ? "rgba(255, 255, 255, 0.8)"
+                            : "rgba(248, 250, 252, 0.8)";
                       }}
                     >
-                      <TableCell className="font-bold text-base" style={{ color: '#16537e' }}>{incident.id}</TableCell>
-                      <TableCell className="font-semibold text-base" style={{ color: '#16537e' }}>{incident.title.split(":")[0]}</TableCell>
+                      <TableCell
+                        className="font-bold text-base"
+                        style={{ color: "#16537e" }}
+                      >
+                        {incident.id}
+                      </TableCell>
+                      <TableCell
+                        className="font-semibold text-base"
+                        style={{ color: "#16537e" }}
+                      >
+                        {incident.title.split(":")[0]}
+                      </TableCell>
                       <TableCell>
                         <Badge
                           variant={
@@ -914,7 +974,9 @@ const ManageIncidents = () => {
                           {incident.severity}
                         </Badge>
                       </TableCell>
-                      <TableCell className="font-medium text-gray-700">{incident.location}</TableCell>
+                      <TableCell className="font-medium text-gray-700">
+                        {incident.location}
+                      </TableCell>
                       <TableCell className="text-gray-600">
                         {new Date(incident.created_at).toLocaleDateString()}
                       </TableCell>
@@ -937,8 +999,14 @@ const ManageIncidents = () => {
                       <TableCell className="font-medium text-gray-700">
                         {incident.assigned_volunteer_id ? (
                           (() => {
-                            const av = volunteers.find((v) => Number(v.id) === Number(incident.assigned_volunteer_id));
-                            return av ? `${av.first_name} ${av.last_name}` : `#${incident.assigned_volunteer_id}`;
+                            const av = volunteers.find(
+                              (v) =>
+                                Number(v.id) ===
+                                Number(incident.assigned_volunteer_id)
+                            );
+                            return av
+                              ? `${av.first_name} ${av.last_name}`
+                              : `#${incident.assigned_volunteer_id}`;
                           })()
                         ) : (
                           <span className="text-gray-400">-</span>
@@ -946,246 +1014,301 @@ const ManageIncidents = () => {
                       </TableCell>
 
                       <TableCell>
-  <div className="flex gap-2">
-    <Dialog>
-      <DialogTrigger>
-        <Button variant="ghost" size="sm">
-          <Eye className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-        <DialogHeader className="pb-4 border-b">
-          <DialogDescription className="mt-0">
-            <div className="text-xl font-bold text-gray-900 mb-1">
-              {incident.assigned_volunteer_id ? (
-                (() => {
-                  const av = volunteers.find((v) => Number(v.id) === Number(incident.assigned_volunteer_id));
-                  return av ? `${av.first_name} ${av.last_name}` : `#${incident.assigned_volunteer_id}`;
-                })()
-              ) : (
-                <span className="text-gray-400">Not Assigned</span>
-              )}
-            </div>
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="space-y-6 py-4 px-6 pb-8">
-          {/* Incident Details Section */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-lg font-bold text-gray-900 mb-4" style={{ lineHeight: '1.3', paddingBottom: '0.25rem' }}>
-              Incident Details
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                  Type
-                </label>
-                <p className="text-lg text-gray-900">
-                  {incident.title && incident.title.includes(":") 
-                    ? incident.title.split(":")[0] 
-                    : incident.title || "N/A"}
-                </p>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                  Severity
-                </label>
-                <div>
-                  <Badge
-                    variant={
-                      incident.severity === "Critical" || incident.severity === "critical"
-                        ? "destructive"
-                        : "default"
-                    }
-                    className="text-sm px-3 py-1"
-                  >
-                    {incident.severity || "medium"}
-                  </Badge>
-                </div>
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                  Location
-                </label>
-                <p className="text-lg text-gray-900">
-                  {incident.location || "N/A"}
-                </p>
-              </div>
-            </div>
-            <div className="mt-6 space-y-2">
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                Description
-              </label>
-              {(() => {
-                const desc = incident.description || "No description provided";
-                const emailMatch = desc.match(/Reporter Email:\s*([^\s]+@[^\s]+)/i) || desc.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-                const email = emailMatch ? emailMatch[1] : null;
-                const descriptionText = email ? desc.replace(/Reporter Email:\s*[^\s]+@[^\s]+/i, '').replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/, '').trim() : desc;
-                
-                return (
-                  <>
-                    <p className="text-base text-gray-700 leading-relaxed bg-white p-3 rounded border">
-                      {descriptionText || "No description provided"}
-                    </p>
-                    {email && (
-                      <div className="mt-4 bg-white p-3 rounded border">
-                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2">
-                          Reporter Email
-                        </label>
-                        <p className="text-base text-gray-700">{email}</p>
-                      </div>
-                    )}
-                  </>
-                );
-              })()}
-            </div>
-          </div>
+                        <div className="flex gap-2">
+                          <Dialog>
+                            <DialogTrigger>
+                              <Button variant="ghost" size="sm">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+                              <DialogHeader className="pb-4 border-b">
+                                <DialogDescription className="mt-0">
+                                  <div className="text-xl font-bold text-gray-900 mb-1">
+                                    {incident.assigned_volunteer_id ? (
+                                      (() => {
+                                        const av = volunteers.find(
+                                          (v) =>
+                                            Number(v.id) ===
+                                            Number(
+                                              incident.assigned_volunteer_id
+                                            )
+                                        );
+                                        return av
+                                          ? `${av.first_name} ${av.last_name}`
+                                          : `#${incident.assigned_volunteer_id}`;
+                                      })()
+                                    ) : (
+                                      <span className="text-gray-400">
+                                        Not Assigned
+                                      </span>
+                                    )}
+                                  </div>
+                                </DialogDescription>
+                              </DialogHeader>
 
-          {/* Contact Information Section */}
-          {(incident.contact_person || incident.contact_phone) && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-lg font-bold text-gray-900 mb-4" style={{ lineHeight: '1.3', paddingBottom: '0.25rem' }}>
-                Contact Information
-              </h3>
-              <div className="space-y-4">
-                {incident.contact_person && (
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                      Contact Person
-                    </label>
-                    <p className="text-lg text-gray-900">
-                      {incident.contact_person}
-                    </p>
-                  </div>
+                              <div className="space-y-6 py-4 px-6 pb-8">
+                                {/* Incident Details Section */}
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                  <h3
+                                    className="text-lg font-bold text-gray-900 mb-4"
+                                    style={{
+                                      lineHeight: "1.3",
+                                      paddingBottom: "0.25rem",
+                                    }}
+                                  >
+                                    Incident Details
+                                  </h3>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                        Type
+                                      </label>
+                                      <p className="text-lg text-gray-900">
+                                        {incident.title &&
+                                        incident.title.includes(":")
+                                          ? incident.title.split(":")[0]
+                                          : incident.title || "N/A"}
+                                      </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                        Severity
+                                      </label>
+                                      <div>
+                                        <Badge
+                                          variant={
+                                            incident.severity === "Critical" ||
+                                            incident.severity === "critical"
+                                              ? "destructive"
+                                              : "default"
+                                          }
+                                          className="text-sm px-3 py-1"
+                                        >
+                                          {incident.severity || "medium"}
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                    <div className="space-y-2 md:col-span-2">
+                                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                        Location
+                                      </label>
+                                      <p className="text-lg text-gray-900">
+                                        {incident.location || "N/A"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="mt-6 space-y-2">
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                      Description
+                                    </label>
+                                    {(() => {
+                                      const desc =
+                                        incident.description ||
+                                        "No description provided";
+                                      const emailMatch =
+                                        desc.match(
+                                          /Reporter Email:\s*([^\s]+@[^\s]+)/i
+                                        ) ||
+                                        desc.match(
+                                          /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/
+                                        );
+                                      const email = emailMatch
+                                        ? emailMatch[1]
+                                        : null;
+                                      const descriptionText = email
+                                        ? desc
+                                            .replace(
+                                              /Reporter Email:\s*[^\s]+@[^\s]+/i,
+                                              ""
+                                            )
+                                            .replace(
+                                              /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/,
+                                              ""
+                                            )
+                                            .trim()
+                                        : desc;
+
+                                      return (
+                                        <>
+                                          <p className="text-base text-gray-700 leading-relaxed bg-white p-3 rounded border">
+                                            {descriptionText ||
+                                              "No description provided"}
+                                          </p>
+                                          {email && (
+                                            <div className="mt-4 bg-white p-3 rounded border">
+                                              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2">
+                                                Reporter Email
+                                              </label>
+                                              <p className="text-base text-gray-700">
+                                                {email}
+                                              </p>
+                                            </div>
+                                          )}
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                </div>
+
+                                {/* Contact Information Section */}
+                                {(incident.contact_person ||
+                                  incident.contact_phone) && (
+                                  <div className="bg-gray-50 p-4 rounded-lg">
+                                    <h3
+                                      className="text-lg font-bold text-gray-900 mb-4"
+                                      style={{
+                                        lineHeight: "1.3",
+                                        paddingBottom: "0.25rem",
+                                      }}
+                                    >
+                                      Contact Information
+                                    </h3>
+                                    <div className="space-y-4">
+                                      {incident.contact_person && (
+                                        <div className="space-y-2">
+                                          <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                            Contact Person
+                                          </label>
+                                          <p className="text-lg text-gray-900">
+                                            {incident.contact_person}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {incident.contact_phone && (
+                                        <div className="space-y-2">
+                                          <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                            Phone Number
+                                          </label>
+                                          <p className="text-lg text-gray-900">
+                                            {incident.contact_phone}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+
+                          <Dialog
+                            open={assignDialogOpen[incident.id] || false}
+                            onOpenChange={(open) =>
+                              setAssignDialogOpen((prev) => ({
+                                ...prev,
+                                [incident.id]: open,
+                              }))
+                            }
+                          >
+                            <DialogTrigger>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                style={{
+                                  borderColor: "#16537e",
+                                  color: "#16537e",
+                                }}
+                              >
+                                <UserPlus className="h-4 w-4 mr-1" />
+                                Assign
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-h-[80vh] overflow-y-auto">
+                              <DialogHeader>
+                                <DialogTitle>Assign Volunteer</DialogTitle>
+                                <DialogDescription>
+                                  Select a volunteer for this incident
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="space-y-4 py-2">
+                                {volunteers.length === 0 ? (
+                                  <div className="text-sm text-gray-500 py-2">
+                                    Loading volunteers... (Found:{" "}
+                                    {volunteers.length})
+                                  </div>
+                                ) : (
+                                  <Select
+                                    value={selectedVolunteer}
+                                    onValueChange={setSelectedVolunteer}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select volunteer" />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-60">
+                                      {volunteers.map((volunteer) => (
+                                        <SelectItem
+                                          key={volunteer.id}
+                                          value={volunteer.id.toString()}
+                                        >
+                                          {volunteer.first_name}{" "}
+                                          {volunteer.last_name}
+                                          {volunteer.skills &&
+                                            volunteer.skills.length > 0 && (
+                                              <>
+                                                {" "}
+                                                - {volunteer.skills.join(", ")}
+                                              </>
+                                            )}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                )}
+                                <Button
+                                  className="w-full"
+                                  onClick={() => {
+                                    if (selectedVolunteer) {
+                                      handleAssignVolunteer(
+                                        incident.id,
+                                        selectedVolunteer
+                                      );
+                                    }
+                                  }}
+                                >
+                                  Confirm Assignment
+                                </Button>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+
+                          {incident.status !== "resolved" && (
+                            <Button
+                              size="sm"
+                              onClick={() => handleResolve(incident.id)}
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #6aa84f 0%, #38761d 100%)",
+                                boxShadow: "0 4px 15px rgba(106, 168, 79, 0.4)",
+                              }}
+                            >
+                              <CheckCircle className="h-4 w-4 mr-1" />
+                              Resolve
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEdit(incident)}
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDelete(incident.id)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Delete
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
                 )}
-                {incident.contact_phone && (
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                      Phone Number
-                    </label>
-                    <p className="text-lg text-gray-900">
-                      {incident.contact_phone}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
-
-    <Dialog
-      open={assignDialogOpen[incident.id] || false}
-      onOpenChange={(open) =>
-        setAssignDialogOpen((prev) => ({
-          ...prev,
-          [incident.id]: open,
-        }))
-      }
-    >
-      <DialogTrigger>
-        <Button 
-          size="sm" 
-          variant="outline"
-          style={{
-            borderColor: '#16537e',
-            color: '#16537e'
-          }}
-        >
-          <UserPlus className="h-4 w-4 mr-1" />
-          Assign
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Assign Volunteer</DialogTitle>
-          <DialogDescription>
-            Select a volunteer for this incident
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 py-2">
-          {volunteers.length === 0 ? (
-            <div className="text-sm text-gray-500 py-2">
-              Loading volunteers... (Found: {volunteers.length})
-            </div>
-          ) : (
-            <Select
-              value={selectedVolunteer}
-              onValueChange={setSelectedVolunteer}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select volunteer" />
-              </SelectTrigger>
-              <SelectContent className="max-h-60">
-                {volunteers.map((volunteer) => (
-                  <SelectItem
-                    key={volunteer.id}
-                    value={volunteer.id.toString()}
-                  >
-                    {volunteer.first_name}{" "}
-                    {volunteer.last_name}
-                    {volunteer.skills && volunteer.skills.length > 0 && (
-                      <> - {volunteer.skills.join(", ")}</>
-                    )}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-          <Button
-            className="w-full"
-            onClick={() => {
-              if (selectedVolunteer) {
-                handleAssignVolunteer(
-                  incident.id,
-                  selectedVolunteer
-                );
-              }
-            }}
-          >
-            Confirm Assignment
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-
-    {incident.status !== "resolved" && (
-      <Button
-        size="sm"
-        onClick={() => handleResolve(incident.id)}
-        style={{
-          background: 'linear-gradient(135deg, #6aa84f 0%, #38761d 100%)',
-          boxShadow: '0 4px 15px rgba(106, 168, 79, 0.4)'
-        }}
-      >
-        <CheckCircle className="h-4 w-4 mr-1" />
-        Resolve
-      </Button>
-    )}
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={() => handleEdit(incident)}
-    >
-      <Edit className="h-4 w-4 mr-1" />
-      Edit
-    </Button>
-    <Button
-      size="sm"
-      variant="destructive"
-      onClick={() => handleDelete(incident.id)}
-    >
-      <Trash2 className="h-4 w-4 mr-1" />
-      Delete
-    </Button>
-  </div>
-</TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>
@@ -1196,17 +1319,22 @@ const ManageIncidents = () => {
           <div
             className="rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto backdrop-blur-sm"
             style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%)',
-              border: '2px solid rgba(22, 83, 126, 0.2)'
+              background:
+                "linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%)",
+              border: "2px solid rgba(22, 83, 126, 0.2)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6 border-b border-gray-100">
-              <h2 className="text-xl font-semibold">Edit Incident #{editingIncident.id}</h2>
+              <h2 className="text-xl font-semibold">
+                Edit Incident #{editingIncident.id}
+              </h2>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-600">Title</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Title
+                </label>
                 <Input
                   value={editForm.title}
                   onChange={(e) =>
@@ -1216,7 +1344,9 @@ const ManageIncidents = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-600">Description</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Description
+                </label>
                 <textarea
                   value={editForm.description}
                   onChange={(e) =>
@@ -1228,7 +1358,9 @@ const ManageIncidents = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Location</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Location
+                  </label>
                   <Input
                     value={editForm.location}
                     onChange={(e) =>
@@ -1238,7 +1370,9 @@ const ManageIncidents = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Severity</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Severity
+                  </label>
                   <Select
                     value={editForm.severity}
                     onValueChange={(value) =>
@@ -1257,7 +1391,9 @@ const ManageIncidents = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Status</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Status
+                  </label>
                   <Select
                     value={editForm.status}
                     onValueChange={(value) =>
@@ -1273,18 +1409,25 @@ const ManageIncidents = () => {
                   </Select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Contact Person</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Contact Person
+                  </label>
                   <Input
                     value={editForm.contact_person}
                     onChange={(e) =>
-                      setEditForm({ ...editForm, contact_person: e.target.value })
+                      setEditForm({
+                        ...editForm,
+                        contact_person: e.target.value,
+                      })
                     }
                     className="mt-1"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-600">Contact Phone</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Contact Phone
+                </label>
                 <Input
                   value={editForm.contact_phone}
                   onChange={(e) =>
@@ -1313,8 +1456,9 @@ const ManageIncidents = () => {
           <div
             className="rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto backdrop-blur-sm"
             style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%)',
-              border: '2px solid rgba(22, 83, 126, 0.2)'
+              background:
+                "linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%)",
+              border: "2px solid rgba(22, 83, 126, 0.2)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -1323,7 +1467,9 @@ const ManageIncidents = () => {
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-600">Title *</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Title *
+                </label>
                 <Input
                   value={createForm.title}
                   onChange={(e) =>
@@ -1334,11 +1480,16 @@ const ManageIncidents = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-600">Description *</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Description *
+                </label>
                 <textarea
                   value={createForm.description}
                   onChange={(e) =>
-                    setCreateForm({ ...createForm, description: e.target.value })
+                    setCreateForm({
+                      ...createForm,
+                      description: e.target.value,
+                    })
                   }
                   rows={4}
                   className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg"
@@ -1347,7 +1498,9 @@ const ManageIncidents = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Location *</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Location *
+                  </label>
                   <Input
                     value={createForm.location}
                     onChange={(e) =>
@@ -1358,7 +1511,9 @@ const ManageIncidents = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Severity *</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Severity *
+                  </label>
                   <Select
                     value={createForm.severity}
                     onValueChange={(value) =>
@@ -1377,22 +1532,32 @@ const ManageIncidents = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Contact Person</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Contact Person
+                  </label>
                   <Input
                     value={createForm.contact_person}
                     onChange={(e) =>
-                      setCreateForm({ ...createForm, contact_person: e.target.value })
+                      setCreateForm({
+                        ...createForm,
+                        contact_person: e.target.value,
+                      })
                     }
                     className="mt-1"
                     placeholder="Optional"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Contact Phone</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Contact Phone
+                  </label>
                   <Input
                     value={createForm.contact_phone}
                     onChange={(e) =>
-                      setCreateForm({ ...createForm, contact_phone: e.target.value })
+                      setCreateForm({
+                        ...createForm,
+                        contact_phone: e.target.value,
+                      })
                     }
                     className="mt-1"
                     placeholder="Optional"
@@ -1419,7 +1584,9 @@ const ManageIncidents = () => {
                 <Button
                   onClick={handleCreate}
                   disabled={
-                    !createForm.title || !createForm.description || !createForm.location
+                    !createForm.title ||
+                    !createForm.description ||
+                    !createForm.location
                   }
                 >
                   Create Incident
@@ -1434,4 +1601,3 @@ const ManageIncidents = () => {
 };
 
 export default ManageIncidents;
-

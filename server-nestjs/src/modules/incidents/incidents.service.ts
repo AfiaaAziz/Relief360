@@ -194,18 +194,8 @@ export class IncidentsService {
         }
     }
 
-    // Return raw assignments rows (no relations) for debugging purposes
-    async getAssignmentsRaw() {
-        try {
-            // Use a simple query to avoid relation-loading issues
-            const rows = await this.assignmentsRepository.query('SELECT id, volunteer_id, incident_id, assigned_at, status, notes FROM volunteer_assignments');
-            return rows || [];
-        } catch (err: any) {
-            console.error('Error fetching raw assignments:', err);
-            // Always return an array to keep the frontend parsing stable
-            return [];
-        }
-    }
+    // Debug helpers removed: getAssignmentsRaw was removed
+
 
     async remove(id: number) {
         try {
@@ -236,27 +226,59 @@ export class IncidentsService {
         }
     }
 
-    // Debug helper: return counts and sample rows for quick troubleshooting
-    async debug() {
-        const result: any = {};
+    // Get incidents for the current logged-in user
+    async findByUser(userId: number, userEmail?: string) {
         try {
-            result.volunteers = await this.volunteersService.findAll();
-        } catch (err) {
-            result.volunteersError = String(err.message || err);
-        }
+            console.log('🔍 findByUser called with:', { userId, userEmail });
 
+            // Build a single query that matches either the user id or the email (case-insensitive)
+            const qb = this.incidentsRepository.createQueryBuilder('incident')
+                .orderBy('incident.created_at', 'DESC');
+
+            if (userId && userEmail) {
+                qb.where('(incident.reported_by_user_id = :userId) OR (LOWER(incident.reported_by_email) = LOWER(:userEmail))', { userId, userEmail });
+            } else if (userId) {
+                qb.where('incident.reported_by_user_id = :userId', { userId });
+            } else if (userEmail) {
+                qb.where('LOWER(incident.reported_by_email) = LOWER(:userEmail)', { userEmail });
+            } else {
+                console.log('🔍 No user identifier provided, returning empty array');
+                return [];
+            }
+
+            const incidents = await qb.getMany();
+            console.log('✅ findByUser results count:', incidents.length);
+            return incidents;
+
+        } catch (err: any) {
+            console.error('❌ Error in findByUser:', err);
+            if (err?.code === '42P01') {
+                return [];
+            }
+            return [];
+        }
+    }
+
+    // Debug helper removed: debug() has been removed
+
+
+    // Repair reports: set reported_by_user_id for incidents matching the user's email where it's null
+    async repairReportsForUser(userId: number, userEmail: string) {
         try {
-            result.incidents = await this.incidentsRepository.find();
-        } catch (err) {
-            result.incidentsError = String(err.message || err);
-        }
+            if (!userId || !userEmail) return { affected: 0 };
 
-        try {
-            result.assignments = await this.assignmentsRepository.find({ relations: ['volunteer', 'incident'] });
-        } catch (err) {
-            result.assignmentsError = String(err.message || err);
-        }
+            const res = await this.incidentsRepository.createQueryBuilder()
+                .update()
+                .set({ reported_by_user_id: userId })
+                .where('reported_by_user_id IS NULL')
+                .andWhere('LOWER(reported_by_email) = LOWER(:email)', { email: userEmail })
+                .execute();
 
-        return result;
+            console.log(`repairReportsForUser: updated ${res?.affected || 0} rows for user ${userId}`);
+            return res;
+        } catch (err: any) {
+            console.error('Error in repairReportsForUser:', err);
+            return { affected: 0 };
+        }
     }
 }

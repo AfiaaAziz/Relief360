@@ -1,4 +1,4 @@
-import { IsString, IsEnum, IsOptional } from 'class-validator';
+import { IsString, IsEnum, IsOptional, IsNumber } from 'class-validator';
 
 export class CreateIncidentDto {
     @IsString()
@@ -20,6 +20,10 @@ export class CreateIncidentDto {
     @IsOptional()
     @IsString()
     contact_phone?: string;
+
+    @IsOptional()
+    @IsNumber()
+    reported_by_user_id?: number;
 
     @IsOptional()
     @IsString()
