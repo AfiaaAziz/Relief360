@@ -308,7 +308,7 @@ const VolunteerDashboard = () => {
   };
 
   const alerts = allIncidents.filter(
-    (i) => i.severity === "Critical" || i.severity === "High"
+    (i) => i.severity === "critical" || i.severity === "high"
   );
 
   const markComplete = async (incidentId) => {
@@ -329,6 +329,34 @@ const VolunteerDashboard = () => {
       toast({
         title: "Error",
         description: extractError(err, "Could not mark as completed."),
+      });
+    }
+  };
+
+  const respondToIncident = async (incidentId) => {
+    const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    const token = localStorage.getItem("authToken");
+    try {
+      const axios = (await import("axios")).default;
+      await axios.post(
+        `${apiBase}/api/incidents/${incidentId}/accept`,
+        { notes: "Responded from dashboard" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast({
+        title: "Success",
+        description: "You have responded to this incident!",
+      });
+      await fetchMyAssignments();
+      await fetchGlobalIncidents();
+    } catch (err) {
+      console.error(
+        "Failed to respond to incident",
+        err?.response?.data || err
+      );
+      toast({
+        title: "Error",
+        description: extractError(err, "Could not respond to incident."),
       });
     }
   };
@@ -451,57 +479,69 @@ const VolunteerDashboard = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {alerts.slice(0, 2).map((alert, idx) => (
-            <div
-              key={alert.id || idx}
-              className="p-4 border-l-4 rounded-lg transition-all duration-300 hover:shadow-lg transform hover:-translate-x-1"
-              style={{
-                borderLeftColor:
-                  alert.severity === "Critical" ? "#ff3535" : "#f48836",
-                background:
-                  alert.severity === "Critical"
-                    ? "linear-gradient(135deg, rgba(255, 53, 53, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%)"
-                    : "linear-gradient(135deg, rgba(244, 136, 54, 0.1) 0%, rgba(244, 136, 54, 0.05) 100%)",
-              }}
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <p
-                    className="font-black text-lg"
-                    style={{ color: "#16537e" }}
-                  >
-                    {alert.severity}: {alert.type} - {alert.location}
-                  </p>
-                  <p
-                    className="text-sm font-semibold mt-1"
-                    style={{ color: "#666" }}
-                  >
-                    {alert.description || alert.notes || "No description"}
-                  </p>
-                </div>
-                <Button
-                  size="sm"
-                  variant={alert.severity === "Critical" ? "" : "outline"}
-                  style={
-                    alert.severity === "Critical"
-                      ? {
-                          background:
-                            "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
-                          color: "#ffffff",
-                          boxShadow: "0 4px 15px rgba(255, 53, 53, 0.4)",
-                        }
-                      : {
-                          border: "2px solid #16537e",
-                          background: "transparent",
-                          color: "#16537e",
-                        }
-                  }
-                >
-                  {alert.severity === "Critical" ? "Respond" : "View Details"}
-                </Button>
-              </div>
+          {alerts.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500 font-semibold">
+                No critical or high priority alerts at this time
+              </p>
+              <p className="text-sm text-gray-400 mt-1">
+                Emergency alerts will appear here when they become available
+              </p>
             </div>
-          ))}
+          ) : (
+            alerts.slice(0, 2).map((alert, idx) => (
+              <div
+                key={alert.id || idx}
+                className="p-4 border-l-4 rounded-lg transition-all duration-300 hover:shadow-lg transform hover:-translate-x-1"
+                style={{
+                  borderLeftColor:
+                    alert.severity === "critical" ? "#ff3535" : "#f48836",
+                  background:
+                    alert.severity === "critical"
+                      ? "linear-gradient(135deg, rgba(255, 53, 53, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%)"
+                      : "linear-gradient(135deg, rgba(244, 136, 54, 0.1) 0%, rgba(244, 136, 54, 0.05) 100%)",
+                }}
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p
+                      className="font-black text-lg"
+                      style={{ color: "#16537e" }}
+                    >
+                      {alert.severity}: {alert.type} - {alert.location}
+                    </p>
+                    <p
+                      className="text-sm font-semibold mt-1"
+                      style={{ color: "#666" }}
+                    >
+                      {alert.description || alert.notes || "No description"}
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant={alert.severity === "critical" ? "" : "outline"}
+                    onClick={() => respondToIncident(alert.id)}
+                    style={
+                      alert.severity === "critical"
+                        ? {
+                            background:
+                              "linear-gradient(135deg, #ff3535 0%, #f44336 100%)",
+                            color: "#ffffff",
+                            boxShadow: "0 4px 15px rgba(255, 53, 53, 0.4)",
+                          }
+                        : {
+                            border: "2px solid #16537e",
+                            background: "transparent",
+                            color: "#16537e",
+                          }
+                    }
+                  >
+                    {alert.severity === "critical" ? "Respond" : "View Details"}
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
         </CardContent>
       </Card>
 
