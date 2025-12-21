@@ -73,9 +73,28 @@ const Login = () => {
           throw new Error(data.message || "Admin login failed");
         }
 
+        // Validate admin response data
+        if (!data.token || !data.user) {
+          throw new Error("Invalid admin login response");
+        }
+
+        // Sanitize admin user data
+        const adminUser = {
+          id: data.user.id || "admin",
+          email: data.user.email || "admin",
+          role: "admin",
+          name: data.user.name || "Administrator",
+          ...data.user,
+        };
+
+        console.log(
+          "✅ Admin login successful:",
+          adminUser.email,
+          adminUser.role
+        );
+
         // Store admin token and user data
         localStorage.setItem("authToken", data.token);
-        const adminUser = { email: "admin", role: "admin", id: "admin" };
         localStorage.setItem("user", JSON.stringify(adminUser));
 
         // Update AuthContext manually for admin

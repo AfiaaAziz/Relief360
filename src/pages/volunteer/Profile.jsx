@@ -143,27 +143,42 @@ const Profile = () => {
 
       const updated = response.data;
 
-      // Update auth user in context and localStorage
-      const mergedUser = {
-        ...(user || {}),
+      // Validate and sanitize the updated user data to prevent contamination
+      if (!updated || typeof updated !== "object") {
+        throw new Error("Invalid response from server");
+      }
+
+      // Create clean user data with proper validation
+      const cleanUserData = {
+        id: user?.id || updated.id,
+        email: user?.email || updated.email,
+        role: user?.role || "volunteer",
         firstName:
-          updated.first_name || (user && (user.firstName || user.first_name)),
-        lastName:
-          updated.last_name || (user && (user.lastName || user.last_name)),
-        phone: updated.phone || user?.phone,
-        skills: updated.skills || user?.skills,
-        experience: updated.experience || user?.experience,
-        address: updated.address || user?.address,
-        availability: updated.availability || user?.availability,
+          updated.first_name || user?.firstName || user?.first_name || "",
+        lastName: updated.last_name || user?.lastName || user?.last_name || "",
+        phone: updated.phone || user?.phone || "",
+        skills: updated.skills || user?.skills || [],
+        experience: updated.experience || user?.experience || "",
+        address: updated.address || user?.address || "",
+        availability: updated.availability || user?.availability || "Available",
         available:
           typeof updated.availability === "string"
             ? String(updated.availability).toLowerCase().includes("avail")
-            : updated.available ?? user?.available,
+            : updated.available ?? user?.available ?? true,
+        // Preserve other user fields that shouldn't change
+        ...user,
       };
 
-      setUser(mergedUser);
+      console.log(
+        "✅ Profile updated for:",
+        cleanUserData.email,
+        "Role:",
+        cleanUserData.role
+      );
+
+      setUser(cleanUserData);
       try {
-        localStorage.setItem("user", JSON.stringify(mergedUser));
+        localStorage.setItem("user", JSON.stringify(cleanUserData));
       } catch (e) {
         console.warn("Could not persist user to localStorage", e);
       }
