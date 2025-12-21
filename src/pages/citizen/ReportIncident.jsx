@@ -303,6 +303,7 @@ const ReportIncident = () => {
       toast({
         title: "Incident Reported Successfully",
         description: `Your incident has been reported with ID: ${createdIncident.id}. We will respond shortly.`,
+        type: "success",
       });
 
       // Reset form
@@ -316,8 +317,10 @@ const ReportIncident = () => {
       });
       setFiles([]);
 
-      // Redirect to citizen dashboard or show success page
-      window.location.href = "/citizen-dashboard";
+      // Redirect to citizen dashboard after 3 seconds to allow user to see success message
+      setTimeout(() => {
+        window.location.href = "/citizen-dashboard";
+      }, 3000);
     } catch (error) {
       console.error("Error submitting incident:", error);
       toast({
