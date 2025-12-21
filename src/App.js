@@ -17,6 +17,7 @@ import DonationsPage from "./pages/Donations";
 import Navbar from "./components/Navbar";
 import VolunteerRegister from "./components/VolunteerRegister";
 import HospitalRegistration from "./components/HospitalRegistration";
+import { Toaster } from "./components/ui/Toast";
 
 // Admin Dashboard Pages
 import AdminDashboard from "./pages/admin/dashboard";
@@ -158,6 +159,7 @@ function App() {
         {/* Global catch-all route */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }

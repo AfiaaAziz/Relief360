@@ -137,8 +137,9 @@ const EmergencyPlans = () => {
       setNewPlanName("");
       setCreateDialogOpen(false);
       toast({
-        title: "Plan Created",
-        description: "New emergency plan has been created.",
+        title: "Success",
+        description: "Emergency plan created successfully",
+        type: "success",
       });
       // Refresh plans
       await fetchPlans();
@@ -187,8 +188,9 @@ const EmergencyPlans = () => {
       setNewTaskTitle("");
       setTaskDialogOpen({ ...taskDialogOpen, [planId]: false });
       toast({
-        title: "Task Added",
-        description: "Task has been added to the plan.",
+        title: "Success",
+        description: "Task added successfully",
+        type: "success",
       });
       await fetchPlans();
     } catch (err) {
@@ -230,7 +232,11 @@ const EmergencyPlans = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       await fetchPlans();
-      toast({ title: "Deleted", description: "Task removed." });
+      toast({
+        title: "Success",
+        description: "Task removed successfully",
+        type: "success",
+      });
     } catch (err) {
       console.error("Delete task failed", err?.response?.data || err);
       toast({
