@@ -31,7 +31,7 @@ const Button = ({
   };
 
   const getButtonStyle = () => {
-    switch(variant) {
+    switch (variant) {
       case 'hero':
         return { background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)' };
       case 'secondary':
@@ -105,7 +105,7 @@ const Home = () => {
   }, [showBotMessage, isChatOpen]);
 
   return (
-    <section 
+    <section
       className="relative flex flex-col"
       style={{
         background: 'linear-gradient(135deg, rgba(22, 83, 126, 0.3) 0%, rgba(56, 118, 29, 0.2) 50%, rgba(106, 168, 79, 0.25) 100%)',
@@ -150,7 +150,7 @@ const Home = () => {
             />
           </div>
         ))}
-        
+
         {/* Navigation Buttons */}
         <button
           onClick={goToPrevious}
@@ -163,7 +163,7 @@ const Home = () => {
         >
           <ChevronLeft className="h-6 w-6 text-white" />
         </button>
-        
+
         <button
           onClick={goToNext}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
@@ -186,10 +186,10 @@ const Home = () => {
               style={{
                 width: index === currentSlide ? '12px' : '8px',
                 height: index === currentSlide ? '12px' : '8px',
-                background: index === currentSlide 
+                background: index === currentSlide
                   ? 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)'
                   : 'rgba(255, 255, 255, 0.5)',
-                boxShadow: index === currentSlide 
+                boxShadow: index === currentSlide
                   ? '0 0 10px rgba(255, 53, 53, 0.8)'
                   : '0 0 5px rgba(255, 255, 255, 0.3)'
               }}
@@ -198,304 +198,331 @@ const Home = () => {
         </div>
       </div>
 
-       {/* Main Content Container */}
-       <div className="relative z-10 flex-1 flex flex-col min-h-0 overflow-hidden">
-         
-         {/* Content Area - Takes available space but leaves room for footer */}
-         <div className="flex-1 flex items-center justify-center px-4 py-1 min-h-0 overflow-hidden">
-           <div className="text-center max-w-4xl mx-auto w-full">
-             
-             {/* Title */}
-             <h1 
-               className="text-3xl md:text-4xl lg:text-5xl font-black leading-tight mb-6"
-               style={{
-                 color: '#ffffff',
-                 textShadow: '0 4px 20px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(153, 0, 0, 0.6), 0 0 30px rgba(255, 255, 255, 0.3)',
-                 WebkitTextStroke: '1px rgba(255, 255, 255, 0.3)'
-               }}
-             >
-               Relief - 360
-             </h1>
+      {/* Main Content Container */}
+      <div className="relative z-10 flex-1 flex flex-col min-h-0 overflow-hidden">
 
-             {/* Subtitle */}
-             <p 
-               className="text-sm md:text-base lg:text-lg text-white max-w-2xl mx-auto font-bold mb-5"
-               style={{
-                 textShadow: '0 2px 15px rgba(0, 0, 0, 0.9), 0 1px 5px rgba(153, 0, 0, 0.5)',
-                 background: 'rgba(0, 0, 0, 0.3)',
-                 padding: '8px 16px',
-                 borderRadius: '8px',
-                 backdropFilter: 'blur(5px)'
-               }}
-             >
-               Connecting citizens, volunteers, hospitals, and emergency responders
-               in real-time to save lives and manage disasters effectively.
-             </p>
+        {/* Content Area - Takes available space but leaves room for footer */}
+        <div className="flex-1 flex items-center justify-center px-4 py-1 min-h-0 overflow-hidden">
+          <div className="text-center max-w-4xl mx-auto w-full">
 
-             {/* Action Buttons */}
-             <div className="flex flex-row justify-center gap-3 mb-8">
-               <Link to="/volunteer-register">
-                 <Button variant="secondary" size="lg" className="shadow-2xl text-sm md:text-base">
-                   <Users className="h-5 w-5" />
-                   Join as Volunteer
-                 </Button>
-               </Link>
-             </div>
+            {/* Title */}
+            <h1
+              className="text-3xl md:text-4xl lg:text-5xl font-black leading-tight mb-6"
+              style={{
+                color: '#ffffff',
+                textShadow: '0 4px 20px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(153, 0, 0, 0.6), 0 0 30px rgba(255, 255, 255, 0.3)',
+                WebkitTextStroke: '1px rgba(255, 255, 255, 0.3)'
+              }}
+            >
+              Relief - 360
+            </h1>
 
-             {/* Stats Grid */}
-             <div className="grid grid-cols-4 gap-8 md:gap-16 text-center text-white max-w-2xl mx-auto">
-               <div 
-                 className="p-4 md:p-5 rounded-xl transition-all duration-300 border-2 hover:scale-105 flex flex-col justify-center"
-                 style={{
-                   background: 'rgba(255, 53, 53, 0.85)',
-                   borderColor: '#ff3535',
-                   backdropFilter: 'blur(10px)',
-                   boxShadow: '0 4px 15px rgba(255, 53, 53, 0.4)'
-                 }}
-               >
-                 <p 
-                   className="text-lg md:text-xl font-black mb-2.5"
-                   style={{ 
-                     color: '#ffffff',
-                     textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)'
-                   }}
-                 >
-                   24/7
-                 </p>
-                 <p 
-                   className="text-[12px] md:text-[15px] font-bold text-white"
-                   style={{
-                     textShadow: '0 1px 5px rgba(0, 0, 0, 0.8)'
-                   }}
-                 >
-                   Emergency
-                 </p>
-               </div>
+            {/* Subtitle */}
+            <p
+              className="text-sm md:text-base lg:text-lg text-white max-w-2xl mx-auto font-bold mb-5"
+              style={{
+                textShadow: '0 2px 15px rgba(0, 0, 0, 0.9), 0 1px 5px rgba(153, 0, 0, 0.5)',
+                background: 'rgba(0, 0, 0, 0.3)',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                backdropFilter: 'blur(5px)'
+              }}
+            >
+              Connecting citizens, volunteers, hospitals, and emergency responders
+              in real-time to save lives and manage disasters effectively.
+            </p>
 
-               <div 
-                 className="p-4 md:p-5 rounded-xl transition-all duration-300 border-2 hover:scale-105 flex flex-col justify-center"
-                 style={{
-                   background: 'rgba(244, 136, 54, 0.85)',
-                   borderColor: '#f48836',
-                   backdropFilter: 'blur(10px)',
-                   boxShadow: '0 4px 15px rgba(244, 136, 54, 0.4)'
-                 }}
-               >
-                 <p 
-                   className="text-lg md:text-xl font-black mb-2.5"
-                   style={{ 
-                     color: '#ffffff',
-                     textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)'
-                   }}
-                 >
-                   1000+
-                 </p>
-                 <p 
-                   className="text-[12px] md:text-[15px] font-bold text-white"
-                   style={{
-                     textShadow: '0 1px 5px rgba(0, 0, 0, 0.8)'
-                   }}
-                 >
-                   Volunteers
-                 </p>
-               </div>
+            {/* Action Buttons */}
+            <div className="flex flex-row justify-center gap-3 mb-8">
+              <Link to="/volunteer-register">
+                <Button variant="secondary" size="lg" className="shadow-2xl text-sm md:text-base">
+                  <Users className="h-5 w-5" />
+                  Join as Volunteer
+                </Button>
+              </Link>
+            </div>
 
-               <div 
-                 className="p-4 md:p-5 rounded-xl transition-all duration-300 border-2 hover:scale-105 flex flex-col justify-center"
-                 style={{
-                   background: 'rgba(106, 168, 79, 0.85)',
-                   borderColor: '#6aa84f',
-                   backdropFilter: 'blur(10px)',
-                   boxShadow: '0 4px 15px rgba(106, 168, 79, 0.4)'
-                 }}
-               >
-                 <p 
-                   className="text-lg md:text-xl font-black mb-2.5"
-                   style={{ 
-                     color: '#ffffff',
-                     textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)'
-                   }}
-                 >
-                   50+
-                 </p>
-                 <p 
-                   className="text-[12px] md:text-[15px] font-bold text-white"
-                   style={{
-                     textShadow: '0 1px 5px rgba(0, 0, 0, 0.8)'
-                   }}
-                 >
-                   Hospitals
-                 </p>
-               </div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-4 gap-8 md:gap-16 text-center text-white max-w-2xl mx-auto">
+              <div
+                className="p-4 md:p-5 rounded-xl transition-all duration-300 border-2 hover:scale-105 flex flex-col justify-center"
+                style={{
+                  background: 'rgba(255, 53, 53, 0.85)',
+                  borderColor: '#ff3535',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 15px rgba(255, 53, 53, 0.4)'
+                }}
+              >
+                <p
+                  className="text-lg md:text-xl font-black mb-2.5"
+                  style={{
+                    color: '#ffffff',
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)'
+                  }}
+                >
+                  24/7
+                </p>
+                <p
+                  className="text-[12px] md:text-[15px] font-bold text-white"
+                  style={{
+                    textShadow: '0 1px 5px rgba(0, 0, 0, 0.8)'
+                  }}
+                >
+                  Emergency
+                </p>
+              </div>
 
-               <div 
-                 className="p-4 md:p-5 rounded-xl transition-all duration-300 border-2 hover:scale-105 flex flex-col justify-center"
-                 style={{
-                   background: 'rgba(22, 83, 126, 0.85)',
-                   borderColor: '#16537e',
-                   backdropFilter: 'blur(10px)',
-                   boxShadow: '0 4px 15px rgba(22, 83, 126, 0.4)'
-                 }}
-               >
-                 <p 
-                   className="text-lg md:text-xl font-black mb-2.5"
-                   style={{ 
-                     color: '#ffffff',
-                     textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)'
-                   }}
-                 >
-                   95%
-                 </p>
-                 <p 
-                   className="text-[12px] md:text-[15px] font-bold text-white"
-                   style={{
-                     textShadow: '0 1px 5px rgba(0, 0, 0, 0.8)'
-                   }}
-                 >
-                   Success
-                 </p>
-               </div>
-             </div>
-           </div>
-         </div>
+              <div
+                className="p-4 md:p-5 rounded-xl transition-all duration-300 border-2 hover:scale-105 flex flex-col justify-center"
+                style={{
+                  background: 'rgba(244, 136, 54, 0.85)',
+                  borderColor: '#f48836',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 15px rgba(244, 136, 54, 0.4)'
+                }}
+              >
+                <p
+                  className="text-lg md:text-xl font-black mb-2.5"
+                  style={{
+                    color: '#ffffff',
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)'
+                  }}
+                >
+                  1000+
+                </p>
+                <p
+                  className="text-[12px] md:text-[15px] font-bold text-white"
+                  style={{
+                    textShadow: '0 1px 5px rgba(0, 0, 0, 0.8)'
+                  }}
+                >
+                  Volunteers
+                </p>
+              </div>
 
-         {/* Emergency Footer Bar - Always visible at bottom */}
-         <div 
-           className="shrink-0 text-white py-3"
-           style={{
-             background: 'linear-gradient(135deg, rgba(153, 0, 0, 0.95) 0%, rgba(244, 67, 54, 0.95) 100%)'
-           }}
-         >
-           <div className="container mx-auto px-4">
-             <div className="flex justify-center gap-4 md:gap-6 text-xs md:text-sm font-bold">
-               <a href="tel:911" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
-                 <Phone className="h-4 w-4" />
-                 <span>Emergency: 911</span>
-               </a>
-               <a href="tel:112" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
-                 <Hospital className="h-4 w-4" />
-                 <span>Medical: 112</span>
-               </a>
-               <a href="tel:101" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
-                 <MapPin className="h-4 w-4" />
-                 <span>Fire: 101</span>
-               </a>
-             </div>
-           </div>
-         </div>
-       </div>
+              <div
+                className="p-4 md:p-5 rounded-xl transition-all duration-300 border-2 hover:scale-105 flex flex-col justify-center"
+                style={{
+                  background: 'rgba(106, 168, 79, 0.85)',
+                  borderColor: '#6aa84f',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 15px rgba(106, 168, 79, 0.4)'
+                }}
+              >
+                <p
+                  className="text-lg md:text-xl font-black mb-2.5"
+                  style={{
+                    color: '#ffffff',
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)'
+                  }}
+                >
+                  50+
+                </p>
+                <p
+                  className="text-[12px] md:text-[15px] font-bold text-white"
+                  style={{
+                    textShadow: '0 1px 5px rgba(0, 0, 0, 0.8)'
+                  }}
+                >
+                  Hospitals
+                </p>
+              </div>
 
-       {/* Attractive Bot Message Popup */}
-       {!isChatOpen && showBotMessage && (
-         <div 
-           className="fixed bottom-20 right-4 z-50 max-w-[240px] animate-bounce"
-           style={{ 
-             animation: 'bounce 2s ease-in-out infinite',
-             animationDelay: '1s'
-           }}
-         >
-           <div 
-             className="relative p-3 rounded-xl shadow-2xl backdrop-blur-md border-2"
-             style={{
-               background: 'linear-gradient(135deg, rgba(153, 0, 0, 0.95) 0%, rgba(244, 67, 54, 0.95) 100%)',
-               borderColor: '#ff3535',
-               boxShadow: '0 8px 25px rgba(153, 0, 0, 0.6)',
-               animation: 'pulse 2s ease-in-out infinite'
-             }}
-           >
-             {/* Close button */}
-             <button
-               onClick={() => setShowBotMessage(false)}
-               className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors z-10"
-             >
-               <X className="h-2.5 w-2.5 text-white" />
-             </button>
-             
-             {/* Message content */}
-             <div className="flex items-center gap-2.5 pr-5">
-               <div 
-                 className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                 style={{
-                   background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
-                   boxShadow: '0 0 12px rgba(255, 53, 53, 0.8)',
-                   animation: 'pulse 1.5s ease-in-out infinite'
-                 }}
-               >
-                 <MessageCircle className="h-4 w-4 text-white" />
-               </div>
-               <div className="flex-1">
-                 <p className="text-white font-bold text-xs leading-tight">
-                   💬 Get instant help from our AI assistant!
-                 </p>
-               </div>
-             </div>
-             
-             {/* Arrow pointing to button */}
-             <div 
-               className="absolute -bottom-1.5 right-6 w-3 h-3 transform rotate-45"
-               style={{
-                 background: 'linear-gradient(135deg, rgba(153, 0, 0, 0.95) 0%, rgba(244, 67, 54, 0.95) 100%)',
-                 borderRight: '2px solid #ff3535',
-                 borderBottom: '2px solid #ff3535'
-               }}
-             ></div>
-           </div>
-         </div>
-       )}
+              <div
+                className="p-4 md:p-5 rounded-xl transition-all duration-300 border-2 hover:scale-105 flex flex-col justify-center"
+                style={{
+                  background: 'rgba(22, 83, 126, 0.85)',
+                  borderColor: '#16537e',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 15px rgba(22, 83, 126, 0.4)'
+                }}
+              >
+                <p
+                  className="text-lg md:text-xl font-black mb-2.5"
+                  style={{
+                    color: '#ffffff',
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)'
+                  }}
+                >
+                  95%
+                </p>
+                <p
+                  className="text-[12px] md:text-[15px] font-bold text-white"
+                  style={{
+                    textShadow: '0 1px 5px rgba(0, 0, 0, 0.8)'
+                  }}
+                >
+                  Success
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-       {/* Floating Chatbot Avatar - Right Side */}
-       {!isChatOpen && (
-         <button
-           onClick={() => {
-             setIsChatOpen(true);
-             setShowBotMessage(false);
-           }}
-           className="fixed bottom-16 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-300"
-           style={{
-             background: 'linear-gradient(135deg, #990000 0%, #f44336 100%)',
-             boxShadow: '0 4px 15px rgba(153, 0, 0, 0.4)'
-           }}
-         >
-           <MessageCircle className="h-6 w-6 text-white" />
-         </button>
-       )}
+        {/* Emergency Footer Bar - Always visible at bottom */}
+        <div
+          className="shrink-0 text-white py-3"
+          style={{
+            background: 'linear-gradient(135deg, rgba(153, 0, 0, 0.95) 0%, rgba(244, 67, 54, 0.95) 100%)'
+          }}
+        >
+          <div className="container mx-auto px-4">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-xs md:text-sm font-bold">
 
-       {/* Chatbot Panel - Right Side (Centered with margins) */}
-       {isChatOpen && (
-         <div 
-           className="fixed top-1/2 right-4 transform -translate-y-1/2 w-80 md:w-96 h-[65vh] max-h-[550px] z-40 flex flex-col shadow-2xl rounded-lg overflow-hidden"
-           style={{
-             background: 'transparent',
-             maxHeight: 'calc(100vh - 100px)'
-           }}
-         >
-           {/* Chat Header - Transparent with only close button */}
-           <div 
-             className="p-2 flex items-center justify-end shrink-0"
-             style={{
-               background: 'transparent'
-             }}
-           >
-             <button 
-               onClick={() => setIsChatOpen(false)}
-               className="w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-lg"
-               style={{
-                 background: 'linear-gradient(135deg, #990000 0%, #f44336 100%)'
-               }}
-             >
-               <X className="h-4 w-4 text-white" />
-             </button>
-           </div>
+              <a href="tel:1122" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
+                <Phone className="h-4 w-4" />
+                <span>Emergency: 1122</span>
+              </a>
 
-           {/* Botpress Webchat Container */}
-           <div 
-             id="bp-webchat-container"
-             className="flex-1 overflow-hidden"
-           >
-             <div id="bp-embedded-webchat" className="w-full h-full" />
-           </div>
-         </div>
-       )}
+              <a href="tel:1122" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
+                <Hospital className="h-4 w-4" />
+                <span>Medical: 1122</span>
+              </a>
+
+              <a href="tel:1122" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
+                <MapPin className="h-4 w-4" />
+                <span>Fire: 1122</span>
+              </a>
+
+              {/* Additional Emergency Contacts */}
+
+              <a href="tel:15" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
+                <Phone className="h-4 w-4" />
+                <span>Police: 15</span>
+              </a>
+
+              <a href="tel:130" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
+                <MapPin className="h-4 w-4" />
+                <span>Motorway Police: 130</span>
+              </a>
+
+              <a href="tel:119" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
+                <Phone className="h-4 w-4" />
+                <span>Gas Emergency: 119</span>
+              </a>
+
+              <a href="tel:118" className="flex items-center gap-1.5 hover:scale-110 transition-transform duration-300">
+                <Phone className="h-4 w-4" />
+                <span>Electricity Emergency: 118</span>
+              </a>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Attractive Bot Message Popup */}
+      {!isChatOpen && showBotMessage && (
+        <div
+          className="fixed bottom-20 right-4 z-50 max-w-[240px] animate-bounce"
+          style={{
+            animation: 'bounce 2s ease-in-out infinite',
+            animationDelay: '1s'
+          }}
+        >
+          <div
+            className="relative p-3 rounded-xl shadow-2xl backdrop-blur-md border-2"
+            style={{
+              background: 'linear-gradient(135deg, rgba(153, 0, 0, 0.95) 0%, rgba(244, 67, 54, 0.95) 100%)',
+              borderColor: '#ff3535',
+              boxShadow: '0 8px 25px rgba(153, 0, 0, 0.6)',
+              animation: 'pulse 2s ease-in-out infinite'
+            }}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setShowBotMessage(false)}
+              className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors z-10"
+            >
+              <X className="h-2.5 w-2.5 text-white" />
+            </button>
+
+            {/* Message content */}
+            <div className="flex items-center gap-2.5 pr-5">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{
+                  background: 'linear-gradient(135deg, #ff3535 0%, #f44336 100%)',
+                  boxShadow: '0 0 12px rgba(255, 53, 53, 0.8)',
+                  animation: 'pulse 1.5s ease-in-out infinite'
+                }}
+              >
+                <MessageCircle className="h-4 w-4 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-white font-bold text-xs leading-tight">
+                  💬 Get instant help from our AI assistant!
+                </p>
+              </div>
+            </div>
+
+            {/* Arrow pointing to button */}
+            <div
+              className="absolute -bottom-1.5 right-6 w-3 h-3 transform rotate-45"
+              style={{
+                background: 'linear-gradient(135deg, rgba(153, 0, 0, 0.95) 0%, rgba(244, 67, 54, 0.95) 100%)',
+                borderRight: '2px solid #ff3535',
+                borderBottom: '2px solid #ff3535'
+              }}
+            ></div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Chatbot Avatar - Right Side */}
+      {!isChatOpen && (
+        <button
+          onClick={() => {
+            setIsChatOpen(true);
+            setShowBotMessage(false);
+          }}
+          className="fixed bottom-16 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-300"
+          style={{
+            background: 'linear-gradient(135deg, #990000 0%, #f44336 100%)',
+            boxShadow: '0 4px 15px rgba(153, 0, 0, 0.4)'
+          }}
+        >
+          <MessageCircle className="h-6 w-6 text-white" />
+        </button>
+      )}
+
+      {/* Chatbot Panel - Right Side (Centered with margins) */}
+      {isChatOpen && (
+        <div
+          className="fixed top-1/2 right-4 transform -translate-y-1/2 w-80 md:w-96 h-[65vh] max-h-[550px] z-40 flex flex-col shadow-2xl rounded-lg overflow-hidden"
+          style={{
+            background: 'transparent',
+            maxHeight: 'calc(100vh - 100px)'
+          }}
+        >
+          {/* Chat Header - Transparent with only close button */}
+          <div
+            className="p-2 flex items-center justify-end shrink-0"
+            style={{
+              background: 'transparent'
+            }}
+          >
+            <button
+              onClick={() => setIsChatOpen(false)}
+              className="w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-lg"
+              style={{
+                background: 'linear-gradient(135deg, #990000 0%, #f44336 100%)'
+              }}
+            >
+              <X className="h-4 w-4 text-white" />
+            </button>
+          </div>
+
+          {/* Botpress Webchat Container */}
+          <div
+            id="bp-webchat-container"
+            className="flex-1 overflow-hidden"
+          >
+            <div id="bp-embedded-webchat" className="w-full h-full" />
+          </div>
+        </div>
+      )}
 
       {/* Custom Styles */}
       <style>{`

@@ -1,4 +1,4 @@
-// src/utils/mockData.js
+
 
 export const mockIncidents = [
   {
@@ -160,12 +160,12 @@ export const mockFeedback = [
 ];
 
 export const mockEmergencyContacts = [
-  { name: "Police Emergency", number: "15" },
-  { name: "Rescue 1122", number: "1122" },
-  { name: "Fire Brigade", number: "16" },
+  { name: "Police", number: "15" },
+  { name: "Rescue", number: "1122" },
   { name: "Ambulance", number: "1122" },
-  { name: "Edhi Foundation", number: "115" },
-  { name: "Chippa Ambulance", number: "1020" },
+  { name: "Edhi Ambulance", number: "115" },
+  { name: "Chhipa Ambulance", number: "1020" },
+  { name: "Fire Brigade", number: "1122" },
 ];
 
 export const safetyTips = {

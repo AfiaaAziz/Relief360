@@ -61,10 +61,45 @@ export default function SafetyTips() {
   ];
 
   const emergencyContacts = [
-    { service: "Ambulance", number: "1122", color: "#f44336", bgColor: "rgba(244, 67, 54, 0.1)" },
-    { service: "Police", number: "15", color: "#16537e", bgColor: "rgba(22, 83, 126, 0.1)" },
-    { service: "Fire", number: "16", color: "#ff3535", bgColor: "rgba(255, 53, 53, 0.1)" },
-  ];
+  {
+    service: "Ambulance",
+    number: "1122",
+    color: "#f44336",
+    bgColor: "rgba(244, 67, 54, 0.1)"
+  },
+   {
+    service: "Police",
+    number: "15",
+    color: "#16537e",
+    bgColor: "rgba(22, 83, 126, 0.1)"
+  },
+  {
+    service: "Fire Brigade",
+    number: "1122",
+    color: "#ff3535",
+    bgColor: "rgba(255, 53, 53, 0.1)"
+  },
+ 
+  {
+    service: "Motorway Police",
+    number: "130",
+    color: "#2e7d32",
+    bgColor: "rgba(46, 125, 50, 0.1)"
+  },
+  {
+    service: "SSGC",
+    number: "1199",
+    color: "#ff9800",
+    bgColor: "rgba(255, 152, 0, 0.1)"
+  },
+  {
+    service: "Electricity Emergency",
+    number: "118",
+    color: "#fbc02d",
+    bgColor: "rgba(251, 192, 45, 0.1)"
+  }
+];
+
 
   const disasters = [
     {
