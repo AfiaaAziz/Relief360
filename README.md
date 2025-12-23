@@ -2,14 +2,8 @@
 
 <div align="center">
 
-![Relief360 Logo](https://via.placeholder.com/150x150/990000/ffffff?text=R360)
 
 **Connecting citizens, volunteers, hospitals, and emergency responders in real-time to save lives and manage disasters effectively.**
-
-[![React](https://img.shields.io/badge/React-19.2.0-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-10.0.0-E0234E?style=flat-square&logo=nestjs)](https://nestjs.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-336791?style=flat-square&logo=postgresql)](https://postgresql.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 
 </div>
 
@@ -208,14 +202,6 @@ npm run start:dev
 
 The backend API will be available at `http://localhost:5000`
 
-### 5. Default Admin Credentials
-
-For initial setup, use these default credentials:
-
-- **Username**: `admin`
-- **Password**: `admin123`
-
- **Important**: Change these credentials immediately after first login in production!
 
 ##  Database Schema
 
@@ -279,20 +265,7 @@ For initial setup, use these default credentials:
 - updated_at (TIMESTAMP)
 ```
 
-### Database Migrations
 
-The project uses TypeORM migrations for database schema management:
-
-```bash
-# Generate new migration
-npm run migration:generate -- src/migrations/YourMigrationName
-
-# Run migrations
-npm run migration:run
-
-# Revert migration
-npm run migration:revert
-```
 
 ##  API Endpoints
 
@@ -425,84 +398,8 @@ POST   /api/emergency-plans   # Create emergency plan
 - **Navigation**: Responsive navbar with role-based visibility
 - **Dashboards**: Clean layouts with data visualization
 
-##  Responsive Design
 
-The application is fully responsive and optimized for:
-
-- **Desktop**: Full-featured dashboard experience
-- **Tablet**: Touch-friendly interface with adapted layouts
-- **Mobile**: Streamlined mobile experience for emergency situations
-
-##  Testing
-
-### Frontend Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run tests in watch mode
-npm run test:watch
-```
-
-### Backend Testing
-
-```bash
-cd server-nestjs
-
-# Run unit tests
-npm test
-
-# Run integration tests
-npm run test:e2e
-
-# Run tests with coverage
-npm run test:cov
-```
-
-##  Deployment
-
-### Frontend Deployment (Netlify/Vercel)
-
-1. Build the application:
-
-```bash
-npm run build
-```
-
-2. Deploy the `build` folder to your hosting platform
-
-3. Configure environment variables for API endpoints
-
-### Backend Deployment (Heroku/Railway/DigitalOcean)
-
-1. Set environment variables:
-
-```bash
-NODE_ENV=production
-PORT=5000
-DATABASE_URL=postgresql://user:pass@host:port/database
-JWT_SECRET=your-production-jwt-secret
-```
-
-2. Deploy using your preferred platform
-
-### Docker Deployment
-
-```bash
-# Build and run with Docker Compose
-docker-compose up --build
-
-# Or build individual containers
-docker build -t relief360-frontend .
-docker build -t relief360-backend ./server-nestjs
-```
-
-
-### Phase 3 - Advanced Features 📅
+### Phase 3 - Advanced Features
 
 - [ ] AI-powered incident prediction
 - [ ] Integration with emergency services APIs
