@@ -1,5 +1,3 @@
-
-
 export const mockIncidents = [
   {
     id: "INC001",
