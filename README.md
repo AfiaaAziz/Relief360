@@ -1,11 +1,8 @@
 # Relief360 - Emergency Management Platform
 
-<div align="center">
-
 
 **Connecting citizens, volunteers, hospitals, and emergency responders in real-time to save lives and manage disasters effectively.**
 
-</div>
 
 ##  Overview
 
